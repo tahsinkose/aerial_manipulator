@@ -68,6 +68,11 @@ Finally run:
 roslaunch quad_manipulator_gazebo simulate.launch
 ```
 
+## Troubleshooting
+In this section I will list the problems and their solutions I have encountered thus far. This will be a living document.
+
+1. "preflight check failed, missing sensor during GAZEBO simulation" -> solve by removing `~/.ros/eeprom/parameters` file.
+
 
 ## Develop and Contribute
 
