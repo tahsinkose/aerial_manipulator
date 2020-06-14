@@ -16,7 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   cv_bridge
   image_transport
-  OpenCV
 )
 
 catkin_package()
@@ -47,10 +46,3 @@ target_link_libraries(listener_arm_pose ${catkin_LIBRARIES})
 
 add_executable(broadcaster_base_world src/broadcaster_base_world.cpp)
 target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
-
-add_executable(image_circlemarkers_detection src/image_circlemarkers_detection.cpp)
-target_link_libraries(image_circlemarkers_detection
-    ${catkin_LIBRARIES}
-    ${OpenCV_LIBS}
-)
-
