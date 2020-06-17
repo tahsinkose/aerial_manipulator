@@ -46,3 +46,6 @@ target_link_libraries(listener_arm_pose ${catkin_LIBRARIES})
 
 add_executable(broadcaster_base_world src/broadcaster_base_world.cpp)
 target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
+
+add_executable(verify_quad_manip src/verify_quad_manip.cpp)
+target_link_libraries(verify_quad_manip ${catkin_LIBRARIES})

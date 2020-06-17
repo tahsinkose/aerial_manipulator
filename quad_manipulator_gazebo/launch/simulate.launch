@@ -14,8 +14,7 @@
   </include>
 
   <!-- ros_control quad_manipulator launch file -->
-  <!-- <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch">
-  </include> -->
+   <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
 
   <!-- vehicle pose -->
   <arg name="x" default="0"/>
