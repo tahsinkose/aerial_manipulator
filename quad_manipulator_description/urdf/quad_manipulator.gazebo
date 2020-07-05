@@ -348,7 +348,7 @@
       <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>quad_manipulation/camera1</cameraName>
+        <cameraName>quad_manipulator/camera1</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>camera_link_optical</frameName>
