@@ -22,7 +22,7 @@ After this, do the following to compile the firmware:
 
 ```
 cd Firmware
-source /opt/ros/*/setup.bash
+source /opt/ros/melodic/setup.bash
 DONT_RUN=1 make px4_sitl_default gazebo
 ```
 
@@ -52,14 +52,12 @@ catkin build
 
 ## Quick Start
 
-This phase is not so quick due to the convolved nature of PX4. Paste the following snippet to the terminal:
+Go into your catkin workspace. Then do the following.
 
 ```
 cd catkin_ws
 source devel/setup.bash
-cd src/quad_manipulator/Firmware
-source Tools/setup_gazebo.bash $(pwd) $(pwd)/build/px4_sitl_default
-export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$(pwd):$(pwd)/Tools/sitl_gazebo
+source setup_px4.sh
 ```
 
 Finally run:
