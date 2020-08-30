@@ -32,6 +32,14 @@
 
   <arg name="vehicle" value="quad_manipulator"/>
   <arg name="world" default="$(find quad_manipulator_gazebo)/worlds/empty.world"/>
+  <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
+  <arg name="world_frame" default="/map"/>
+  <node name="ground_truth_to_tf" pkg="message_to_tf" type="message_to_tf" output="screen">
+      <param name="odometry_topic" value="/mavros/local_position/odom" />
+      <param name="frame_id" value="$(arg world_frame)" />
+      <param name="tf_prefix" value="$(arg tf_prefix)"/>
+      <remap from="ground_truth_to_tf/pose" to="pose"/>
+  </node>
   <!-- Gazebo sim -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <arg name="gui" value="$(arg gui)"/>
