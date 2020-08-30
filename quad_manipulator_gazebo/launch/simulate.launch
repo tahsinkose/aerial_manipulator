@@ -12,10 +12,8 @@
     <arg name="fcu_url" value="$(arg fcu_url)"/>
     <arg name="respawn_mavros" value="$(arg respawn_mavros)"/>
   </include>
-
   <!-- ros_control quad_manipulator launch file -->
    <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
-
   <!-- vehicle pose -->
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
@@ -26,7 +24,7 @@
   <!-- gazebo configs -->
   <arg name="gui" default="true"/>
   <arg name="debug" default="false"/>
-  <arg name="verbose" default="false"/>
+  <arg name="verbose" default="true"/>
   <arg name="paused" default="false"/>
   <arg name="respawn_gazebo" default="false"/>
 
@@ -52,4 +50,6 @@
   <!-- gazebo model -->
   <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen"
       args="-urdf -param robot_description -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
+
+  <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
 </launch>

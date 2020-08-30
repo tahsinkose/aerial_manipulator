@@ -1,32 +1,43 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root version="2.3.8">
  <tabbed_widget parent="main_window" name="Main Window">
-  <plotmatrix rows="2" tab_name="plot" columns="2">
-   <plot style="Lines" col="0" row="0">
-    <range left="325.696000" top="0.500000" right="425.696000" bottom="-0.500000"/>
-    <limitY max="0.5" min="-0.5"/>
-    <curve G="127" B="14" custom_transform="noTransform" name="/mavros/local_position/odom/pose/position/x" R="255"/>
-    <curve G="119" B="180" custom_transform="noTransform" name="/mavros/local_position/pose/position/x" R="31"/>
-    <transform value="noTransform"/>
-   </plot>
-   <plot style="Lines" col="0" row="1">
-    <range left="325.696000" top="0.500000" right="425.696000" bottom="-0.500000"/>
-    <limitY max="0.5" min="-0.5"/>
-    <curve G="76" B="193" custom_transform="noTransform" name="/mavros/local_position/odom/pose/position/y" R="241"/>
-    <curve G="39" B="40" custom_transform="noTransform" name="/mavros/local_position/pose/position/y" R="214"/>
-    <transform value="noTransform"/>
-   </plot>
-   <plot style="Lines" col="1" row="0">
-    <range left="325.696000" top="0.500000" right="425.696000" bottom="-0.500000"/>
-    <limitY max="0.5" min="-0.5"/>
-    <curve G="103" B="189" custom_transform="noTransform" name="/mavros/local_position/odom/pose/position/z" R="148"/>
-    <curve G="201" B="56" custom_transform="noTransform" name="/mavros/local_position/pose/position/z" R="26"/>
-    <transform value="noTransform"/>
-   </plot>
-   <plot style="Lines" col="1" row="1">
-    <range left="325.696000" top="0.814214" right="425.696000" bottom="-0.654569"/>
+  <plotmatrix columns="2" tab_name="plot" rows="3">
+   <plot row="0" style="Lines" col="0">
+    <range bottom="3.943057" top="4.935437" left="0.000000" right="61.468000"/>
     <limitY/>
-    <curve G="190" B="207" custom_transform="noTransform" name="/mavros/local_position/odom/twist/linear/x" R="23"/>
+    <curve B="14" R="255" G="127" custom_transform="noTransform" name="/mavros/local_position/odom/pose/position/x"/>
+    <curve B="180" R="31" G="119" custom_transform="noTransform" name="/mavros/local_position/pose/position/x"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="1" style="Lines" col="0">
+    <range bottom="2.535478" top="2.972310" left="0.000000" right="61.468000"/>
+    <limitY/>
+    <curve B="193" R="241" G="76" custom_transform="noTransform" name="/mavros/local_position/odom/pose/position/y"/>
+    <curve B="40" R="214" G="39" custom_transform="noTransform" name="/mavros/local_position/pose/position/y"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="2" style="Lines" col="0">
+    <range bottom="-0.009565" top="0.148338" left="0.000000" right="61.468000"/>
+    <limitY/>
+    <curve B="34" R="188" G="189" custom_transform="noTransform" name="/mavros/local_position/odom/twist/linear/y"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="0" style="Lines" col="1">
+    <range bottom="4.992159" top="5.140373" left="0.000000" right="61.468000"/>
+    <limitY/>
+    <curve B="189" R="148" G="103" custom_transform="noTransform" name="/mavros/local_position/odom/pose/position/z"/>
+    <curve B="56" R="26" G="201" custom_transform="noTransform" name="/mavros/local_position/pose/position/z"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="1" style="Lines" col="1">
+    <range bottom="-0.021700" top="0.519283" left="0.000000" right="61.468000"/>
+    <limitY/>
+    <curve B="207" R="23" G="190" custom_transform="noTransform" name="/mavros/local_position/odom/twist/linear/x"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="2" style="Lines" col="1">
+    <range bottom="0.000000" top="1.000000" left="0.000000" right="1.000000"/>
+    <limitY/>
     <transform value="noTransform"/>
    </plot>
   </plotmatrix>
@@ -52,8 +63,8 @@
    <discard_large_arrays value="true"/>
    <max_array_size value="100"/>
   </plugin>
-  <plugin status="idle" ID="ROS /rosout Visualization"/>
-  <plugin status="idle" ID="ROS Topic Re-Publisher"/>
+  <plugin ID="ROS /rosout Visualization" status="idle"/>
+  <plugin ID="ROS Topic Re-Publisher" status="idle"/>
  </Plugins>
  <!-- - - - - - - - - - - - - - - -->
  <previouslyLoaded_Datafiles/>

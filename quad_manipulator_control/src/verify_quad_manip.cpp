@@ -5,6 +5,9 @@
 #include <mavros_msgs/State.h>
 #include <ros/ros.h>
 
+namespace {
+  constexpr double distance_tolerance = 0.1;
+}
 class QuadManipulator {
 public:
   QuadManipulator() {
@@ -28,14 +31,23 @@ public:
   void pose_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
     current_pose_ = *msg;
   }
-  void arm() {
+  bool arm() {
     // the setpoint publishing rate MUST be faster than 2Hz
     ros::Rate rate(20.0);
     // wait for FCU connection
-    while (ros::ok() && !current_state_.connected) {
+    ros::WallTime init = ros::WallTime::now();
+    double elapsed = ros::WallTime::now().toSec() - init.toSec();
+    while (elapsed < 10.0 && !current_state_.connected) {
       ros::spinOnce();
       rate.sleep();
+      elapsed = ros::WallTime::now().toSec() - init.toSec();
     }
+
+    if(!current_state_.connected){
+      ROS_ERROR_NAMED("verify_quad_manip", "Couldn't connect to the board!");
+      return false;
+    }
+
     geometry_msgs::PoseStamped pose;
     pose.pose.position.x = 0;
     pose.pose.position.y = 0;
@@ -79,13 +91,14 @@ public:
       ros::spinOnce();
       rate.sleep();
     }
+    return true;
   }
 
-  void test() {
+  void test(double x, double y, double z) {
     geometry_msgs::PoseStamped pose;
-    pose.pose.position.x = 0;
-    pose.pose.position.y = 0;
-    pose.pose.position.z = 2;
+    pose.pose.position.x = x;
+    pose.pose.position.y = y;
+    pose.pose.position.z = z;
     // the setpoint publishing rate MUST be faster than 2Hz
     ros::Rate rate(20.0);
     double dist = DBL_MAX;
@@ -99,13 +112,15 @@ public:
           sqrt(pow((current_pose_.pose.position.x - pose.pose.position.x), 2) +
                pow((current_pose_.pose.position.y - pose.pose.position.y), 2) +
                pow((current_pose_.pose.position.z - pose.pose.position.z), 2));
-    } while (dist > 0.1);
-    mavros_msgs::CommandTOL land_cmd;
-    if(landing_client_.call(land_cmd)){
-      ROS_INFO("Landing request was %s",
-               (land_cmd.response.success ? "successful" : "unsuccesful"));
+    } while (dist > distance_tolerance);
+    mavros_msgs::SetMode hover_set_mode;
+    hover_set_mode.request.custom_mode = "AUTO.LOITER";
+    if(set_mode_client_.call(hover_set_mode) && hover_set_mode.response.mode_sent){
+      ROS_INFO("Finishing with hover mode.");
     }
-
+    else {
+      ROS_ERROR("Could not finish at hover mode!");
+    }
   }
 
 private:
@@ -122,8 +137,17 @@ private:
 
 int main(int argc, char **argv) {
   ros::init(argc, argv, "verify_quad_manip");
+  if(argc != 4){
+    ROS_ERROR("Usage: rosrun quad_manipulator_control verify_quad_manip <x> <y> <z>");
+    return 1;
+  }
+  double x = std::atof(argv[1]);
+  double y = std::atof(argv[2]);
+  double z = std::atof(argv[3]);
   QuadManipulator quad_manip;
-  quad_manip.arm();
-  quad_manip.test();
+  if(quad_manip.arm()){
+    quad_manip.test(x, y, z);
+  }
+
   return 0;
 }
