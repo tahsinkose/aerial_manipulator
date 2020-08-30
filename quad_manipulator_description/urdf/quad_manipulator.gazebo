@@ -1,45 +1,44 @@
 <?xml version="1.0"?>
-<robot>
-
+<robot  xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="robot_namespace" value="quad_manipulator"/>
 
   <!-- ros_control plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/quad_manipulator</robotNamespace>
+      <robotNamespace>${robot_namespace}</robotNamespace>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
       <legacyModeNS>true</legacyModeNS>
     </plugin>
   </gazebo>
-
 
   <!-- base_link -->
   <gazebo reference="base_link">
     <material>Gazebo/Orange</material>
   </gazebo>
 
-  <!-- rotor_link_0 -->
-  <gazebo reference="rotor_link_0">
+  <!-- rotor_0 -->
+  <gazebo reference="rotor_0">
     <mu1>0.2</mu1>
     <mu2>0.2</mu2>
     <material>Gazebo/Grey</material>
   </gazebo>
 
-  <!-- rotor_link_1 -->
-  <gazebo reference="rotor_link_1">
+  <!-- rotor_1 -->
+  <gazebo reference="rotor_1">
     <mu1>0.2</mu1>
     <mu2>0.2</mu2>
     <material>Gazebo/Grey</material>
   </gazebo>
 
-  <!-- rotor_link_2 -->
-  <gazebo reference="rotor_link_2">
+  <!-- rotor_2 -->
+  <gazebo reference="rotor_2">
     <mu1>0.2</mu1>
     <mu2>0.2</mu2>
     <material>Gazebo/Grey</material>
   </gazebo>
 
-  <!-- rotor_link_3 -->
-  <gazebo reference="rotor_link_3">
+  <!-- rotor_3 -->
+  <gazebo reference="rotor_3">
     <mu1>0.2</mu1>
     <mu2>0.2</mu2>
     <material>Gazebo/Grey</material>
@@ -95,17 +94,17 @@
   </gazebo>
 
   <gazebo>
-    <plugin name='rosbag' filename='libgazebo_multirotor_base_plugin.so'>
-      <robotNamespace/>
+    <plugin name='multirotor_base_plugin' filename='libgazebo_multirotor_base_plugin.so'>
+      <robotNamespace>${robot_namespace}</robotNamespace>
       <linkName>base_link</linkName>
       <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
     </plugin>
   </gazebo>
   <gazebo>
     <plugin name="front_right_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace/>
-      <jointName>rotor_joint_0</jointName>
-      <linkName>rotor_link_0</linkName>
+      <robotNamespace>${robot_namespace}</robotNamespace>
+      <jointName>rotor_0_joint</jointName>
+      <linkName>rotor_0</linkName>
       <turningDirection>ccw</turningDirection>
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
@@ -122,9 +121,9 @@
   </gazebo>
   <gazebo>
     <plugin name="back_left_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace/>
-      <jointName>rotor_joint_1</jointName>
-      <linkName>rotor_link_1</linkName>
+      <robotNamespace>${robot_namespace}</robotNamespace>
+      <jointName>rotor_1_joint</jointName>
+      <linkName>rotor_1</linkName>
       <turningDirection>ccw</turningDirection>
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
@@ -141,9 +140,9 @@
   </gazebo>
   <gazebo>
     <plugin name="front_left_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace/>
-      <jointName>rotor_joint_2</jointName>
-      <linkName>rotor_link_2</linkName>
+      <robotNamespace>${robot_namespace}</robotNamespace>
+      <jointName>rotor_2_joint</jointName>
+      <linkName>rotor_2</linkName>
       <turningDirection>cw</turningDirection>
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
@@ -160,9 +159,9 @@
   </gazebo>
   <gazebo>
     <plugin name="back_right_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace/>
-      <jointName>rotor_joint_3</jointName>
-      <linkName>rotor_link_3</linkName>
+      <robotNamespace>${robot_namespace}</robotNamespace>
+      <jointName>rotor_3_joint</jointName>
+      <linkName>rotor_3</linkName>
       <turningDirection>cw</turningDirection>
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
@@ -179,11 +178,11 @@
   </gazebo>
   <gazebo>
     <plugin name='gps_plugin' filename='libgazebo_gps_plugin.so'>
-      <robotNamespace/>
+      <robotNamespace>${robot_namespace}</robotNamespace>
       <gpsNoise>1</gpsNoise>
     </plugin>
     <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-      <robotNamespace/>
+      <robotNamespace>${robot_namespace}</robotNamespace>
       <pubRate>100</pubRate>
       <noiseDensity>0.0004</noiseDensity>
       <randomWalk>6.4e-06</randomWalk>
@@ -191,14 +190,14 @@
       <magTopic>/mag</magTopic>
     </plugin>
     <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
-      <robotNamespace/>
+      <robotNamespace>${robot_namespace}</robotNamespace>
       <pubRate>50</pubRate>
       <baroTopic>/baro</baroTopic>
     </plugin>
   </gazebo>
   <gazebo>
     <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
-        <robotNamespace/>
+        <robotNamespace>${robot_namespace}</robotNamespace>
         <imuSubTopic>/imu</imuSubTopic>
         <gpsSubTopic>/gps</gpsSubTopic>
         <magSubTopic>/mag</magSubTopic>
@@ -352,12 +351,6 @@
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>camera_link_optical</frameName>
-        <!-- setting hackBaseline to anything but 0.0 will cause a misalignment
-            between the gazebo sensor image and the frame it is supposed to
-            be attached to -->
-        <!-- focal length calculation
-            f = (width/2) / tan( hfov/2) = (640/2) / tan(2/2) = 205.4696
-        -->
         <hackBaseline>0.0</hackBaseline>
         <distortionK1>0.0</distortionK1>
         <distortionK2>0.0</distortionK2>
@@ -374,8 +367,8 @@
 
   <gazebo>
     <plugin name="rotors_gazebo_imu_plugin" filename="libgazebo_imu_plugin.so">
-      <robotNamespace/>
-      <linkName>/imu_link</linkName>
+      <robotNamespace>${robot_namespace}</robotNamespace>
+      <linkName>imu_link</linkName>
       <imuTopic>/imu</imuTopic>
       <gyroscopeNoiseDensity>0.0</gyroscopeNoiseDensity>                  <!-- 0.0003394 -->
       <gyroscopeRandomWalk>0.0</gyroscopeRandomWalk>                     <!-- 3.8785e-05 -->
