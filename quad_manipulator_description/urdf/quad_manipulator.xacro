@@ -259,8 +259,6 @@
       xyz="0 0 1" />
   </joint>
 
-
-
 <link
     name="arm_base_link">
     <inertial>
