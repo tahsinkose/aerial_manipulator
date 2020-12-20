@@ -3,8 +3,7 @@
   <version>1.0.0</version>
   <description>
     <p>URDF Description package for quad_manipulator_description</p>
-    <p>This package contains configuration data, 3D models and launch files
-for quad_manipulator robot</p>
+    <p>This package contains configuration data, 3D models and launch files for quad_manipulator robot</p>
   </description>
   <author>zhonghang</author>
   <maintainer email="zhonghang@hnu.edu.cn" />

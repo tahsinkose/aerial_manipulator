@@ -15,7 +15,7 @@
   <!-- ros_control quad_manipulator launch file -->
    <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
   <!-- vehicle pose -->
-  <arg name="x" default="0"/>
+  <arg name="x" default="10"/>
   <arg name="y" default="0"/>
   <arg name="z" default="0.3"/>
   <arg name="R" default="0"/>
@@ -29,7 +29,7 @@
   <arg name="respawn_gazebo" default="false"/>
 
   <arg name="vehicle" value="quad_manipulator"/>
-  <arg name="world" default="$(find quad_manipulator_gazebo)/worlds/empty.world"/>
+  <arg name="world" default="$(find hector_moveit_gazebo_worlds)/worlds/garden2.world"/>
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
   <arg name="world_frame" default="/map"/>
   <node name="ground_truth_to_tf" pkg="message_to_tf" type="message_to_tf" output="screen">

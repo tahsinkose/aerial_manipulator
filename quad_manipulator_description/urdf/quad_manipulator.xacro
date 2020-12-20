@@ -438,8 +438,7 @@
     spring_reference="0"
     spring_stiffness="0.5"/>
   </joint>
-  <link
-    name="arm_link_3">
+  <link name="arm_link_3">
     <inertial>
       <origin
         xyz="-2.7373E-05 -0.0018898 -0.084066"
@@ -501,8 +500,31 @@
     spring_reference="0"
     spring_stiffness="0.5"/>
   </joint>
-  <link
-    name="grasp_link_1">
+  <link name="arm_eef">
+    <inertial>
+      <origin
+        xyz="0.0 0.0 0.0"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0" ixy="0" ixz="0"
+        iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="arm_eef_joint"
+    type="fixed">
+    <origin
+      xyz="0 0.0 -0.12"
+      rpy="0 -3.14 0.0" />
+    <parent
+      link="arm_link_3" />
+    <child
+      link="arm_eef" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link name="grasp_link_1">
     <inertial>
       <origin
         xyz="-0.012047 0.027271 -0.0023834"
@@ -545,10 +567,10 @@
     name="grasp_joint_1"
     type="revolute">
     <origin
-      xyz="-0.021588457268 0 -0.1455143753568"
-      rpy="-1.5707963267949 -0.474869647734542 0" />
+      xyz="0.021588457268 0 0.0255143753568"
+      rpy="-1.5707963267949 2.665130352265458 0" />
     <parent
-      link="arm_link_3" />
+      link="arm_eef" />
     <child
       link="grasp_link_1" />
     <axis
@@ -603,10 +625,10 @@
     name="grasp_joint_2"
     type="revolute">
     <origin
-      xyz="0.0215884572684 0 -0.1455143753568"
-      rpy="-1.5707963267949 0.246759488513054 0" />
+      xyz="-0.0215884572684 0 0.0255143753568"
+      rpy="-1.5707963267949 3.386759488513054 0" />
     <parent
-      link="arm_link_3" />
+      link="arm_eef" />
     <child
       link="grasp_link_2" />
     <axis
@@ -662,7 +684,7 @@
     type="fixed">
     <origin
       xyz="0 0.126 -0.057"
-      rpy="0 1.5708 0" />
+      rpy="0 0 1.5708" />
     <parent
       link="base_link" />
     <child

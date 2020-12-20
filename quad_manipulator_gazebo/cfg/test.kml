@@ -18,8 +18,8 @@
    <visibility>0</visibility>
    <description>Transparent purple line</description>
    <LookAt>
-    <longitude>8.5455972</longitude>
-    <latitude>47.3977430</latitude>
+    <longitude>8.5457870</longitude>
+    <latitude>47.3977388</latitude>
     <altitude>0</altitude>
     <heading>-100</heading>
     <tilt>45</tilt>
@@ -29,12 +29,18 @@
     <extruder>1</extruder>
     <tessellate>1</tessellate>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>8.5455972,47.3977430,499.00
-8.5439327,47.3981323,499.00
-8.5455123,47.3987471,499.00
-8.5466871,47.3983595,499.00
-8.5468155,47.3974306,499.00
-8.5462330,47.3979786,499.00
+    <coordinates>8.5457870,47.3977388,490.00
+8.5457909,47.3978092,490.00
+8.5457915,47.3978777,490.00
+8.5453864,47.3978761,490.00
+8.5453839,47.3978115,490.00
+8.5457874,47.3978125,490.00
+8.5457875,47.3977433,490.00
+8.5453811,47.3977433,490.00
+8.5453779,47.3976739,490.00
+8.5457910,47.3976742,490.00
+8.5457916,47.3976076,490.00
+8.5453728,47.3976082,490.00
 </coordinates>
    </LineString>
   </Placemark>
