@@ -317,7 +317,7 @@
     <inertial>
       <origin
         xyz="0 -0.0086194 0"
-        rpy="-3.1416 1.57 0" />
+        rpy="-1.57 0 0" />
       <mass
         value="0.033119" />
       <inertia
@@ -331,7 +331,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="-3.1416 1.57 0" />
+        rpy="-1.57 0 0" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/arm_link_1.STL" />
@@ -345,7 +345,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="-3.1416 1.57 0" />
+        rpy="-1.57 0 0" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/arm_link_1.STL" />
@@ -357,13 +357,13 @@
     type="revolute">
     <origin
       xyz="0 0 0.02075"
-      rpy="1.5707 0 -1.5707" />
+      rpy="0 0 0" />
     <parent
       link="arm_base_link" />
     <child
       link="arm_link_1" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 0 1" />
     <limit
       lower="-3.14"
       upper="3.14"
@@ -380,7 +380,7 @@
     <inertial>
       <origin
         xyz="-0.0002669 0 0.069913"
-        rpy="0 -1.57 3.1416" />
+        rpy="-1.57 -1.57 0" />
       <mass
         value="0.097521" />
       <inertia
@@ -394,7 +394,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 -1.57 3.1416" />
+        rpy="3.14 -1.57 0" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/arm_link_2.STL" />
@@ -408,7 +408,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 -1.57 3.1416" />
+        rpy="-1.57 -1.57 0" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/arm_link_2.STL" />
@@ -419,8 +419,8 @@
     name="arm_joint_2"
     type="revolute">
     <origin
-      xyz="0 0.0300000000000296 0"
-      rpy="0 0 0.523598775598296" />
+      xyz="0 0 0.0300000000000296"
+      rpy="1.57 -0.523598775598296 -1.57" />
     <parent
       link="arm_link_1" />
     <child
@@ -428,8 +428,8 @@
     <axis
       xyz="0 0 1" />
       <limit
-        lower="-0.8"
-        upper="3.0"
+        lower="-1.7"
+        upper="1.7"
         effort="10"
         velocity="1" />
     <dynamics
@@ -528,7 +528,7 @@
     <inertial>
       <origin
         xyz="-0.012047 0.027271 -0.0023834"
-        rpy="0 0 0" />
+        rpy="0 -1.57 1.57" />
       <mass
         value="0.016743" />
       <inertia
@@ -542,7 +542,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 -1.57 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/grasp_link_1.STL" />
@@ -556,7 +556,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 -1.57 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/grasp_link_1.STL" />
@@ -568,13 +568,13 @@
     type="revolute">
     <origin
       xyz="-0.01833 0 -0.025"
-      rpy="1.57 -1.1 0" />
+      rpy="0 0.45 0" />
     <parent
       link="arm_eef" />
     <child
       link="grasp_link_1" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 1 0" />
       <limit
         lower="-0.8"
         upper="0.0"
@@ -586,7 +586,7 @@
     <inertial>
       <origin
         xyz="0.0056081 0.029333 -0.0023778"
-        rpy="0 0 0" />
+        rpy="0 -1.57 1.57" />
         <mass
           value="0.016743" />
         <inertia
@@ -600,7 +600,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 -1.57 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/grasp_link_2.STL" />
@@ -614,7 +614,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 -1.57 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/grasp_link_2.STL" />
@@ -626,13 +626,13 @@
     type="revolute">
     <origin
       xyz="-0.0215884572684 0 0.0255143753568"
-      rpy="1.57 -1.9 0" />
+      rpy="0 -0.33 0" />
     <parent
       link="arm_eef" />
     <child
       link="grasp_link_2" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 1 0" />
       <limit
         lower="0.0"
         upper="0.8"
