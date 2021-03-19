@@ -2,7 +2,7 @@
   <arg name="launch_gazebo" default="false"/>
   <param
     name="robot_description"
-    command="$(find xacro)/xacro '$(find quad_manipulator_description)/urdf/quad_manipulator.xacro'" />
+    command="$(find xacro)/xacro '$(find quad_manipulator_description)/urdf/quad_manipulator_sim.xacro'" />
   <node
     name="joint_state_publisher"
     pkg="joint_state_publisher"

@@ -6,7 +6,7 @@
     <!-- vehicle model-->
     <arg name="vehicle" value="quad_manipulator"/>
 	<param name="robot_description"
-		command="$(find xacro)/xacro --inorder '$(find quad_manipulator_description)/urdf/$(arg vehicle).xacro'" />
+		command="$(find xacro)/xacro --inorder '$(find quad_manipulator_description)/urdf/$(arg vehicle)_sim.xacro'" />
     <env name="PX4_SIM_MODEL" value="$(arg vehicle)" />
     <env name="PX4_ESTIMATOR" value="$(arg est)" />
 
