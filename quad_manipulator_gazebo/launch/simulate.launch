@@ -13,7 +13,7 @@
     <arg name="respawn_mavros" value="$(arg respawn_mavros)"/>
   </include>
   <!-- ros_control quad_manipulator launch file -->
-   <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
+  <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
   <!-- vehicle pose -->
   <arg name="x" default="10"/>
   <arg name="y" default="0"/>
