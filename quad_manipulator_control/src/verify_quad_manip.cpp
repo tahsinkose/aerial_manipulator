@@ -67,6 +67,8 @@ public:
     arm_cmd.request.value = true;
 
     ros::Time last_request = ros::Time::now();
+    int arm_timeout = 10;
+    int current_arm_cnt = 0;
     while (ros::ok()) {
       if (current_state_.mode != "OFFBOARD" &&
           (ros::Time::now() - last_request > ros::Duration(5.0))) {
@@ -80,6 +82,11 @@ public:
             (ros::Time::now() - last_request > ros::Duration(5.0))) {
           if (arming_client_.call(arm_cmd) && arm_cmd.response.success) {
             ROS_INFO("Vehicle armed");
+          } else {
+            current_arm_cnt++;
+            if (current_arm_cnt == arm_timeout) {
+              break;
+            }
           }
           last_request = ros::Time::now();
         }
