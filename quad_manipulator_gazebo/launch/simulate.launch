@@ -3,8 +3,10 @@
 
   <!-- MAVROS configs -->
   <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+  <arg name="use_zero_noise_process" default="true"/>
   <param name="robot_description"
-		command="$(find xacro)/xacro '$(find quad_manipulator_description)/urdf/quad_manipulator_sim.xacro'" />
+		command="$(find xacro)/xacro '$(find quad_manipulator_description)/urdf/quad_manipulator_sim.xacro'
+      use_zero_noise_process:=$(arg use_zero_noise_process)"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   <!-- gazebo simulation with px4 and mavros launch file -->
   <include file="$(find quad_manipulator_control)/launch/mavros_posix_sitl.launch">
