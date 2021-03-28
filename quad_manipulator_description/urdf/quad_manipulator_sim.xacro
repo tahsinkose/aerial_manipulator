@@ -15,10 +15,10 @@
       <mass value="1.5" />
       <inertia
         ixx="0.028479"
-        ixy="4.8442E-07"
-        ixz="1.3005E-07"
+        ixy="0"
+        ixz="0"
         iyy="0.03948435007"
-        iyz="6.61872E-08"
+        iyz="0"
         izz="0.04059" />
     </inertial>
     <visual>
@@ -61,8 +61,7 @@
   </joint>
 
 
-  <link
-    name="rotor_0">
+  <link name="rotor_0">
     <inertial>
       <origin
         xyz="-7.3331E-06 0.0086864 -0.00026313"
@@ -71,10 +70,10 @@
         value="0.022934" />
       <inertia
         ixx="1.612E-06"
-        ixy="-1.1526E-09"
-        ixz="-1.8205E-06"
+        ixy="0"
+        ixz="0"
         iyy="9.0967E-05"
-        iyz="-2.8751E-10"
+        iyz="0"
         izz="9.0135E-05" />
     </inertial>
     <visual>
@@ -110,8 +109,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="rotor_1">
+  <link name="rotor_1">
     <inertial>
       <origin
         xyz="-7.3878E-06 0.0086864 -0.00026314"
@@ -120,10 +118,10 @@
         value="0.022934" />
       <inertia
         ixx="1.612E-06"
-        ixy="-1.1546E-09"
-        ixz="-1.8205E-06"
+        ixy="0"
+        ixz="0"
         iyy="9.0967E-05"
-        iyz="-2.894E-10"
+        iyz="0"
         izz="9.0135E-05" />
     </inertial>
     <visual>
@@ -159,8 +157,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="rotor_2">
+  <link name="rotor_2">
     <inertial>
       <origin
         xyz="-8.2569E-06 0.0096575 -0.00026317"
@@ -168,12 +165,12 @@
       <mass
         value="0.022929" />
       <inertia
-        ixx="1.6116E-06"
-        ixy="1.1887E-09"
-        ixz="-1.8165E-06"
-        iyy="9.0918E-05"
-        iyz="3.3076E-10"
-        izz="9.0087E-05" />
+        ixx="1.612E-06"
+        ixy="0"
+        ixz="0"
+        iyy="9.0967E-05"
+        iyz="0"
+        izz="9.0135E-05" />
     </inertial>
     <visual>
       <origin
@@ -208,8 +205,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="rotor_3">
+  <link name="rotor_3">
     <inertial>
       <origin
         xyz="-8.224E-06 0.0096575 -0.00026313"
@@ -217,12 +213,12 @@
       <mass
         value="0.022929" />
       <inertia
-        ixx="1.6116E-06"
-        ixy="1.1793E-09"
-        ixz="-1.8166E-06"
-        iyy="9.0918E-05"
-        iyz="3.2833E-10"
-        izz="9.0087E-05" />
+        ixx="1.612E-06"
+        ixy="0"
+        ixz="0"
+        iyy="9.0967E-05"
+        iyz="0"
+        izz="9.0135E-05" />
     </inertial>
     <visual>
       <origin
