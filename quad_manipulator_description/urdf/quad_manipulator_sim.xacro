@@ -4,25 +4,25 @@
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find quad_manipulator_description)/urdf/quad_manipulator.gazebo" />
   <!-- Import Gazebo-IMU-->
-  <xacro:arg name="use_zero_noise_process" default="true"/>
-  <xacro:if value="$(arg use_zero_noise_process)">
+  <xacro:arg name="use_zero_noise_model" default="true"/>
+  <xacro:if value="$(arg use_zero_noise_model)">
     <xacro:imu>
-      <noise_process>
+      <noise_model>
         <gyroscopeNoiseDensity>0.0</gyroscopeNoiseDensity>
         <gyroscopeRandomWalk>0.0</gyroscopeRandomWalk>
         <accelerometerNoiseDensity>0.0</accelerometerNoiseDensity>
         <accelerometerRandomWalk>0.0</accelerometerRandomWalk>
-      </noise_process>
+      </noise_model>
     </xacro:imu>
   </xacro:if>
-  <xacro:unless value="$(arg use_zero_noise_process)">
+  <xacro:unless value="$(arg use_zero_noise_model)">
     <xacro:imu>
-      <noise_process>
+      <noise_model>
         <gyroscopeNoiseDensity>0.00018665</gyroscopeNoiseDensity>
         <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
         <accelerometerNoiseDensity>0.00186</accelerometerNoiseDensity>
         <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
-      </noise_process>
+      </noise_model>
     </xacro:imu>
   </xacro:unless>
   <!-- Import Rviz colors -->

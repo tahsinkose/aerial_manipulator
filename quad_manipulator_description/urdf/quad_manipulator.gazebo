@@ -365,13 +365,13 @@
     </sensor>
   </gazebo>
 
-  <xacro:macro name="imu" params="**noise_process">
+  <xacro:macro name="imu" params="**noise_model">
     <gazebo>
       <plugin name="rotors_gazebo_imu_plugin" filename="libgazebo_imu_plugin.so">
         <robotNamespace>${robot_namespace}</robotNamespace>
         <linkName>imu_link</linkName>
         <imuTopic>/imu</imuTopic>
-        <xacro:insert_block name="noise_process"/>
+        <xacro:insert_block name="noise_model"/>
         <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
         <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
         <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
