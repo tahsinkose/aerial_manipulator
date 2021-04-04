@@ -20,7 +20,7 @@
       <ode>
         <solver>
           <type>quick</type>
-          <iters>1000</iters>
+          <iters>500</iters>
           <sor>1.3</sor>
           <use_dynamic_moi_rescaling>0</use_dynamic_moi_rescaling>
         </solver>
@@ -82,6 +82,23 @@
       <uri>model://orchard_wall</uri>
       <name>wall2</name>
       <pose>0.56 -16.05 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://cafe_table</uri>
+      <name>target_table</name>
+      <pose>16.4485 -14.8338 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://cafe_table</uri>
+      <name>source_table</name>
+      <pose>15.2534 13.9765 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple</uri>
+      <name>target_apple</name>
+      <pose>15.264 13.965 0.776 0 0 0</pose>
     </include>
   </world>
 </sdf>
