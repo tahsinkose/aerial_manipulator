@@ -379,4 +379,24 @@
       </plugin>
     </gazebo>
   </xacro:macro>
+
+  <gazebo>
+    <plugin name="grasp_collisions" filename="libgazebo_ros_robot_collisions.so">
+      <topicName>${robot_namespace}/robot_collisions</topicName>
+      <disable_collisions_on_attach>true</disable_collisions_on_attach>
+      <forces_angle_tolerance_deg>90</forces_angle_tolerance_deg>
+      <min_force_ratio>0.2</min_force_ratio>
+      <max_grip_count>20</max_grip_count>
+      <release_tolerance>0.008</release_tolerance>
+      <grip_count_threshold>1</grip_count_threshold>
+      <minUpdateDT>0.05</minUpdateDT>
+      <gripper_topic>${robot_namespace}/fake_grasping_status</gripper_topic>
+      <gripper>
+        <gripper_name>arm</gripper_name>
+        <palm_name>grasp_link_1</palm_name>
+        <finger_link_name>grasp_link_1</finger_link_name>
+        <finger_link_name>grasp_link_2</finger_link_name>
+      </gripper>
+    </plugin>
+  </gazebo>
 </robot>

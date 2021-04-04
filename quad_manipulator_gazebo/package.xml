@@ -1,4 +1,4 @@
-<package>
+<package format="2">
   <name>quad_manipulator_gazebo</name>
   <version>0.1.0</version>
   <description>quad_manipulator_gazebo</description>
@@ -14,12 +14,17 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>gazebo_plugins</run_depend>
-  <run_depend>gazebo_ros</run_depend>
-  <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>quad_manipulator_control</run_depend>
-  <run_depend>quad_manipulator_description</run_depend>
-  <run_depend>xacro</run_depend>
+  <depend>roscpp</depend>
+  <depend>gazebo_dev</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>quad_manipulator_msgs</depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>gazebo</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>gazebo_ros_control</exec_depend>
+  <exec_depend>quad_manipulator_control</exec_depend>
+  <exec_depend>quad_manipulator_description</exec_depend>
+  <exec_depend>xacro</exec_depend>
 
   <export>
     <gazebo_ros gazebo_model_path="${prefix}/Media/models"/>
