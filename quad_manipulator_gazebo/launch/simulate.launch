@@ -53,6 +53,7 @@
       args="-urdf -param robot_description -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
 
   <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
+  <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
   <!--node name="plot_juggler" pkg="plotjuggler" type="PlotJuggler"-->
         <!--args="--><!--layout $(find quad_manipulator_gazebo)/cfg/odom.xml"/-->
 </launch>
