@@ -1,0 +1,31 @@
+<sdf version="1.6">
+  <model name="orchard_ground">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <scale>20 20 1</scale>
+            <uri>model://orchard_ground/meshes/ground.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100</mu>
+              <mu2>50</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <scale>20 20 1</scale>
+            <uri>model://orchard_ground/meshes/ground.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

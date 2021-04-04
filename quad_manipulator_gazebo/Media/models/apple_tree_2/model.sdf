@@ -1,0 +1,349 @@
+<sdf version="1.6">
+  <model name="apple_tree_2">
+    <static>true</static>
+    <link name="link">
+      <collision name="branch">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Branch1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="branch">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Branch1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+            <name>AppleTree/Branch</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="leaf1">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Leaf1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="leaf1">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Leaf1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+            <name>AppleTree/Leaf1</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="leaf2">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Leaf2</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="leaf2">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Leaf2</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+            <name>AppleTree/Leaf2</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="fruit1">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="fruit1">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+            <name>AppleTree/Fruit1</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="fruit2">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit2</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="fruit2">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit2</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+            <name>AppleTree/Fruit2</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="fruit3">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit3</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="fruit3">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit3</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+            <name>AppleTree/Fruit3</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="fruit4">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit4</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="fruit4">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Fruit4</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+
+            <name>AppleTree/Fruit4</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="blossom1">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Blossom1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="blossom1">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Blossom1</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+
+            <name>AppleTree/Blossom1</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="blossom2">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Blossom2</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="blossom2">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Blossom2</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+
+            <name>AppleTree/Blossom2</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="blossom3">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Blossom3</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="blossom3">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Blossom3</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts</uri>
+            <uri>model://apple_tree/materials/textures</uri>
+
+            <name>AppleTree/Blossom3</name>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+      <collision name="bark">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Bark</name>
+            </submesh>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="bark">
+        <geometry>
+          <mesh>
+            <uri>model://apple_tree_2/meshes/apple_tree.dae</uri>
+            <submesh>
+              <name>Bark</name>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <script>
+            <uri>model://apple_tree/materials/scripts/</uri>
+            <uri>model://apple_tree/materials/textures/</uri>
+            <name>AppleTree/Bark</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

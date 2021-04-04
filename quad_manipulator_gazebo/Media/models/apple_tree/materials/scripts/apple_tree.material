@@ -1,0 +1,176 @@
+material AppleTree/Branch
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture brn1.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Leaf1
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture lef1.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Leaf2
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture lef2.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Fruit1
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture frt1.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Fruit2
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture frt2.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Fruit3
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture frt3.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Fruit4
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture frt4.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Blossom1
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture blo1.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+
+material AppleTree/Blossom2
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture blo2.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Blossom3
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture blo3.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+
+material AppleTree/Bark
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture bark_diffuse.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
