@@ -1,0 +1,10 @@
+uint8 GRASPING=0
+uint8 DETACH=1
+uint8 ERROR_GRASPING=3
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+string gripper
+string object
+uint8 event_type
