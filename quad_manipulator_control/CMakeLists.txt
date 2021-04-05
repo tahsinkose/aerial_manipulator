@@ -47,7 +47,7 @@ add_compile_options(
 #add_executable(broadcaster_base_world src/sandbox/broadcaster_base_world.cpp)
 #target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
 
-add_library(quad_manipulator src/quad_manipulator.cpp)
+add_library(quad_manipulator src/quad_manipulator.cpp src/utils.cpp)
 target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 
 add_executable(simple_pick_fly_dispose src/simple_pick_fly_dispose.cpp)

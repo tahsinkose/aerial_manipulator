@@ -1,4 +1,5 @@
 #include <quad_manipulator_control/quad_manipulator.h>
+#include <quad_manipulator_control/utils.h>
 
 #include <vector>
 
@@ -36,6 +37,7 @@ void QuadManipulator::state_cb(const mavros_msgs::State::ConstPtr &msg) {
 void QuadManipulator::local_pose_cb(
     const geometry_msgs::PoseStamped::ConstPtr &msg) {
   local_pose_ = *msg;
+  ROS_DEBUG("Received current pose: %s", ToString(local_pose_).c_str());
 }
 
 bool QuadManipulator::arm() {
@@ -51,7 +53,7 @@ bool QuadManipulator::arm() {
   }
 
   if (!current_state_.connected) {
-    ROS_ERROR_NAMED("verify_quad_manip", "Couldn't connect to the board!");
+    ROS_ERROR("Couldn't connect to the board!");
     return false;
   }
 

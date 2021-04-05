@@ -1,5 +1,6 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <quad_manipulator_control/quad_manipulator.h>
+#include <quad_manipulator_control/utils.h>
 
 namespace {
 constexpr double distance_tolerance = 0.02; // 2cm tolerance for this test.
@@ -19,14 +20,15 @@ int main(int argc, char **argv) {
     ROS_ERROR("Robot could not takeoff. Failing..");
     return -1;
   }
-  // Sleep for 3 seconds
-  ros::Duration(3.0).sleep();
 
   geometry_msgs::PoseStamped target_pose;
   target_pose.pose.position.x = -7.9;
   target_pose.pose.position.y = 7.9;
   target_pose.pose.position.z = 0.97;
-  quad_manip.move_base(target_pose);
+  const bool moved = quad_manip.move_base(target_pose, distance_tolerance);
+  if (!moved) {
+    ROS_ERROR("Could not move to target pose: %s", ToString(target_pose).c_str());
+  }
 
   return 0;
 }
