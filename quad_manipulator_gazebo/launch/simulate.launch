@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <launch>
-
-  <!-- MAVROS configs -->
-  <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
   <arg name="use_zero_noise_model" default="true"/>
   <param name="robot_description"
 		command="$(find xacro)/xacro '$(find quad_manipulator_description)/urdf/quad_manipulator_sim.xacro'
       use_zero_noise_model:=$(arg use_zero_noise_model)"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <!-- MAVROS configs -->
+  <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
   <!-- gazebo simulation with px4 and mavros launch file -->
   <include file="$(find quad_manipulator_control)/launch/mavros_posix_sitl.launch">
     <arg name="interactive" value="true"/>
@@ -17,7 +17,7 @@
   <!-- ros_control quad_manipulator launch file -->
   <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
   <!-- vehicle pose -->
-  <arg name="x" default="16"/>
+  <arg name="x" default="0"/>
   <arg name="y" default="0"/>
   <arg name="z" default="0.3"/>
   <arg name="R" default="0"/>
@@ -29,7 +29,7 @@
   <arg name="paused" default="false"/>
 
   <arg name="vehicle" value="quad_manipulator"/>
-  <arg name="world" default="$(find quad_manipulator_gazebo)/worlds/apple_garden.world"/>
+  <arg name="world" default="$(find quad_manipulator_gazebo)/worlds/empty.world"/>
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
   <arg name="world_frame" default="/map"/>
   <node name="ground_truth_to_tf" pkg="message_to_tf" type="message_to_tf" output="screen">
@@ -54,6 +54,10 @@
 
   <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
   <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
-  <!--node name="plot_juggler" pkg="plotjuggler" type="PlotJuggler"-->
-        <!--args="--><!--layout $(find quad_manipulator_gazebo)/cfg/odom.xml"/-->
+
+  <arg name="use_plot_juggler" default="false"/>
+  <group if="$(arg use_plot_juggler)">
+    <node name="plot_juggler" pkg="plotjuggler" type="PlotJuggler"
+        args="--layout $(find quad_manipulator_gazebo)/cfg/odom.xml"/>
+  </group>
 </launch>

@@ -181,7 +181,7 @@ void RobotCollisions::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf) {
         rosnode_->advertise<quad_manipulator_msgs::FakeGraspingEvent>(
             gripperTopic, 5);
 
-    // Add grippers:
+    // Support multiple grippers:
     for (sdf::ElementPtr gripperElement = _sdf->GetElement("gripper");
          gripperElement != NULL;
          gripperElement = gripperElement->GetNextElement("gripper")) {
