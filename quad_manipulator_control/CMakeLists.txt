@@ -21,9 +21,37 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package()
 
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+)
+
+add_executable(manipulator_velocity_node src/sandbox/manipulator_velocity_node.cpp)
+target_link_libraries(manipulator_velocity_node ${catkin_LIBRARIES})
+
+add_executable(quad_velocity_control src/sandbox/quad_velocity_control.cpp)
+target_link_libraries(quad_velocity_control ${catkin_LIBRARIES})
+
+add_executable(quad_manipulator_startup src/sandbox/quad_manipulator_startup.cpp)
+target_link_libraries(quad_manipulator_startup ${catkin_LIBRARIES})
+
+add_executable(listener_arm_pose src/sandbox/listener_arm_pose.cpp)
+target_link_libraries(listener_arm_pose ${catkin_LIBRARIES})
+
+add_executable(broadcaster_base_world src/sandbox/broadcaster_base_world.cpp)
+target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
+
+add_library(quad_manipulator src/quad_manipulator.cpp)
+target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
+
+add_executable(simple_pick_fly_dispose src/simple_pick_fly_dispose.cpp)
+target_link_libraries(simple_pick_fly_dispose quad_manipulator)
+
+
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
 )
 
 install(DIRECTORY config
@@ -31,21 +59,3 @@ install(DIRECTORY config
 
 install(DIRECTORY launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-
-add_executable(manipulator_velocity_node src/manipulator_velocity_node.cpp)
-target_link_libraries(manipulator_velocity_node ${catkin_LIBRARIES})
-
-add_executable(quad_velocity_control src/quad_velocity_control.cpp)
-target_link_libraries(quad_velocity_control ${catkin_LIBRARIES})
-
-add_executable(quad_manipulator_startup src/quad_manipulator_startup.cpp)
-target_link_libraries(quad_manipulator_startup ${catkin_LIBRARIES})
-
-add_executable(listener_arm_pose src/listener_arm_pose.cpp)
-target_link_libraries(listener_arm_pose ${catkin_LIBRARIES})
-
-add_executable(broadcaster_base_world src/broadcaster_base_world.cpp)
-target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
-
-add_executable(verify_quad_manip src/verify_quad_manip.cpp)
-target_link_libraries(verify_quad_manip ${catkin_LIBRARIES})
