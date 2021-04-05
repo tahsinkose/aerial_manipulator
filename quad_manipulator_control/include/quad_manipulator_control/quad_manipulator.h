@@ -28,6 +28,10 @@ public:
    */
   bool arm();
 
+  /**
+   * @brief Takes off the robot to a hardcoded altitude in local coordinate frame.
+   * @returns True if successfully took off, false otherwise.
+   */
   bool takeoff();
 
   /**
@@ -38,6 +42,16 @@ public:
    */
   bool move_base(const geometry_msgs::PoseStamped& target_pose, double position_tolerance = 0.05);
 
+  /**
+   * @brief Sends request and waits for specified mode, if the robot is already not in that mode.
+   * @param mode String representation of mode.
+   * @param timeout Timeout in seconds.
+   * @returns True if the robot transitions into the specified @p mode in @p timeout seconds, false otherwise.
+   */
+  bool wait_for_mode(const std::string& mode,  const ros::Duration &timeout = ros::Duration(15));
+
+  bool wait_for_armed(const ros::Duration &timeout = ros::Duration(15));
+
 private:
   mavros_msgs::State current_state_;
   geometry_msgs::PoseStamped local_pose_;
@@ -47,6 +61,5 @@ private:
   ros::Publisher local_pos_pub_;
   ros::ServiceClient arming_client_;
   ros::ServiceClient set_mode_client_;
-  ros::ServiceClient takeoff_client_;
   ros::ServiceClient landing_client_;
 };

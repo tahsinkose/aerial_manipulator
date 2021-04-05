@@ -1,16 +1,28 @@
 #include <quad_manipulator_control/quad_manipulator.h>
 
+#include <vector>
+
+namespace {
+constexpr const char *kOffboardMode = "OFFBOARD";
+constexpr const char *kAutoLoiterMode = "AUTO.LOITER";
+constexpr double kDefaultTakeoffAltitude = 2.5; // in meters.
+
+const std::vector<std::string> kValidFlightModes{
+    "MANUAL",     "ACRO",      "ALTCTL",       "POSCTL",      "OFFBOARD",
+    "STABILIZED", "RATTITUDE", "AUTO.MISSION", "AUTO.LOITER", "AUTO.TAKEOFF",
+    "AUTO.RTL",   "AUTO.LAND", "AUTO.RTGS",    "AUTO.READY"};
+} // namespace
+
 QuadManipulator::QuadManipulator() {
   state_sub_ = nh_.subscribe<mavros_msgs::State>(
       "mavros/state", 10, &QuadManipulator::state_cb, this);
   pose_sub_ = nh_.subscribe<geometry_msgs::PoseStamped>(
-      "/mavros/local_position/pose", 100, &QuadManipulator::local_pose_cb, this);
+      "/mavros/local_position/pose", 100, &QuadManipulator::local_pose_cb,
+      this);
   local_pos_pub_ = nh_.advertise<geometry_msgs::PoseStamped>(
       "mavros/setpoint_position/local", 10);
   arming_client_ =
       nh_.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
-  takeoff_client_ =
-      nh_.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/takeoff");
   landing_client_ =
       nh_.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/land");
   set_mode_client_ = nh_.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
@@ -18,10 +30,11 @@ QuadManipulator::QuadManipulator() {
 
 void QuadManipulator::state_cb(const mavros_msgs::State::ConstPtr &msg) {
   current_state_ = *msg;
-  ROS_INFO_ONCE("Received current state with mode %s", msg->mode.c_str());
+  ROS_DEBUG("Received current state with mode %s", msg->mode.c_str());
 }
 
-void QuadManipulator::local_pose_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
+void QuadManipulator::local_pose_cb(
+    const geometry_msgs::PoseStamped::ConstPtr &msg) {
   local_pose_ = *msg;
 }
 
@@ -51,90 +64,121 @@ bool QuadManipulator::arm() {
     rate.sleep();
   }
 
-  mavros_msgs::SetMode offb_set_mode;
-  offb_set_mode.request.custom_mode = "OFFBOARD";
-
-  mavros_msgs::CommandBool arming_cmd;
-  arming_cmd.request.value = true;
-
-  ros::Time last_request = ros::Time::now();
-  int arming_timeout = 10;
-  int current_arm_cnt = 0;
-  while (ros::ok()) {
-    if (current_state_.mode != "OFFBOARD" &&
-        (ros::Time::now() - last_request > ros::Duration(5.0))) {
-      if (set_mode_client_.call(offb_set_mode) &&
-          offb_set_mode.response.mode_sent) {
-        ROS_INFO("Offboard mode request sent to PX4");
-      }
-      last_request = ros::Time::now();
-    } else if (current_state_.mode != "OFFBOARD") {
-      ROS_INFO_ONCE("Current mode: %s. Sent offboard mode request within last 5 "
-               "seconds. Pending..",
-               current_state_.mode.c_str());
-    } else {
-      ROS_INFO_ONCE("Offboard enabled");
-      if (!current_state_.armed &&
-          (ros::Time::now() - last_request > ros::Duration(5.0))) {
-        if (arming_client_.call(arming_cmd) && arming_cmd.response.success) {
-          ROS_INFO("Vehicle armed");
-        } else {
-          current_arm_cnt++;
-          if (current_arm_cnt == arming_timeout) {
-            return false;
-          }
-        }
-        last_request = ros::Time::now();
-      }
-    }
-    local_pos_pub_.publish(dummy);
-    if (current_state_.mode == "OFFBOARD" && current_state_.armed) {
-      break;
-    }
-    ros::spinOnce();
-    rate.sleep();
+  if (!wait_for_mode(kOffboardMode)) {
+    return false;
+  }
+  if (!wait_for_armed()) {
+    return false;
   }
   return true;
 }
 
 bool QuadManipulator::takeoff() {
-  mavros_msgs::CommandTOL srv_takeoff;
-  srv_takeoff.request.altitude = 1.5;
-
-  if (takeoff_client_.call(srv_takeoff)) {
-    ROS_INFO("Takeoff sent %d", srv_takeoff.response.success);
-    return true;
-  } else {
-    ROS_ERROR("Failed Takeoff");
-    return false;
-  }
+  geometry_msgs::PoseStamped local_T_takeoff;
+  local_T_takeoff.pose.position.x = 0;
+  local_T_takeoff.pose.position.y = 0;
+  local_T_takeoff.pose.position.z = kDefaultTakeoffAltitude;
+  return move_base(local_T_takeoff);
 }
 
 bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose,
-                                 double position_tolerance) {
+                                double position_tolerance) {
+
+  // Make sure we are in offboard mode.
+  if (!wait_for_mode(kOffboardMode)) {
+    return false;
+  }
+
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   double dist = DBL_MAX;
-
+  ROS_INFO("Going to pose: %lf, %lf, %lf in frame '%s'",
+           target_pose.pose.position.x, target_pose.pose.position.y,
+           target_pose.pose.position.z, target_pose.header.frame_id.c_str());
   do {
     local_pos_pub_.publish(target_pose);
 
     ros::spinOnce();
     rate.sleep();
-    dist = sqrt(pow((local_pose_.pose.position.x - target_pose.pose.position.x), 2) +
-                pow((local_pose_.pose.position.y - target_pose.pose.position.y), 2) +
-                pow((local_pose_.pose.position.z - target_pose.pose.position.z), 2));
-  } while (dist > position_tolerance);
+    dist = sqrt(
+        pow((local_pose_.pose.position.x - target_pose.pose.position.x), 2) +
+        pow((local_pose_.pose.position.y - target_pose.pose.position.y), 2) +
+        pow((local_pose_.pose.position.z - target_pose.pose.position.z), 2));
+  } while (ros::ok() && dist > position_tolerance);
 
-  // Transition back to auto loiter mode.
-  mavros_msgs::SetMode hover_set_mode;
-  hover_set_mode.request.custom_mode = "AUTO.LOITER";
-  if (set_mode_client_.call(hover_set_mode) &&
-      hover_set_mode.response.mode_sent) {
-    ROS_INFO("Finishing with hover mode.");
-    return true;
-  } else {
-    ROS_ERROR("Could not finish at hover mode!");
+  if (!ros::ok()) {
     return false;
   }
+
+  // Transition back to auto loiter mode.
+  return wait_for_mode(kAutoLoiterMode);
+}
+
+bool QuadManipulator::wait_for_mode(const std::string &mode,
+                                    const ros::Duration &timeout) {
+
+  if (std::find(kValidFlightModes.begin(), kValidFlightModes.end(), mode) ==
+      kValidFlightModes.end()) {
+    ROS_ERROR("Unknown flight mode %s. Failing!", mode.c_str());
+    return false;
+  }
+
+  if (current_state_.mode == mode) {
+    ROS_INFO("Robot is already in %s mode", mode.c_str());
+    return true;
+  }
+
+  mavros_msgs::SetMode set_mode;
+  set_mode.request.custom_mode = mode;
+  if (set_mode_client_.call(set_mode) && set_mode.response.mode_sent) {
+    ROS_INFO("Sent %s mode request.", mode.c_str());
+  } else {
+    ROS_ERROR("Could not sent %s mode request!", mode.c_str());
+    return false;
+  }
+
+  ros::Rate rate(20.0);
+  ros::Time start_time = ros::Time::now();
+  ros::Time finish_time = start_time + timeout;
+  while (ros::ok() && current_state_.mode != mode &&
+         ros::Time::now() < finish_time) {
+    ROS_DEBUG("Current mode: %s. Pending until %s mode..",
+                  current_state_.mode.c_str(), mode.c_str());
+    ros::spinOnce();
+    rate.sleep();
+    geometry_msgs::PoseStamped dummy;
+    local_pos_pub_.publish(dummy);
+  }
+  const bool result = current_state_.mode == mode;
+  ROS_INFO("Finishing %s in %s mode ",
+           (result ? "successfully" : "unsuccessfully"), current_state_.mode.c_str());
+  return result;
+}
+
+bool QuadManipulator::wait_for_armed(const ros::Duration &timeout) {
+  mavros_msgs::CommandBool arming_cmd;
+  arming_cmd.request.value = true;
+  if (current_state_.armed) {
+    ROS_INFO("Robot is already armed!");
+    return true;
+  }
+
+  if (arming_client_.call(arming_cmd) && arming_cmd.response.success) {
+    ROS_INFO("Vehicle arm request is sent!");
+  } else {
+    ROS_ERROR("Vehicle arm request could not be sent. Failing..");
+    return false;
+  }
+  ros::Rate rate(20.0);
+  ros::Time start_time = ros::Time::now();
+  ros::Time finish_time = start_time + timeout;
+  ROS_INFO("Waiting for armed status..");
+  while (ros::ok() && current_state_.armed != true &&
+         ros::Time::now() < finish_time) {
+    ros::spinOnce();
+    rate.sleep();
+  }
+  const bool result = current_state_.armed;
+  ROS_INFO("Armed %s", (result ? "successfully" : "unsuccessfully"));
+  return result;
 }
