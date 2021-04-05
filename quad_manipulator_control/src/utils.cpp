@@ -13,3 +13,13 @@ std::string ToString(const geometry_msgs::PoseStamped &pose) {
       << "] in frame: " << pose.header.frame_id;
   return oss.str();
 }
+
+std::string ToString(const std::map<std::string, double>& joint_states) {
+  std::ostringstream oss;
+  oss << "Joint States: [";
+  for(auto js : joint_states){
+    oss << "(" << js.first << ") -> " << js.second <<"\n";
+  }
+  oss << "]";
+  return oss.str();
+}

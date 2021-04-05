@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   cv_bridge
   image_transport
+  trajectory_msgs
+  sensor_msgs
 )
 
 catkin_package()
@@ -37,9 +39,6 @@ add_compile_options(
 #
 #add_executable(quad_velocity_control src/sandbox/quad_velocity_control.cpp)
 #target_link_libraries(quad_velocity_control ${catkin_LIBRARIES})
-#
-#add_executable(quad_manipulator_startup src/sandbox/quad_manipulator_startup.cpp)
-#target_link_libraries(quad_manipulator_startup ${catkin_LIBRARIES})
 #
 #add_executable(listener_arm_pose src/sandbox/listener_arm_pose.cpp)
 #target_link_libraries(listener_arm_pose ${catkin_LIBRARIES})

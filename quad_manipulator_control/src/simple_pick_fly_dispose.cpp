@@ -9,9 +9,14 @@ constexpr double distance_tolerance = 0.02; // 2cm tolerance for this test.
 int main(int argc, char **argv) {
   ros::init(argc, argv, "simple_pick_fly_dispose");
   QuadManipulator quad_manip;
+
   const bool armed = quad_manip.arm();
   if (!armed) {
     ROS_ERROR("Robot could not be armed. Failing..");
+    return -1;
+  }
+  if(!quad_manip.open_gripper()){
+    ROS_ERROR("Robot could not open grippers. Failing..");
     return -1;
   }
 

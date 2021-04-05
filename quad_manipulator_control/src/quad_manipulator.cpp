@@ -1,32 +1,55 @@
 #include <quad_manipulator_control/quad_manipulator.h>
 #include <quad_manipulator_control/utils.h>
 
+#include <trajectory_msgs/JointTrajectory.h>
 #include <vector>
 
 namespace {
 constexpr const char *kOffboardMode = "OFFBOARD";
 constexpr const char *kAutoLoiterMode = "AUTO.LOITER";
 constexpr double kDefaultTakeoffAltitude = 2.5; // in meters.
+constexpr double kJointTolerance = 1e-4;        // in rad.
 
 const std::vector<std::string> kValidFlightModes{
     "MANUAL",     "ACRO",      "ALTCTL",       "POSCTL",      "OFFBOARD",
     "STABILIZED", "RATTITUDE", "AUTO.MISSION", "AUTO.LOITER", "AUTO.TAKEOFF",
     "AUTO.RTL",   "AUTO.LAND", "AUTO.RTGS",    "AUTO.READY"};
+
+const std::vector<std::string> kArmJointNames{"arm_joint_1", "arm_joint_2",
+                                              "arm_joint_3"};
+const std::vector<std::string> kGraspJointNames{"grasp_joint_1",
+                                                "grasp_joint_2"};
 } // namespace
 
 QuadManipulator::QuadManipulator() {
-  state_sub_ = nh_.subscribe<mavros_msgs::State>(
+  mav_state_sub_ = nh_.subscribe<mavros_msgs::State>(
       "mavros/state", 10, &QuadManipulator::state_cb, this);
-  pose_sub_ = nh_.subscribe<geometry_msgs::PoseStamped>(
-      "/mavros/local_position/pose", 100, &QuadManipulator::local_pose_cb,
+  mav_local_pose_sub_ = nh_.subscribe<geometry_msgs::PoseStamped>(
+      "mavros/local_position/pose", 100, &QuadManipulator::local_pose_cb, this);
+  // These are all we need for now.
+  for (const auto &jn : kArmJointNames) {
+    joint_states_[jn] = 0.0;
+  }
+  for (const auto &jn : kGraspJointNames) {
+    joint_states_[jn] = 0.0;
+  }
+
+  joint_states_sub_ = nh_.subscribe<sensor_msgs::JointState>(
+      "/quad_manipulator/joint_states", 100, &QuadManipulator::joint_states_cb,
       this);
   local_pos_pub_ = nh_.advertise<geometry_msgs::PoseStamped>(
       "mavros/setpoint_position/local", 10);
+
   arming_client_ =
       nh_.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
   landing_client_ =
       nh_.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/land");
   set_mode_client_ = nh_.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
+
+  arm_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>(
+      "/quad_manipulator/arm_controller/command", 10);
+  hand_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>(
+      "/quad_manipulator/grasp_controller/command", 10);
 }
 
 void QuadManipulator::state_cb(const mavros_msgs::State::ConstPtr &msg) {
@@ -38,6 +61,17 @@ void QuadManipulator::local_pose_cb(
     const geometry_msgs::PoseStamped::ConstPtr &msg) {
   local_pose_ = *msg;
   ROS_DEBUG("Received current pose: %s", ToString(local_pose_).c_str());
+}
+
+void QuadManipulator::joint_states_cb(
+    const sensor_msgs::JointState::ConstPtr &msg) {
+  for (size_t i = 0; i < msg->name.size(); i++) {
+    const std::string &jn = msg->name[i];
+    if (joint_states_.count(jn) != 0) {
+      joint_states_[jn] = msg->position[i];
+    }
+  }
+  ROS_DEBUG("Updated joint states: %s", ToString(joint_states_).c_str());
 }
 
 bool QuadManipulator::arm() {
@@ -145,7 +179,7 @@ bool QuadManipulator::wait_for_mode(const std::string &mode,
   while (ros::ok() && current_state_.mode != mode &&
          ros::Time::now() < finish_time) {
     ROS_DEBUG("Current mode: %s. Pending until %s mode..",
-                  current_state_.mode.c_str(), mode.c_str());
+              current_state_.mode.c_str(), mode.c_str());
     ros::spinOnce();
     rate.sleep();
     geometry_msgs::PoseStamped dummy;
@@ -153,7 +187,8 @@ bool QuadManipulator::wait_for_mode(const std::string &mode,
   }
   const bool result = current_state_.mode == mode;
   ROS_INFO("Finishing %s in %s mode ",
-           (result ? "successfully" : "unsuccessfully"), current_state_.mode.c_str());
+           (result ? "successfully" : "unsuccessfully"),
+           current_state_.mode.c_str());
   return result;
 }
 
@@ -183,4 +218,56 @@ bool QuadManipulator::wait_for_armed(const ros::Duration &timeout) {
   const bool result = current_state_.armed;
   ROS_INFO("Armed %s", (result ? "successfully" : "unsuccessfully"));
   return result;
+}
+
+bool QuadManipulator::in_pose(const std::vector<std::string> &joint_names,
+                              const std::vector<double> &desired) {
+  for (size_t i = 0; i < joint_names.size(); i++) {
+    const auto &jn = joint_names[i];
+    if (!joint_states_.count(jn)) {
+      ROS_ERROR("Unknown joint %s", jn.c_str());
+      return false;
+    }
+    if (fabs(joint_states_[jn] - desired[i]) > kJointTolerance) {
+      return false;
+    }
+  }
+  ROS_INFO("Robot is in pose");
+  return true;
+}
+
+bool QuadManipulator::cmd_gripper(const std::vector<double>& desired, const ros::Duration &timeout = ros::Duration(15)) {
+  trajectory_msgs::JointTrajectory grasp_trajectory;
+  grasp_trajectory.joint_names = kGraspJointNames;
+  trajectory_msgs::JointTrajectoryPoint trajectory_point;
+  trajectory_point.positions = desired;
+  trajectory_point.time_from_start =
+      ros::Duration(1.5); // Make it by default 1.5 seconds for now
+  grasp_trajectory.points.push_back(trajectory_point);
+
+  ros::Rate rate(20.0);
+  ros::Time start_time = ros::Time::now();
+  ros::Time finish_time = start_time + timeout;
+  while (ros::ok() && !in_pose(kGraspJointNames, trajectory_point.positions) &&
+         ros::Time::now() < finish_time) {
+    grasp_trajectory.header.stamp = ros::Time::now();
+    hand_control_pub_.publish(grasp_trajectory);
+    ros::spinOnce();
+    rate.sleep();
+  }
+  return in_pose(kGraspJointNames, trajectory_point.positions);
+}
+
+bool QuadManipulator::open_gripper(const ros::Duration &timeout) {
+  ROS_INFO("Opening gripper..");
+  const double is_open = cmd_gripper({-0.8,0.8}, timeout);
+  ROS_INFO("Grippers %s", (is_open ? "are open" : "could not be fully opened"));
+  return is_open;
+}
+
+bool QuadManipulator::close_gripper(const ros::Duration &timeout) {
+  ROS_INFO("Closing gripper..");
+  const double is_open = cmd_gripper({0.0,0.0}, timeout);
+  ROS_INFO("Grippers %s", (is_open ? "are closed" : "could not be fully closed"));
+  return is_open;
 }
