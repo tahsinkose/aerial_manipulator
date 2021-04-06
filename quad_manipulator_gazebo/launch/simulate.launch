@@ -44,16 +44,20 @@
       <arg name="world_name" value="$(arg world)"/>
       <arg name="debug" value="$(arg debug)"/>
       <arg name="verbose" value="$(arg verbose)"/>
-      <arg name="paused" value="$(arg paused)"/>
+      <arg name="paused" value="true"/>
       <arg name="respawn_gazebo" value="false"/>
       <arg name="output" value="log"/>
   </include>
   <!-- gazebo model -->
   <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen"
-      args="-urdf -param robot_description -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
-
+      args="-urdf -unpause -param robot_description -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)
+            -J arm_joint_2 -0.48"/>
   <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
-  <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
+
+  <arg name="use_joint_trajectory_gui" default="false"/>
+   <group if="$(arg use_joint_trajectory_gui)">
+      <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
+   </group>
 
   <arg name="use_plot_juggler" default="false"/>
   <group if="$(arg use_plot_juggler)">
