@@ -13,10 +13,16 @@ public:
   QuadManipulator();
 
   /**
+   * @brief Waits for connection with PX4 autopilot.
+   * @returns True if successfully connected, false otherwise
+   */
+  bool wait_for_connection();
+
+  /**
    * @brief Arms the robot.
    * @returns True if successfully armed, false otherwise
    */
-  bool arm();
+  bool motor_arm();
 
   /**
    * @brief Takes off the robot to a hardcoded altitude in local coordinate
@@ -36,9 +42,11 @@ public:
   bool move_base(const geometry_msgs::PoseStamped &target_pose,
                  double position_tolerance = 0.05);
 
+  bool move_manip(const std::vector<double> &desired);
+
   bool open_gripper(const ros::Duration &timeout = ros::Duration(15));
 
-  bool close_gripper(const ros::Duration &timeout = ros::Duration(15));
+  bool close_gripper(const std::vector<double> &desired = {-0.35, 0.35}, const ros::Duration &timeout = ros::Duration(15));
 
 private:
   /**
@@ -78,9 +86,14 @@ private:
    */
   bool wait_for_armed(const ros::Duration &timeout = ros::Duration(15));
 
-  bool in_pose(const std::vector<std::string>& joint_names, const std::vector<double>& desired);
+  bool in_pose(const std::vector<std::string> &joint_names,
+               const std::vector<double> &desired);
 
-  bool cmd_gripper(const std::vector<double>& desired, const ros::Duration &timeout = ros::Duration(15));
+  bool cmd_gripper(const std::vector<double> &desired,
+                   const ros::Duration &timeout = ros::Duration(15));
+
+  bool cmd_manip(const std::vector<double> &desired,
+                 const ros::Duration &timeout = ros::Duration(15));
 
 private:
   mavros_msgs::State current_state_;

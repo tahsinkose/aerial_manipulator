@@ -7,8 +7,8 @@
 namespace {
 constexpr const char *kOffboardMode = "OFFBOARD";
 constexpr const char *kAutoLoiterMode = "AUTO.LOITER";
-constexpr double kDefaultTakeoffAltitude = 2.5; // in meters.
-constexpr double kJointTolerance = 1e-4;        // in rad.
+constexpr double kDefaultTakeoffAltitude = 1.5; // in meters.
+constexpr double kJointTolerance = 1e-2;        // in rad.
 
 const std::vector<std::string> kValidFlightModes{
     "MANUAL",     "ACRO",      "ALTCTL",       "POSCTL",      "OFFBOARD",
@@ -74,7 +74,7 @@ void QuadManipulator::joint_states_cb(
   ROS_DEBUG("Updated joint states: %s", ToString(joint_states_).c_str());
 }
 
-bool QuadManipulator::arm() {
+bool QuadManipulator::wait_for_connection(){
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   // wait for FCU connection
@@ -90,7 +90,11 @@ bool QuadManipulator::arm() {
     ROS_ERROR("Couldn't connect to the board!");
     return false;
   }
+  return true;
+}
 
+bool QuadManipulator::motor_arm() {
+  ros::Rate rate(20.0);
   geometry_msgs::PoseStamped dummy;
 
   // send a few setpoints before starting
@@ -201,9 +205,9 @@ bool QuadManipulator::wait_for_armed(const ros::Duration &timeout) {
   }
 
   if (arming_client_.call(arming_cmd) && arming_cmd.response.success) {
-    ROS_INFO("Vehicle arm request is sent!");
+    ROS_INFO("Vehicle motor_arm request is sent!");
   } else {
-    ROS_ERROR("Vehicle arm request could not be sent. Failing..");
+    ROS_ERROR("Vehicle motor_arm request could not be sent. Failing..");
     return false;
   }
   ros::Rate rate(20.0);
@@ -232,17 +236,16 @@ bool QuadManipulator::in_pose(const std::vector<std::string> &joint_names,
       return false;
     }
   }
-  ROS_INFO("Robot is in pose");
   return true;
 }
 
-bool QuadManipulator::cmd_gripper(const std::vector<double>& desired, const ros::Duration &timeout = ros::Duration(15)) {
+bool QuadManipulator::cmd_gripper(const std::vector<double>& desired, const ros::Duration &timeout) {
   trajectory_msgs::JointTrajectory grasp_trajectory;
   grasp_trajectory.joint_names = kGraspJointNames;
   trajectory_msgs::JointTrajectoryPoint trajectory_point;
   trajectory_point.positions = desired;
   trajectory_point.time_from_start =
-      ros::Duration(1.5); // Make it by default 1.5 seconds for now
+      ros::Duration(1.0); // Make it by default 1.0 seconds for now
   grasp_trajectory.points.push_back(trajectory_point);
 
   ros::Rate rate(20.0);
@@ -258,16 +261,45 @@ bool QuadManipulator::cmd_gripper(const std::vector<double>& desired, const ros:
   return in_pose(kGraspJointNames, trajectory_point.positions);
 }
 
+bool QuadManipulator::cmd_manip(const std::vector<double>& desired, const ros::Duration &timeout) {
+  trajectory_msgs::JointTrajectory arm_trajectory;
+  arm_trajectory.joint_names = kArmJointNames;
+  trajectory_msgs::JointTrajectoryPoint trajectory_point;
+  trajectory_point.positions = desired;
+  trajectory_point.time_from_start =
+      ros::Duration(2.5); // Make it by default 2.5 seconds for now
+  arm_trajectory.points.push_back(trajectory_point);
+
+  ros::Rate rate(20.0);
+  ros::Time start_time = ros::Time::now();
+  ros::Time finish_time = start_time + timeout;
+  while (ros::ok() && !in_pose(kArmJointNames, trajectory_point.positions) &&
+         ros::Time::now() < finish_time) {
+    arm_trajectory.header.stamp = ros::Time::now();
+    arm_control_pub_.publish(arm_trajectory);
+    ros::spinOnce();
+    rate.sleep();
+  }
+  return in_pose(kArmJointNames, trajectory_point.positions);
+}
+
 bool QuadManipulator::open_gripper(const ros::Duration &timeout) {
   ROS_INFO("Opening gripper..");
-  const double is_open = cmd_gripper({-0.8,0.8}, timeout);
+  const bool is_open = cmd_gripper({-0.8,0.8}, timeout);
   ROS_INFO("Grippers %s", (is_open ? "are open" : "could not be fully opened"));
   return is_open;
 }
 
-bool QuadManipulator::close_gripper(const ros::Duration &timeout) {
+bool QuadManipulator::close_gripper(const std::vector<double>& desired, const ros::Duration &timeout) {
   ROS_INFO("Closing gripper..");
-  const double is_open = cmd_gripper({0.0,0.0}, timeout);
-  ROS_INFO("Grippers %s", (is_open ? "are closed" : "could not be fully closed"));
-  return is_open;
+  const bool is_closed = cmd_gripper(desired, timeout);
+  ROS_INFO("Grippers %s", (is_closed ? "are closed" : "could not be closed"));
+  return is_closed;
+}
+
+bool QuadManipulator::move_manip(const std::vector<double>& desired) {
+  //ROS_INFO("Moving arm to desired setpoint: %s", ToString(desired).c_str());
+  const bool moved = cmd_manip(desired);
+  ROS_INFO("Arm %s", (moved ? "successfully moved" : "could not be moved"));
+  return moved;
 }
