@@ -12,6 +12,7 @@
         <gyroscopeRandomWalk>0.0</gyroscopeRandomWalk>
         <accelerometerNoiseDensity>0.0</accelerometerNoiseDensity>
         <accelerometerRandomWalk>0.0</accelerometerRandomWalk>
+        <accelerometerTurnOnBiasSigma>0.0</accelerometerTurnOnBiasSigma>
       </noise_model>
     </xacro:imu>
   </xacro:if>
@@ -22,6 +23,7 @@
         <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
         <accelerometerNoiseDensity>0.00186</accelerometerNoiseDensity>
         <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
+        <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
       </noise_model>
     </xacro:imu>
   </xacro:unless>
@@ -383,7 +385,7 @@
       upper="3.14"
       effort="10"
       velocity="1" />
-    
+
   </joint>
 
   <link name="arm_link_2">
@@ -442,7 +444,7 @@
         upper="1.7"
         effort="10"
         velocity="1" />
-    
+
   </joint>
 
   <link name="arm_link_3">
