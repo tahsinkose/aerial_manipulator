@@ -8,6 +8,9 @@
     <arg name="P" value="0"/>
     <arg name="Y" value="0"/>
     <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/workout.world"/>
-    <arg name="use_zero_noise_model" value="false"/>
+    <arg name="use_zero_noise_model" value="true"/>
+    <arg name="use_plot_juggler" value="true"/>
   </include>
+
+  <node name="simple_pick_fly_dispose" pkg="quad_manipulator_control" type="simple_pick_fly_dispose" output="screen"/>
 </launch>

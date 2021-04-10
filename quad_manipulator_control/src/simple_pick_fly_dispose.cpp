@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     ROS_ERROR("Robot could connect to PX4 board. Failing..");
     return -1;
   }
-  const bool armed = quad_manip.motor_arm();
+  const bool armed = quad_manip.motor_arm(true);
   if (!armed) {
     ROS_ERROR("Robot could not be armed. Failing..");
     return -1;
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
   }
 
   geometry_msgs::Pose correct_pose;
-  correct_pose.position.x = 0.003;
+  correct_pose.position.x = 0.0025;
   correct_pose.position.y = 0.0;
   correct_pose.position.z = 0.008;
   if (!set_gazebo_model_pose(kAppleName, correct_pose)) {
@@ -92,5 +92,28 @@ int main(int argc, char **argv) {
   }
   ROS_INFO("Disposal finished!");
 
+  geometry_msgs::PoseStamped home_pose;
+  home_pose.pose.position.x = 0;
+  home_pose.pose.position.y = 0;
+  home_pose.pose.position.z = 2.0;
+  const bool returned = quad_manip.move_base(home_pose, distance_tolerance);
+  if (!returned) {
+    ROS_ERROR("Could not move to home pose: %s",
+              ToString(home_pose).c_str());
+    return -1;
+  }
+  const bool landed = quad_manip.land();
+  if (!landed) {
+    ROS_ERROR("Could not landed");
+    return -1;
+  }
+  ROS_INFO("Returned home!");
+  const bool disarmed = quad_manip.motor_arm(false);
+  if (!disarmed) {
+    ROS_ERROR("Robot could not be armed. Failing..");
+    return -1;
+  }
+  ROS_INFO("Robot disarmed!");
+  ROS_INFO("Test finished successfully!");
   return 0;
 }
