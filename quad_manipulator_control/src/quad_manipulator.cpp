@@ -74,26 +74,28 @@ void QuadManipulator::joint_states_cb(
   ROS_DEBUG("Updated joint states: %s", ToString(joint_states_).c_str());
 }
 
-bool QuadManipulator::wait_for_connection(){
+bool QuadManipulator::wait_for_connection(const ros::WallDuration &timeout){
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   // wait for FCU connection
   ros::WallTime init = ros::WallTime::now();
-  double elapsed = ros::WallTime::now().toSec() - init.toSec();
-  while (elapsed < 10.0 && !current_state_.connected) {
+  ros::WallTime finish_time = init + timeout;
+  while (ros::ok() && current_state_.connected != true &&
+         ros::WallTime::now() < finish_time) {
     ros::spinOnce();
     rate.sleep();
-    elapsed = ros::WallTime::now().toSec() - init.toSec();
   }
-
   if (!current_state_.connected) {
     ROS_ERROR("Couldn't connect to the board!");
     return false;
   }
+  else {
+    ROS_INFO("Connected to the board!");
+  }
   return true;
 }
 
-bool QuadManipulator::motor_arm() {
+bool QuadManipulator::motor_arm(bool arm) {
   ros::Rate rate(20.0);
   geometry_msgs::PoseStamped dummy;
 
@@ -107,7 +109,7 @@ bool QuadManipulator::motor_arm() {
   if (!wait_for_mode(kOffboardMode)) {
     return false;
   }
-  if (!wait_for_armed()) {
+  if (!wait_for_armed(arm)) {
     return false;
   }
   return true;
@@ -119,6 +121,11 @@ bool QuadManipulator::takeoff() {
   local_T_takeoff.pose.position.y = 0;
   local_T_takeoff.pose.position.z = kDefaultTakeoffAltitude;
   return move_base(local_T_takeoff);
+}
+
+bool QuadManipulator::land(){
+  mavros_msgs::CommandTOL srv_land;
+  return landing_client_.call(srv_land) && srv_land.response.success;
 }
 
 bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose,
@@ -184,6 +191,7 @@ bool QuadManipulator::wait_for_mode(const std::string &mode,
          ros::Time::now() < finish_time) {
     ROS_DEBUG("Current mode: %s. Pending until %s mode..",
               current_state_.mode.c_str(), mode.c_str());
+    set_mode_client_.call(set_mode);
     ros::spinOnce();
     rate.sleep();
     geometry_msgs::PoseStamped dummy;
@@ -196,31 +204,30 @@ bool QuadManipulator::wait_for_mode(const std::string &mode,
   return result;
 }
 
-bool QuadManipulator::wait_for_armed(const ros::Duration &timeout) {
+bool QuadManipulator::wait_for_armed(bool arm, const ros::Duration &timeout) {
   mavros_msgs::CommandBool arming_cmd;
-  arming_cmd.request.value = true;
+  arming_cmd.request.value = arm;
   if (current_state_.armed) {
-    ROS_INFO("Robot is already armed!");
+    ROS_INFO("Robot is already %s!", (arm ? "armed" : "disarmed"));
     return true;
   }
 
   if (arming_client_.call(arming_cmd) && arming_cmd.response.success) {
-    ROS_INFO("Vehicle motor_arm request is sent!");
+    ROS_INFO("Vehicle motor_%s request is sent!", (arm ? "armed" : "disarmed"));
   } else {
-    ROS_ERROR("Vehicle motor_arm request could not be sent. Failing..");
+    ROS_ERROR("Vehicle motor_%s request could not be sent. Failing..", (arm ? "armed" : "disarmed"));
     return false;
   }
   ros::Rate rate(20.0);
   ros::Time start_time = ros::Time::now();
   ros::Time finish_time = start_time + timeout;
-  ROS_INFO("Waiting for armed status..");
-  while (ros::ok() && current_state_.armed != true &&
-         ros::Time::now() < finish_time) {
+  ROS_INFO("Waiting for %s status..", (arm ? "armed" : "disarmed"));
+  while (ros::ok() && current_state_.armed != true && ros::Time::now() < finish_time) {
     ros::spinOnce();
     rate.sleep();
   }
   const bool result = current_state_.armed;
-  ROS_INFO("Armed %s", (result ? "successfully" : "unsuccessfully"));
+  ROS_INFO("%s %s", (arm ? "armed" : "disarmed"), (result ? "successfully" : "unsuccessfully"));
   return result;
 }
 

@@ -14,15 +14,17 @@ class QuadManipulator {
 
   /**
    * @brief Waits for connection with PX4 autopilot.
+   * @param timeout Timeout in seconds.
    * @returns True if successfully connected, false otherwise
    */
-  bool wait_for_connection();
+  bool wait_for_connection(const ros::WallDuration &timeout = ros::WallDuration(45));
 
   /**
    * @brief Arms the robot.
+   * @param arm Whether to arm/disarm.
    * @returns True if successfully armed, false otherwise
    */
-  bool motor_arm();
+  bool motor_arm(bool arm);
 
   /**
    * @brief Takes off the robot to a hardcoded altitude in local coordinate
@@ -30,6 +32,12 @@ class QuadManipulator {
    * @returns True if successfully took off, false otherwise.
    */
   bool takeoff();
+
+  /**
+   * @brief Lands the robot to ground below
+   * @returns True if successfully landed, false otherwise.
+   */
+  bool land();
 
   /**
    * @brief Moves the robot to passed in @p target_pose.
@@ -65,7 +73,7 @@ class QuadManipulator {
    * @returns True if it was possible to close the gripper.
    * false otherwise.
    */
-  bool close_gripper(const std::vector<double> &desired = {-0.35, 0.35},
+  bool close_gripper(const std::vector<double> &desired = {-0.4, 0.4},
                      const ros::Duration &timeout = ros::Duration(15));
 
  private:
@@ -99,11 +107,12 @@ class QuadManipulator {
 
   /**
    * @brief Waits for armed status, if not already armed.
+   * @param arm Whether to arm/disarm.
    * @param timeout Timeout in seconds.
    * @returns True if the robot transitions into the armed status in @p timeout
    * seconds, false otherwise.
    */
-  bool wait_for_armed(const ros::Duration &timeout = ros::Duration(15));
+  bool wait_for_armed(bool arm, const ros::Duration &timeout = ros::Duration(15));
 
   /**
    * @brief Check whether the specified @p joint_names of manipulator is in @p desired pose.
