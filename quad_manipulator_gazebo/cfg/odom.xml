@@ -1,59 +1,77 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root version="2.3.8">
  <tabbed_widget name="Main Window" parent="main_window">
-  <plotmatrix tab_name="plot" columns="3" rows="3">
-   <plot style="Lines" row="0" col="0">
-    <range bottom="-0.506624" left="185.060000" right="285.056000" top="-0.346383"/>
+  <plotmatrix rows="4" columns="3" tab_name="plot">
+   <plot row="0" style="Lines" col="0">
+    <range top="0.100737" bottom="0.018616" left="0.020000" right="8.852000"/>
     <limitY/>
-    <curve name="/mavros/local_position/odom/pose/position/x" G="119" custom_transform="noTransform" R="31" B="180"/>
+    <curve name="/mavros/local_position/odom/pose/position/x" B="180" custom_transform="noTransform" R="31" G="119"/>
     <transform value="Custom::noTransform"/>
    </plot>
-   <plot style="Lines" row="1" col="0">
-    <range bottom="-1.036363" left="185.060000" right="285.056000" top="-0.214303"/>
+   <plot row="1" style="Lines" col="0">
+    <range top="-1.026282" bottom="-1.166092" left="0.020000" right="8.852000"/>
     <limitY/>
-    <curve name="/mavros/local_position/odom/pose/orientation/roll_deg" G="76" custom_transform="noTransform" R="241" B="193"/>
+    <curve name="/mavros/local_position/odom/pose/orientation/roll_deg" B="193" custom_transform="noTransform" R="241" G="76"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="2" col="0">
-    <range bottom="-0.012500" left="185.088000" right="285.088000" top="0.512499"/>
+   <plot row="2" style="Lines" col="0">
+    <range top="0.100000" bottom="-0.100000" left="0.000000" right="0.000000"/>
     <limitY/>
-    <curve name="/quad_manipulator/joint_states/arm_joint_1/position" G="39" custom_transform="noTransform" R="214" B="40"/>
+    <curve name="/quad_manipulator/joint_states/arm_joint_1/position" B="40" custom_transform="noTransform" R="214" G="39"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="0" col="1">
-    <range bottom="0.964637" left="185.060000" right="285.056000" top="1.059913"/>
+   <plot row="3" style="Lines" col="0">
+    <range top="-0.097223" bottom="-0.098211" left="0.000000" right="8.860000"/>
     <limitY/>
-    <curve name="/mavros/local_position/odom/pose/position/y" G="39" custom_transform="noTransform" R="214" B="40"/>
+    <curve name="/mavros/imu/data/linear_acceleration/x" B="40" custom_transform="noTransform" R="214" G="39"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="1" col="1">
-    <range bottom="0.183675" left="185.060000" right="285.056000" top="0.956950"/>
+   <plot row="0" style="Lines" col="1">
+    <range top="0.395885" bottom="0.251057" left="0.020000" right="8.852000"/>
     <limitY/>
-    <curve name="/mavros/local_position/odom/pose/orientation/pitch_deg" G="189" custom_transform="noTransform" R="188" B="34"/>
+    <curve name="/mavros/local_position/odom/pose/position/y" B="40" custom_transform="noTransform" R="214" G="39"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="2" col="1">
-    <range bottom="-1.219743" left="185.088000" right="285.088000" top="0.029750"/>
+   <plot row="1" style="Lines" col="1">
+    <range top="0.980729" bottom="0.815112" left="0.020000" right="8.852000"/>
     <limitY/>
-    <curve name="/quad_manipulator/joint_states/arm_joint_2/position" G="201" custom_transform="noTransform" R="26" B="56"/>
+    <curve name="/mavros/local_position/odom/pose/orientation/pitch_deg" B="34" custom_transform="noTransform" R="188" G="189"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="0" col="2">
-    <range bottom="0.925285" left="185.060000" right="285.056000" top="1.052378"/>
+   <plot row="2" style="Lines" col="1">
+    <range top="0.100000" bottom="-0.100000" left="0.000000" right="0.000000"/>
     <limitY/>
-    <curve name="/mavros/local_position/odom/pose/position/z" G="201" custom_transform="noTransform" R="26" B="56"/>
+    <curve name="/quad_manipulator/joint_states/arm_joint_2/position" B="56" custom_transform="noTransform" R="26" G="201"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="1" col="2">
-    <range bottom="-0.533133" left="185.060000" right="285.056000" top="0.514503"/>
+   <plot row="3" style="Lines" col="1">
+    <range top="-0.094953" bottom="-0.099139" left="0.000000" right="8.860000"/>
     <limitY/>
-    <curve name="/mavros/local_position/odom/pose/orientation/yaw_deg" G="39" custom_transform="noTransform" R="214" B="40"/>
+    <curve name="/mavros/imu/data/linear_acceleration/y" B="56" custom_transform="noTransform" R="26" G="201"/>
     <transform value="noTransform"/>
    </plot>
-   <plot style="Lines" row="2" col="2">
-    <range bottom="-1.527236" left="185.088000" right="285.088000" top="0.037250"/>
+   <plot row="0" style="Lines" col="2">
+    <range top="-0.012200" bottom="-0.065462" left="0.020000" right="8.852000"/>
     <limitY/>
-    <curve name="/quad_manipulator/joint_states/arm_joint_3/position" G="127" custom_transform="noTransform" R="255" B="14"/>
+    <curve name="/mavros/local_position/odom/pose/position/z" B="56" custom_transform="noTransform" R="26" G="201"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="1" style="Lines" col="2">
+    <range top="1.116182" bottom="0.454633" left="0.020000" right="8.852000"/>
+    <limitY/>
+    <curve name="/mavros/local_position/odom/pose/orientation/yaw_deg" B="40" custom_transform="noTransform" R="214" G="39"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="2" style="Lines" col="2">
+    <range top="0.100000" bottom="-0.100000" left="0.000000" right="0.000000"/>
+    <limitY/>
+    <curve name="/quad_manipulator/joint_states/arm_joint_3/position" B="14" custom_transform="noTransform" R="255" G="127"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot row="3" style="Lines" col="2">
+    <range top="9.804707" bottom="9.798810" left="0.000000" right="8.860000"/>
+    <limitY/>
+    <curve name="/mavros/imu/data/linear_acceleration/z" B="14" custom_transform="noTransform" R="255" G="127"/>
     <transform value="noTransform"/>
    </plot>
   </plotmatrix>
