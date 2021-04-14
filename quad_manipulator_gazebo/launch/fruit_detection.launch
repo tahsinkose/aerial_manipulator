@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="world_dir" value="$(find quad_manipulator_gazebo)/worlds/apple_garden" />
+  <node name="ground_truth" pkg="fields_ignition" type="ground_truth.py" output="screen">
+      <param name="world_dir" value="$(arg world_dir)" />
+  </node>
+</launch>
