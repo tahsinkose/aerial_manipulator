@@ -8,10 +8,10 @@
   <xacro:if value="$(arg use_zero_noise_model)">
     <xacro:imu>
       <noise_model>
-        <gyroscopeNoiseDensity>0.0</gyroscopeNoiseDensity>
-        <gyroscopeRandomWalk>0.0</gyroscopeRandomWalk>
-        <accelerometerNoiseDensity>0.0</accelerometerNoiseDensity>
-        <accelerometerRandomWalk>0.0</accelerometerRandomWalk>
+        <gyroscopeNoiseDensity>0.000018665</gyroscopeNoiseDensity>
+        <gyroscopeRandomWalk>3.8785e-06</gyroscopeRandomWalk>
+        <accelerometerNoiseDensity>0.000186</accelerometerNoiseDensity>
+        <accelerometerRandomWalk>0.0006</accelerometerRandomWalk>
         <accelerometerTurnOnBiasSigma>0.0</accelerometerTurnOnBiasSigma>
       </noise_model>
     </xacro:imu>
