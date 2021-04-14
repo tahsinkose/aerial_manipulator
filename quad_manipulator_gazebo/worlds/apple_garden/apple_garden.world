@@ -95,10 +95,5 @@
       <name>source_table</name>
       <pose>15.2534 13.9765 0 0 0 0</pose>
     </include>
-    <include>
-      <uri>model://apple</uri>
-      <name>target_apple</name>
-      <pose>15.984 0.1225 0.002 0 0 0</pose>
-    </include>
   </world>
 </sdf>
