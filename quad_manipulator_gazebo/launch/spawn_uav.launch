@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="model" default="$(find quad_manipulator_description)/urdf/quad_manipulator_sim.xacro"/>
+
+  <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
+  <param name="tf_prefix" type="string" value="$(arg tf_prefix)" />
+  <arg name="use_zero_noise_model" default="true"/>
+
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.3"/>
+  <arg name="yaw" default="0.0"/>
+  <arg name="ID" default="0"/>
+  <arg name="fcu_url" default="udp://:14540@localhost:14580"/>
+  <arg name="mavlink_udp_port" default="14560"/>
+  <arg name="mavlink_tcp_port" default="4560"/>
+
+  <arg name="world_frame" value="/map"/>
+  <param name="robot_description"
+		command="$(find xacro)/xacro '$(arg model)'
+      use_zero_noise_model:=$(arg use_zero_noise_model)
+      robot_namespace:=$(arg tf_prefix)
+      mavlink_udp_port:=$(arg mavlink_udp_port)
+      mavlink_tcp_port:=$(arg mavlink_tcp_port)"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	  respawn="true" output="screen">
+    <param name="publish_frequency" type="double" value="20.0" />
+  </node>
+
+  <!-- gazebo simulation with px4 and mavros launch file -->
+  <include file="$(find quad_manipulator_control)/launch/mavros_posix_sitl.launch">
+    <arg name="interactive" value="true"/>
+    <arg name="fcu_url" value="$(arg fcu_url)"/>
+    <arg name="respawn_mavros" value="false"/>
+  </include>
+  <!-- ros_control quad_manipulator launch file -->
+  <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch">
+    <arg name="name" value="$(arg tf_prefix)"/>
+  </include>
+
+  <node name="ground_truth_to_tf" pkg="message_to_tf" type="message_to_tf" output="screen">
+      <param name="odometry_topic" value="mavros/local_position/odom" />
+      <param name="frame_id" value="$(arg world_frame)" />
+      <param name="tf_prefix" value="$(arg tf_prefix)"/>
+      <remap from="ground_truth_to_tf/pose" to="pose"/>
+  </node>
+  <!-- gazebo model -->
+  <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen"
+      args="-urdf -unpause -param robot_description -model $(arg tf_prefix) -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)
+            -J arm_joint_2 -0.48"/>
+</launch>

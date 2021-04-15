@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <robot  xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:property name="robot_namespace" value="quad_manipulator"/>
-
+  <xacro:property name="namespace" value="$(arg robot_namespace)" />
+  <xacro:property name="udp_port" value="$(arg mavlink_udp_port)" />
+  <xacro:property name="tcp_port" value="$(arg mavlink_tcp_port)" />
   <!-- ros_control plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
       <legacyModeNS>true</legacyModeNS>
     </plugin>
@@ -95,14 +95,12 @@
 
   <gazebo>
     <plugin name='multirotor_base_plugin' filename='libgazebo_multirotor_base_plugin.so'>
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <linkName>base_link</linkName>
       <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
     </plugin>
   </gazebo>
   <gazebo>
     <plugin name="front_right_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <jointName>rotor_0_joint</jointName>
       <linkName>rotor_0</linkName>
       <turningDirection>ccw</turningDirection>
@@ -121,7 +119,6 @@
   </gazebo>
   <gazebo>
     <plugin name="back_left_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <jointName>rotor_1_joint</jointName>
       <linkName>rotor_1</linkName>
       <turningDirection>ccw</turningDirection>
@@ -140,7 +137,6 @@
   </gazebo>
   <gazebo>
     <plugin name="front_left_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <jointName>rotor_2_joint</jointName>
       <linkName>rotor_2</linkName>
       <turningDirection>cw</turningDirection>
@@ -159,7 +155,6 @@
   </gazebo>
   <gazebo>
     <plugin name="back_right_motor_model" filename="libgazebo_motor_model.so">
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <jointName>rotor_3_joint</jointName>
       <linkName>rotor_3</linkName>
       <turningDirection>cw</turningDirection>
@@ -178,11 +173,9 @@
   </gazebo>
   <gazebo>
     <plugin name='gps_plugin' filename='libgazebo_gps_plugin.so'>
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <gpsNoise>1</gpsNoise>
     </plugin>
     <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <pubRate>100</pubRate>
       <noiseDensity>0.0004</noiseDensity>
       <randomWalk>6.4e-06</randomWalk>
@@ -190,14 +183,12 @@
       <magTopic>/mag</magTopic>
     </plugin>
     <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
-      <robotNamespace>${robot_namespace}</robotNamespace>
       <pubRate>50</pubRate>
       <baroTopic>/baro</baroTopic>
     </plugin>
   </gazebo>
   <gazebo>
     <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
-        <robotNamespace>${robot_namespace}</robotNamespace>
         <imuSubTopic>/imu</imuSubTopic>
         <gpsSubTopic>/gps</gpsSubTopic>
         <magSubTopic>/mag</magSubTopic>
@@ -347,7 +338,7 @@
       <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>quad_manipulator/camera1</cameraName>
+        <cameraName>camera1</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>camera_link_optical</frameName>
@@ -368,8 +359,7 @@
   <xacro:macro name="imu" params="**noise_model">
     <gazebo>
       <plugin name="rotors_gazebo_imu_plugin" filename="libgazebo_imu_plugin.so">
-        <robotNamespace>${robot_namespace}</robotNamespace>
-        <linkName>imu_link</linkName>
+        <linkName>base_link</linkName>
         <imuTopic>/imu</imuTopic>
         <xacro:insert_block name="noise_model"/>
         <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
@@ -381,7 +371,7 @@
 
   <gazebo>
     <plugin name="grasp_collisions" filename="libgazebo_ros_robot_collisions.so">
-      <topicName>${robot_namespace}/robot_collisions</topicName>
+      <topicName>${namespace}/robot_collisions</topicName>
       <disable_collisions_on_attach>true</disable_collisions_on_attach>
       <forces_angle_tolerance_deg>90</forces_angle_tolerance_deg>
       <min_force_ratio>0.2</min_force_ratio>
@@ -389,7 +379,7 @@
       <release_tolerance>0.008</release_tolerance>
       <grip_count_threshold>1</grip_count_threshold>
       <minUpdateDT>0.05</minUpdateDT>
-      <gripper_topic>${robot_namespace}/fake_grasping_status</gripper_topic>
+      <gripper_topic>${namespace}/fake_grasping_status</gripper_topic>
       <gripper>
         <gripper_name>arm</gripper_name>
         <palm_name>grasp_link_1</palm_name>

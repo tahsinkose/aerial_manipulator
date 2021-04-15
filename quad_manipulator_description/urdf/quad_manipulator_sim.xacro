@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 
 <robot name="quad_manipulator" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="robot_namespace" default=""/>
+  <xacro:arg name='mavlink_udp_port' default='14560' />
+  <xacro:arg name='mavlink_tcp_port' default='4560' />
+  <xacro:arg name="use_zero_noise_model" default="true"/>
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find quad_manipulator_description)/urdf/quad_manipulator.gazebo" />
   <!-- Import Gazebo-IMU-->
-  <xacro:arg name="use_zero_noise_model" default="true"/>
   <xacro:if value="$(arg use_zero_noise_model)">
     <xacro:imu>
       <noise_model>
@@ -68,21 +71,6 @@
       </geometry>
     </collision>
   </link>
-
-  <link name="imu_link">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="0.015" />
-      <inertia ixx="1e-05" ixy="0" ixz="0" iyy="1e-05" iyz="0" izz="1e-05" />
-    </inertial>
-  </link>
-  <joint name="imu_joint" type="revolute">
-    <parent link="base_link" />
-    <child link="imu_link" />
-    <axis xyz="1 0 0" />
-    <limit lower="0" upper="0" effort="0" velocity="0" />
-  </joint>
-
 
   <link name="rotor_0">
     <inertial>

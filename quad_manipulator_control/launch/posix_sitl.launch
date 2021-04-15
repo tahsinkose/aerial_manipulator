@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <!-- Posix SITL environment launch script -->
-
-    <arg name="est" default="ekf2"/>
+    <arg name="est" value="ekf2"/>
     <!-- vehicle model-->
     <arg name="vehicle" value="quad_manipulator"/>
     <env name="PX4_SIM_MODEL" value="$(arg vehicle)" />

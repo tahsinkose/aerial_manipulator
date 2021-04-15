@@ -1,43 +1,11 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="use_zero_noise_model" default="true"/>
-  <param name="robot_description"
-		command="$(find xacro)/xacro '$(find quad_manipulator_description)/urdf/quad_manipulator_sim.xacro'
-      use_zero_noise_model:=$(arg use_zero_noise_model)"/>
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-
-  <!-- MAVROS configs -->
-  <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
-  <!-- gazebo simulation with px4 and mavros launch file -->
-  <include file="$(find quad_manipulator_control)/launch/mavros_posix_sitl.launch">
-    <arg name="interactive" value="true"/>
-    <arg name="fcu_url" value="$(arg fcu_url)"/>
-    <arg name="respawn_mavros" value="false"/>
-  </include>
-  <!-- ros_control quad_manipulator launch file -->
-  <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch"/>
-  <!-- vehicle pose -->
-  <arg name="x" default="0"/>
-  <arg name="y" default="0"/>
-  <arg name="z" default="0.3"/>
-  <arg name="R" default="0"/>
-  <arg name="P" default="0"/>
-  <arg name="Y" default="0"/>
   <!-- gazebo configs -->
   <arg name="debug" default="false"/>
   <arg name="verbose" default="true"/>
   <arg name="paused" default="false"/>
 
-  <arg name="vehicle" value="quad_manipulator"/>
   <arg name="world" default="$(find quad_manipulator_gazebo)/worlds/empty.world"/>
-  <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
-  <arg name="world_frame" default="/map"/>
-  <node name="ground_truth_to_tf" pkg="message_to_tf" type="message_to_tf" output="screen">
-      <param name="odometry_topic" value="/mavros/local_position/odom" />
-      <param name="frame_id" value="$(arg world_frame)" />
-      <param name="tf_prefix" value="$(arg tf_prefix)"/>
-      <remap from="ground_truth_to_tf/pose" to="pose"/>
-  </node>
   <!-- Gazebo sim -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <arg name="gui" value="true"/>
@@ -48,20 +16,15 @@
       <arg name="respawn_gazebo" value="false"/>
       <arg name="output" value="log"/>
   </include>
-  <!-- gazebo model -->
-  <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen"
-      args="-urdf -unpause -param robot_description -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)
-            -J arm_joint_2 -0.48"/>
-  <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
-
-  <arg name="use_joint_trajectory_gui" default="false"/>
-   <group if="$(arg use_joint_trajectory_gui)">
-      <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
-   </group>
-
+  <include file="$(find quad_manipulator_gazebo)/launch/spawn_drones.launch"/>
   <arg name="use_plot_juggler" default="false"/>
   <group if="$(arg use_plot_juggler)">
     <node name="plot_juggler" pkg="plotjuggler" type="PlotJuggler"
         args="--layout $(find quad_manipulator_gazebo)/cfg/odom.xml"/>
   </group>
+  <arg name="use_joint_trajectory_gui" default="false"/>
+   <group if="$(arg use_joint_trajectory_gui)">
+      <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
+   </group>
+  <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
 </launch>
