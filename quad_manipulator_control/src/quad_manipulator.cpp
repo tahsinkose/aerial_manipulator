@@ -35,7 +35,7 @@ QuadManipulator::QuadManipulator() {
   }
 
   joint_states_sub_ = nh_.subscribe<sensor_msgs::JointState>(
-      "/quad_manipulator/joint_states", 100, &QuadManipulator::joint_states_cb,
+      "joint_states", 100, &QuadManipulator::joint_states_cb,
       this);
   local_pos_pub_ = nh_.advertise<geometry_msgs::PoseStamped>(
       "mavros/setpoint_position/local", 10);
@@ -47,9 +47,9 @@ QuadManipulator::QuadManipulator() {
   set_mode_client_ = nh_.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
 
   arm_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>(
-      "/quad_manipulator/arm_controller/command", 10);
+      "arm_controller/command", 10);
   hand_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>(
-      "/quad_manipulator/grasp_controller/command", 10);
+      "grasp_controller/command", 10);
 }
 
 void QuadManipulator::state_cb(const mavros_msgs::State::ConstPtr &msg) {

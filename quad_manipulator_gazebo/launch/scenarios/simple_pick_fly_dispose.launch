@@ -2,7 +2,7 @@
 <launch>
   <include file="$(find quad_manipulator_gazebo)/launch/sim.launch">
     <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/workout.world"/>
-    <arg name="use_plot_juggler" value="true"/>
+    <arg name="use_plot_juggler" value="false"/>
   </include>
   <group ns="uav1">
       <arg name="fcu_url" default="udp://:14540@localhost:14580"/>
@@ -18,6 +18,6 @@
           <arg name="mavlink_tcp_port" value="4560"/>
           <arg name="use_zero_noise_model" value="true"/>
       </include>
+       <node name="simple_pick_fly_dispose" pkg="quad_manipulator_control" type="simple_pick_fly_dispose" output="screen"/>
   </group>
-  <node name="simple_pick_fly_dispose" pkg="quad_manipulator_control" type="simple_pick_fly_dispose" output="screen"/>
 </launch>
