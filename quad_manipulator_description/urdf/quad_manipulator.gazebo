@@ -109,11 +109,10 @@
       <maxRotVelocity>1100</maxRotVelocity>
       <motorConstant>8.54858e-06</motorConstant>
       <momentConstant>0.06</momentConstant>
-      <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>0</motorNumber>
       <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
       <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
-      <motorSpeedPubTopic>/motor_speed/0</motorSpeedPubTopic>
       <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
     </plugin>
   </gazebo>
@@ -127,11 +126,10 @@
       <maxRotVelocity>1100</maxRotVelocity>
       <motorConstant>8.54858e-06</motorConstant>
       <momentConstant>0.06</momentConstant>
-      <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>1</motorNumber>
       <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
       <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
-      <motorSpeedPubTopic>/motor_speed/1</motorSpeedPubTopic>
       <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
     </plugin>
   </gazebo>
@@ -145,11 +143,10 @@
       <maxRotVelocity>1100</maxRotVelocity>
       <motorConstant>8.54858e-06</motorConstant>
       <momentConstant>0.06</momentConstant>
-      <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>2</motorNumber>
       <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
       <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
-      <motorSpeedPubTopic>/motor_speed/2</motorSpeedPubTopic>
       <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
     </plugin>
   </gazebo>
@@ -163,11 +160,10 @@
       <maxRotVelocity>1100</maxRotVelocity>
       <motorConstant>8.54858e-06</motorConstant>
       <momentConstant>0.06</momentConstant>
-      <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>3</motorNumber>
       <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
       <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
-      <motorSpeedPubTopic>/motor_speed/3</motorSpeedPubTopic>
       <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
     </plugin>
   </gazebo>
@@ -180,19 +176,22 @@
       <noiseDensity>0.0004</noiseDensity>
       <randomWalk>6.4e-06</randomWalk>
       <biasCorrelationTime>600</biasCorrelationTime>
-      <magTopic>/mag</magTopic>
+      <magTopic>mag</magTopic>
     </plugin>
     <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
       <pubRate>50</pubRate>
-      <baroTopic>/baro</baroTopic>
+      <baroTopic>baro</baroTopic>
     </plugin>
   </gazebo>
   <gazebo>
     <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
-        <imuSubTopic>/imu</imuSubTopic>
-        <gpsSubTopic>/gps</gpsSubTopic>
-        <magSubTopic>/mag</magSubTopic>
-        <baroSubTopic>/baro</baroSubTopic>
+        <imuSubTopic>imu</imuSubTopic>
+        <gpsSubTopic>gps</gpsSubTopic>
+        <magSubTopic>mag</magSubTopic>
+        <baroSubTopic>baro</baroSubTopic>
+        <irlockSubTopic>camera/link/irlock</irlockSubTopic>
+        <opticalFlowSubTopic>px4flow/link/opticalFlow</opticalFlowSubTopic>
+        <visionSubTopic>vision_odom</visionSubTopic>
         <mavlink_addr>INADDR_ANY</mavlink_addr>
         <mavlink_udp_port>${udp_port}</mavlink_udp_port>
         <mavlink_tcp_port>${tcp_port}</mavlink_tcp_port>
@@ -210,7 +209,7 @@
         <send_odometry>1</send_odometry>
         <enable_lockstep>1</enable_lockstep>
         <use_tcp>1</use_tcp>
-        <motorSpeedCommandPubTopic>/gazebo/command/motor_speed</motorSpeedCommandPubTopic>
+        <motorSpeedCommandPubTopic>command/motor_speed</motorSpeedCommandPubTopic>
         <control_channels>
           <channel name='rotor1'>
             <input_index>0</input_index>
@@ -360,7 +359,7 @@
     <gazebo>
       <plugin name="rotors_gazebo_imu_plugin" filename="libgazebo_imu_plugin.so">
         <linkName>base_link</linkName>
-        <imuTopic>/imu</imuTopic>
+        <imuTopic>imu</imuTopic>
         <xacro:insert_block name="noise_model"/>
         <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
         <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
