@@ -2,13 +2,7 @@
 <launch>
   <arg name="world_dir" value="$(find quad_manipulator_gazebo)/worlds/apple_garden" />
   <arg name="world" value="$(arg world_dir)/apple_garden.world"/>
-  <include file="$(find quad_manipulator_gazebo)/launch/simulate.launch">
-    <arg name="x" value="16"/>
-    <arg name="y" value="0"/>
-    <arg name="z" value="0.3"/>
-    <arg name="R" value="0"/>
-    <arg name="P" value="0"/>
-    <arg name="Y" value="0"/>
+  <include file="$(find quad_manipulator_gazebo)/launch/sim.launch">
     <arg name="world" value="$(arg world)"/>
   </include>
 

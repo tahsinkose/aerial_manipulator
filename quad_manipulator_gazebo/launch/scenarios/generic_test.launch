@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find quad_manipulator_gazebo)/launch/sim.launch"/>
+<include file="$(find quad_manipulator_gazebo)/launch/spawn_drones.launch"/>
+</launch>
