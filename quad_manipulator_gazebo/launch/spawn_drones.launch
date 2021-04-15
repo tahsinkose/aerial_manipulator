@@ -2,17 +2,17 @@
 
 <launch>
     <group ns="uav1">
-        <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+        <arg name="fcu_url" default="udp://:14540@localhost:14580"/>
         <include file="$(find quad_manipulator_gazebo)/launch/spawn_uav.launch" >
             <arg name="tf_prefix" value="uav1" />
             <arg name="x" value="0.0" />
             <arg name="y" value="0.0" />
             <arg name="z" value="0.3" />
             <arg name="yaw" value="0.0" />
-            <arg name="ID" value="1"/>
+            <arg name="ID" value="0"/>
             <arg name="fcu_url" value="$(arg fcu_url)"/>
-            <arg name="mavlink_udp_port" default="14560"/>
-            <arg name="mavlink_tcp_port" default="4560"/>
+            <arg name="mavlink_udp_port" value="14560"/>
+            <arg name="mavlink_tcp_port" value="4560"/>
         </include>
     </group>
 

@@ -6,10 +6,9 @@
     <arg name="vehicle" value="quad_manipulator"/>
     <env name="PX4_SIM_MODEL" value="$(arg vehicle)" />
     <env name="PX4_ESTIMATOR" value="$(arg est)" />
-
-    <!-- PX4 configs -->
-    <arg name="interactive" default="true"/>
+    <arg name="ID" default="0"/>
     <node name="sitl" pkg="px4" type="px4" output="screen"
-        args="$(find px4)/ROMFS/px4fmu_common -s etc/init.d-posix/rcS -d" required="true"/>
+        args="$(find px4)/ROMFS/px4fmu_common -s etc/init.d-posix/rcS -i $(arg ID)
+        -w sitl_$(arg vehicle)_$(arg ID) -d" required="true"/>
 
 </launch>

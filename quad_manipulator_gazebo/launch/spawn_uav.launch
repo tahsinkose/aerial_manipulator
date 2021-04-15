@@ -30,10 +30,15 @@
   </node>
 
   <!-- gazebo simulation with px4 and mavros launch file -->
-  <include file="$(find quad_manipulator_control)/launch/mavros_posix_sitl.launch">
-    <arg name="interactive" value="true"/>
+  <include file="$(find quad_manipulator_control)/launch/posix_sitl.launch">
+    <arg name="ID" value="$(arg ID)"/>
+  </include>
+  <include file="$(find mavros)/launch/px4.launch">
+    <!-- GCS link is provided by SITL -->
+    <arg name="gcs_url" value=""/>
     <arg name="fcu_url" value="$(arg fcu_url)"/>
-    <arg name="respawn_mavros" value="false"/>
+    <arg name="tgt_system" value="$(eval 1 + arg('ID'))"/>
+    <arg name="tgt_component" value="1"/>
   </include>
   <!-- ros_control quad_manipulator launch file -->
   <include file="$(find quad_manipulator_control)/launch/manipulator_control.launch">
