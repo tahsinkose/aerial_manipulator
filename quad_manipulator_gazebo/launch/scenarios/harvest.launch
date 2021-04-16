@@ -2,11 +2,9 @@
 <launch>
   <arg name="world_dir" value="$(find quad_manipulator_gazebo)/worlds/apple_garden" />
   <arg name="world" value="$(arg world_dir)/apple_garden.world"/>
-  <include file="$(find quad_manipulator_gazebo)/launch/sim.launch">
+  <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
     <arg name="world" value="$(arg world)"/>
   </include>
-
-  <node name="orchard_reco_manager" pkg="fields_ignition" type="ground_truth.py" output="screen">
-      <param name="world_dir" value="$(arg world_dir)" />
-  </node>
+  <include file="$(find quad_manipulator_gazebo)/launch/internal/spawn_drones.launch"/>
+  <include file="$(find quad_manipulator_gazebo)/launch/reco/fruit_detection.launch"/>
 </launch>

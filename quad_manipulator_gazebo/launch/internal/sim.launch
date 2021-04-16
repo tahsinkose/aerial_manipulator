@@ -25,5 +25,5 @@
    <group if="$(arg use_joint_trajectory_gui)">
       <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
    </group>
-  <include file="$(find quad_manipulator_gazebo)/launch/rviz.launch"/>
+  <include file="$(find quad_manipulator_gazebo)/launch/internal/rviz.launch"/>
 </launch>

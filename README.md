@@ -50,10 +50,10 @@ cd catkin_ws
 source devel/setup.bash
 ```
 
-Finally run:
+In order to bringup an idle session of a single robot, run:
 
 ```
-roslaunch quad_manipulator_gazebo generic_test.launch
+roslaunch quad_manipulator_gazebo sim_bringup.launch
 ```
 
 ## Troubleshooting

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch"/>
+  <group ns="uav1">
+    <include file="$(find quad_manipulator_gazebo)/launch/internal/bringup.launch">
+      <arg name="tf_prefix" value="uav1" />
+      <arg name="x" value="0.0" />
+      <arg name="y" value="0.0" />
+      <arg name="yaw" value="0.0" />
+      <arg name="use_zero_noise_model" value="true"/>
+    </include>
+  </group>
+</launch>
