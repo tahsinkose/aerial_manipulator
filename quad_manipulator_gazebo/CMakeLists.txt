@@ -65,6 +65,8 @@ link_directories(
 add_library(gazebo_ros_robot_collisions src/robot_collisions.cpp src/fake_grasping_gripper.cpp)
 target_link_libraries(gazebo_ros_robot_collisions ${PROJECT_NAME}_dependencies)
 
+catkin_add_env_hooks (custom_env SHELLS bash DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
 install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
