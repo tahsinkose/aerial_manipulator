@@ -26,16 +26,7 @@ source /opt/ros/melodic/setup.bash
 DONT_RUN=1 make px4_sitl_default gazebo
 ```
 
-`DONT_RUN=1` is prepended to skip launching empty Gazebo session, since we don't need it at this point. Followingly we need to
-create a model specific file under `ROMFS/px4fmu_common/init.d-posix`. This is a must-do step for any new robot not officially supported by PX4 codebase. Create `Firmware/ROMFS/px4fmu_common/init.d-posix/10090_quad_manipulator` file with the following content:
-
-```
-#!/bin/sh
-
-sh /etc/init.d/rc.mc_defaults
-
-set MIXER quad_w
-```
+`DONT_RUN=1` is prepended to skip launching empty Gazebo session, since we don't need it at this point.
 
 Next, we need to blacklist `px4` package, since it uses plain CMake for compilation and we don't want to mess with it via `catkin`. Also we need to extend the installation path of `melodic`:
 
@@ -57,17 +48,15 @@ Go into your catkin workspace. Then do the following.
 ```
 cd catkin_ws
 source devel/setup.bash
-source setup_px4.sh
 ```
 
 Finally run:
 
 ```
-roslaunch quad_manipulator_gazebo simulate.launch
+roslaunch quad_manipulator_gazebo generic_test.launch
 ```
 
 ## Troubleshooting
-In this section I will list the problems and their solutions I have encountered thus far. This will be a living document.
 
 1. "preflight check failed, missing sensor during GAZEBO simulation" -> solve by removing `~/.ros/eeprom/parameters` file.
 
