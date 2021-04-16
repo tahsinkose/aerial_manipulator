@@ -4,6 +4,7 @@ echo "Preparing specific variables for the Quad Manipulator Stack"
 echo "*******"
 
 export ROS_TEST_RESULTS_DIR="$(pwd)/test_results"
+export ROS_LOG_DIR="$(pwd)/ros_logs"
 # PX4 stuff
 SRC_DIR=$(pwd)/src/quad_manipulator/Firmware
 BUILD_DIR=$SRC_DIR/build/px4_sitl_default

@@ -55,7 +55,7 @@
   <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen"
       args="-urdf -unpause -param robot_description -model $(arg tf_prefix) -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)
             -J arm_joint_2 -0.48"/>
-  <node pkg="tf" type="static_transform_publisher" name="$(arg tf_prefix)_map_publisher"
+  <node pkg="tf" type="static_transform_publisher" name="map_publisher"
     args="$(arg x) $(arg y) $(arg z) 0 0 0 earth $(arg tf_prefix)/map 100" />
   <rosparam file = "$(find quad_manipulator_gazebo)/cfg/px4_config.yaml" subst_value="True"/>
 </launch>
