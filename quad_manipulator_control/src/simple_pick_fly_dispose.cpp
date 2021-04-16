@@ -1,119 +1,74 @@
+#include <gtest/gtest.h>
+
 #include <geometry_msgs/PoseStamped.h>
 #include <quad_manipulator_control/quad_manipulator.h>
 #include <quad_manipulator_control/utils.h>
 
 namespace {
-constexpr double distance_tolerance = 0.05; // 5cm tolerance for this test.
+constexpr double distance_tolerance = 0.05;  // 5cm tolerance for this test.
 constexpr const char *kAppleName = "target_apple";
 const std::vector<double> kArmGrab = {0.0, 0.0, -0.1};
 const std::vector<double> kArmDispose = {0.0, -0.37, -0.99};
 const std::vector<double> kArmZero = {0.0, 0.0, 0.0};
 const std::vector<double> kGripperFullClose = {0.0, 0.0};
-} // namespace
+}  // namespace
 
-int main(int argc, char **argv) {
-  ros::init(argc, argv, "simple_pick_fly_dispose");
+TEST(QuadManipulatorTest, SimplePickFlyDispose) {
   QuadManipulator quad_manip;
   // 1 - Connect
-  const bool connected = quad_manip.wait_for_connection();
-  if (!connected) {
-    ROS_ERROR("Robot could connect to PX4 board. Failing..");
-    return -1;
-  }
-  const bool armed = quad_manip.motor_arm(true);
-  if (!armed) {
-    ROS_ERROR("Robot could not be armed. Failing..");
-    return -1;
-  }
-
+  ROS_INFO("Connecting...");
+  ASSERT_TRUE(quad_manip.wait_for_connection()) << "Robot could connect to PX4 board";
+  ASSERT_TRUE(quad_manip.motor_arm(true)) << "Robot could not be armed";
   // 2 - Pick
-  if (!quad_manip.open_gripper()) {
-    ROS_ERROR("Robot could not open grippers. Failing..");
-    return -1;
-  }
-
-  if (!quad_manip.move_manip(kArmGrab)) {
-    ROS_ERROR(
-        "Robot could not move the arm to desired configuration. Failing..");
-    return -1;
-  }
+  ROS_INFO("Picking apple...");
+  ASSERT_TRUE(quad_manip.open_gripper()) << "Robot could not open grippers";
+  ASSERT_TRUE(quad_manip.move_manip(kArmGrab)) << "Robot could not move the arm to desired configuration";
 
   geometry_msgs::Pose correct_pose;
   correct_pose.position.x = 0.0025;
   correct_pose.position.y = 0.0;
   correct_pose.position.z = 0.008;
-  if (!set_gazebo_model_pose(kAppleName, correct_pose)) {
-    ROS_ERROR("Could not set the apple's pose properly.");
-    return -1;
-  }
 
-  if (!quad_manip.close_gripper()) {
-    ROS_ERROR("Robot could not open grippers. Failing..");
-    return -1;
-  }
+  ASSERT_TRUE(set_gazebo_model_pose(kAppleName, correct_pose)) << "Could not set the apple's pose properly.";
+
+  ASSERT_TRUE(quad_manip.close_gripper()) << "Robot could not open grippers";
   // 3 - Fly
-  const bool took_off = quad_manip.takeoff();
-  if (!took_off) {
-    ROS_ERROR("Robot could not takeoff. Failing..");
-    return -1;
-  }
+  ROS_INFO("Takeoff...");
+  ASSERT_TRUE(quad_manip.takeoff()) << "Robot could not takeoff";
 
   geometry_msgs::PoseStamped target_pose;
   target_pose.pose.position.x = -7.9;
   target_pose.pose.position.y = 7.9;
   target_pose.pose.position.z = 1.02;
-  const bool moved = quad_manip.move_base(target_pose, distance_tolerance);
-  if (!moved) {
-    ROS_ERROR("Could not move to target pose: %s",
-              ToString(target_pose).c_str());
-    return -1;
-  }
-
+  ASSERT_TRUE(quad_manip.move_base(target_pose, distance_tolerance))
+      << "Could not move to target pose: " << ToString(target_pose);
   // 4 - Dispose.
   ROS_INFO("Disposal started!");
-  if (!quad_manip.move_manip(kArmDispose)) {
-    ROS_ERROR(
-        "Robot could not move the arm to desired configuration. Failing..");
-    return -1;
-  }
-  if (!quad_manip.open_gripper()) {
-    ROS_ERROR("Robot could not open grippers. Failing..");
-    return -1;
-  }
+  ASSERT_TRUE(quad_manip.move_manip(kArmDispose)) << "Robot could not move the arm to desired configuration";
+  ASSERT_TRUE(quad_manip.open_gripper()) << "Robot could not open grippers.";
+  ASSERT_TRUE(quad_manip.close_gripper(kGripperFullClose)) << "Robot could not open grippers";
 
-  if (!quad_manip.close_gripper(kGripperFullClose)) {
-    ROS_ERROR("Robot could not open grippers. Failing..");
-    return -1;
-  }
-  if (!quad_manip.move_manip(kArmZero)) {
-    ROS_ERROR(
-        "Robot could not move the arm to desired configuration. Failing..");
-    return -1;
-  }
+  ASSERT_TRUE(quad_manip.move_manip(kArmZero)) << "Robot could not move the arm to desired configuration.";
   ROS_INFO("Disposal finished!");
 
   geometry_msgs::PoseStamped home_pose;
   home_pose.pose.position.x = 0;
   home_pose.pose.position.y = 0;
   home_pose.pose.position.z = 2.0;
-  const bool returned = quad_manip.move_base(home_pose, distance_tolerance);
-  if (!returned) {
-    ROS_ERROR("Could not move to home pose: %s",
-              ToString(home_pose).c_str());
-    return -1;
-  }
-  const bool landed = quad_manip.land();
-  if (!landed) {
-    ROS_ERROR("Could not landed");
-    return -1;
-  }
+  ROS_INFO("Returning home...");
+  ASSERT_TRUE(quad_manip.move_base(home_pose, distance_tolerance))
+      << "Could not move to home pose: " << ToString(home_pose).c_str();
+
+  ROS_INFO("Landing...");
+  ASSERT_TRUE(quad_manip.land()) << "Could not landed";
   ROS_INFO("Returned home!");
-  const bool disarmed = quad_manip.motor_arm(false);
-  if (!disarmed) {
-    ROS_ERROR("Robot could not be armed. Failing..");
-    return -1;
-  }
+  ASSERT_TRUE(quad_manip.motor_arm(false)) << "Robot could not be armed.";
   ROS_INFO("Robot disarmed!");
-  ROS_INFO("Test finished successfully!");
-  return 0;
+}
+
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
+  ros::init(argc, argv, "simple_pick_fly_dispose");
+  ros::NodeHandle nh;
+  return RUN_ALL_TESTS();
 }
