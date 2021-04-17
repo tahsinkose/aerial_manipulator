@@ -174,3 +174,19 @@ material AppleTree/Bark
     }
   }
 }
+
+material AppleTree/Apple
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture apple.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
