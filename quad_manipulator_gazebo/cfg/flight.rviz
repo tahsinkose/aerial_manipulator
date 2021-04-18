@@ -9,7 +9,7 @@ Panels:
         - /TF1/Frames1
         - /UAV2 Pose1
       Splitter Ratio: 0.5
-    Tree Height: 780
+    Tree Height: 419
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -28,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Fruits
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -144,70 +144,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        arm_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        arm_eef:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        arm_link_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        arm_link_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        arm_link_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        grasp_link_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        grasp_link_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rotor_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rotor_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rotor_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rotor_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: UAV2 RobotModel
       Robot Description: uav2/robot_description
       TF Prefix: uav2
@@ -265,38 +201,6 @@ Visualization Manager:
           Value: true
         uav1/rotor_3:
           Value: true
-        uav2/arm_base_link:
-          Value: true
-        uav2/arm_eef:
-          Value: true
-        uav2/arm_link_1:
-          Value: true
-        uav2/arm_link_2:
-          Value: true
-        uav2/arm_link_3:
-          Value: true
-        uav2/base_footprint:
-          Value: true
-        uav2/base_link:
-          Value: true
-        uav2/base_stabilized:
-          Value: true
-        uav2/camera_link:
-          Value: true
-        uav2/grasp_link_1:
-          Value: true
-        uav2/grasp_link_2:
-          Value: true
-        uav2/map:
-          Value: true
-        uav2/rotor_0:
-          Value: true
-        uav2/rotor_1:
-          Value: true
-        uav2/rotor_2:
-          Value: true
-        uav2/rotor_3:
-          Value: true
       Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
@@ -326,29 +230,6 @@ Visualization Manager:
                   uav1/rotor_2:
                     {}
                   uav1/rotor_3:
-                    {}
-          uav2/map:
-            uav2/base_footprint:
-              uav2/base_stabilized:
-                uav2/base_link:
-                  uav2/arm_base_link:
-                    uav2/arm_link_1:
-                      uav2/arm_link_2:
-                        uav2/arm_link_3:
-                          uav2/arm_eef:
-                            uav2/grasp_link_1:
-                              {}
-                            uav2/grasp_link_2:
-                              {}
-                  uav2/camera_link:
-                    {}
-                  uav2/rotor_0:
-                    {}
-                  uav2/rotor_1:
-                    {}
-                  uav2/rotor_2:
-                    {}
-                  uav2/rotor_3:
                     {}
       Update Interval: 0
       Value: true
@@ -383,7 +264,7 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Class: rviz/Image
-      Enabled: false
+      Enabled: true
       Image Topic: /uav1/camera1/image_raw
       Max Value: 1
       Median window: 5
@@ -393,7 +274,7 @@ Visualization Manager:
       Queue Size: 2
       Transport Hint: raw
       Unreliable: false
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -512,25 +393,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 2.2103190422058105
+      Distance: 13.513469696044922
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.9040422439575195
-        Y: -0.5939429998397827
-        Z: -1.1920928955078125e-7
+        X: 13.635701179504395
+        Y: -0.11089366674423218
+        Z: 6.146469786472153e-7
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6703976988792419
+      Pitch: 0.16539788246154785
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 4.370433807373047
+      Yaw: 6.2454352378845215
     Saved: ~
 Window Geometry:
   Displays:
@@ -540,7 +421,7 @@ Window Geometry:
   Hide Right Dock: true
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000031e00000366fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc0000003d00000366000000e60100001cfa000000010100000002fb0000000a0049006d0061006700650100000000ffffffff0000005e00fffffffb000000100044006900730070006c0061007900730100000000000003af0000015600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f00000366fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000366000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005a40000003efc0100000002fb0000000800540069006d00650100000000000005a4000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000002800000036600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000022500000366fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc0000003d00000366000000e60100001cfa000000000100000002fb0000000a0049006d0061006700650100000000ffffffff0000005e00fffffffb000000100044006900730070006c0061007900730100000000000003af0000015600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f00000366fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000366000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005a40000003efc0100000002fb0000000800540069006d00650100000000000005a4000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000003790000036600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

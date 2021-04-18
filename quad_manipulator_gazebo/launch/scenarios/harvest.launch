@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="world_dir" value="$(find quad_manipulator_gazebo)/worlds/apple_garden" />
-  <arg name="world" value="$(arg world_dir)/apple_garden.world"/>
+  <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/apple_garden_ordered.world" />
   <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
     <arg name="world" value="$(arg world)"/>
   </include>
