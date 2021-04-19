@@ -37,7 +37,7 @@
     <inertial>
       <origin
         xyz="-2E-06 5.841E-05 -0.07727462"
-        rpy="0 0 0" />
+        rpy="0 0 1.57" />
       <mass value="1.5" />
       <inertia
         ixx="0.028479"
@@ -50,7 +50,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 0 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/base_link.STL" />
@@ -64,7 +64,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 0 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/base_link.STL" />
@@ -283,7 +283,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 0 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/arm_base_link.STL" />
@@ -297,7 +297,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="0 0 1.57" />
       <geometry>
         <mesh
           filename="package://quad_manipulator_description/meshes/arm_base_link.STL" />
@@ -308,8 +308,8 @@
     name="arm_base_joint"
     type="fixed">
     <origin
-      xyz="0 -0.07 -0.063"
-      rpy="-3.1416 0 -3.1416" />
+      xyz="-0.07 0 -0.063"
+      rpy="-3.1416 0 1.57" />
     <parent
       link="base_link" />
     <child
@@ -672,8 +672,8 @@
     name="camera_joint"
     type="fixed">
     <origin
-      xyz="0 0.126 -0.057"
-      rpy="0 0 1.5708" />
+      xyz="0.126 0.0 -0.057"
+      rpy="0 0 0" />
     <parent
       link="base_link" />
     <child
