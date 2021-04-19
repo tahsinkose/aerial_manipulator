@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   trajectory_msgs
   sensor_msgs
+  eigen_conversions
 )
 
 catkin_package()
@@ -39,10 +40,6 @@ add_compile_options(
 #
 #add_executable(quad_velocity_control src/sandbox/quad_velocity_control.cpp)
 #target_link_libraries(quad_velocity_control ${catkin_LIBRARIES})
-#
-#add_executable(listener_arm_pose src/sandbox/listener_arm_pose.cpp)
-#target_link_libraries(listener_arm_pose ${catkin_LIBRARIES})
-#
 #add_executable(broadcaster_base_world src/sandbox/broadcaster_base_world.cpp)
 #target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
 
