@@ -1,12 +1,16 @@
 #pragma once
+#include <stdint.h>
 
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/TwistStamped.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/CommandTOL.h>
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/State.h>
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
 
 class QuadManipulator {
  public:
@@ -76,6 +80,16 @@ class QuadManipulator {
   bool close_gripper(const std::vector<double> &desired = {-0.4, 0.4},
                      const ros::Duration &timeout = ros::Duration(15));
 
+  /**
+   * @brief Orbits around the setpoint @p pose.
+   * @param pose Pose in any frame convertible to vehicle's map frame.
+   * @param orbit_radius Radius of the orbit.
+   * @param velocity_during_orbit Velocity during the orbit.
+   * @return true if it was possible to start orbitting.
+   */
+  bool orbit_around(const geometry_msgs::PoseStamped &pose, double orbit_radius = 2.0,
+                    double velocity_during_orbit = 0.5);
+
  private:
   /**
    * @brief Receives state information of the robot, e.g. armed, mode.
@@ -91,6 +105,13 @@ class QuadManipulator {
   void local_pose_cb(const geometry_msgs::PoseStamped::ConstPtr &msg);
 
   /**
+   * @brief Receives the velocity of the robot in local coordinate frame.
+   * @param msg geometry_msgs::TwistStamped message representing the velocity of the
+   * robot in local coordinate frame.
+   */
+  void local_vel_cb(const geometry_msgs::TwistStamped::ConstPtr &msg);
+
+  /**
    * @brief Receives the joint states of the robot.
    */
   void joint_states_cb(const sensor_msgs::JointState::ConstPtr &msg);
@@ -103,7 +124,8 @@ class QuadManipulator {
    * @returns True if the robot transitions into the specified @p mode in @p
    * timeout seconds, false otherwise.
    */
-  bool wait_for_mode(const std::string &mode, const ros::Duration &timeout = ros::Duration(15));
+  bool wait_for_mode(const std::string &mode, uint8_t base_mode = mavros_msgs::SetModeRequest::MAV_MODE_PREFLIGHT,
+                     const ros::Duration &timeout = ros::Duration(15));
 
   /**
    * @brief Waits for armed status, if not already armed.
@@ -140,21 +162,28 @@ class QuadManipulator {
    */
   bool cmd_manip(const std::vector<double> &desired, const ros::Duration &timeout = ros::Duration(15));
 
+  bool base_not_moving();
+
  private:
   mavros_msgs::State current_state_;
   geometry_msgs::PoseStamped local_pose_;
+  geometry_msgs::TwistStamped local_velocity_;
   std::map<std::string, double> joint_states_;
 
   ros::NodeHandle nh_;
   ros::Subscriber mav_state_sub_;
   ros::Subscriber mav_local_pose_sub_;
+  ros::Subscriber mav_local_vel_sub_;
   ros::Subscriber joint_states_sub_;
 
   ros::Publisher local_pos_pub_;
   ros::ServiceClient arming_client_;
   ros::ServiceClient set_mode_client_;
   ros::ServiceClient landing_client_;
+  ros::ServiceClient command_client_;
 
   ros::Publisher arm_control_pub_;
   ros::Publisher hand_control_pub_;
+  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 };

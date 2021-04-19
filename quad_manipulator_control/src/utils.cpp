@@ -12,6 +12,15 @@ std::string ToString(const geometry_msgs::PoseStamped &pose) {
   return oss.str();
 }
 
+std::string ToString(const geometry_msgs::TwistStamped &twist) {
+  std::ostringstream oss;
+  oss << "Linear: [" << std::to_string(twist.twist.linear.x) << ", " << std::to_string(twist.twist.linear.y) << ", "
+      << std::to_string(twist.twist.linear.z) << "] - Angular: [" << std::to_string(twist.twist.angular.x) << ", "
+      << std::to_string(twist.twist.angular.y) << ", " << std::to_string(twist.twist.angular.z)
+      << "] in frame: " << twist.header.frame_id;
+  return oss.str();
+}
+
 std::string ToString(const std::map<std::string, double> &joint_states) {
   std::ostringstream oss;
   oss << "Joint States: [";
@@ -40,12 +49,12 @@ bool set_gazebo_model_pose(const std::string &model_name, const geometry_msgs::P
   return gazebo_set_client.call(set_srv) && set_srv.response.success;
 }
 
-geometry_msgs::PoseStamped px4_T_gazebo_convert(const geometry_msgs::PoseStamped& pose) {
-  geometry_msgs::PoseStamped px4_pose;
-  px4_pose.header.frame_id = "px4";
-  px4_pose.pose.position.x = pose.pose.position.y;
-  px4_pose.pose.position.y = pose.pose.position.x;
-  px4_pose.pose.position.z = pose.pose.position.z;
-  px4_pose.pose.orientation = pose.pose.orientation;
-  return px4_pose;
+geometry_msgs::PoseStamped px4_ned_T_gazebo_convert(const geometry_msgs::PoseStamped& pose) {
+  geometry_msgs::PoseStamped px4_ned_pose;
+  px4_ned_pose.header.frame_id = "px4";
+  px4_ned_pose.pose.position.x = pose.pose.position.y;
+  px4_ned_pose.pose.position.y = pose.pose.position.x;
+  px4_ned_pose.pose.position.z = -pose.pose.position.z;
+  px4_ned_pose.pose.orientation = pose.pose.orientation;
+  return px4_ned_pose;
 }
