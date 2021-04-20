@@ -38,22 +38,21 @@ add_compile_options(
 #add_executable(manipulator_velocity_node src/sandbox/manipulator_velocity_node.cpp)
 #target_link_libraries(manipulator_velocity_node ${catkin_LIBRARIES})
 #
-#add_executable(quad_velocity_control src/sandbox/quad_velocity_control.cpp)
-#target_link_libraries(quad_velocity_control ${catkin_LIBRARIES})
 #add_executable(broadcaster_base_world src/sandbox/broadcaster_base_world.cpp)
 #target_link_libraries(broadcaster_base_world ${catkin_LIBRARIES})
 
 add_library(quad_manipulator src/quad_manipulator.cpp src/utils.cpp)
 target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 
-add_executable(orchard_patrol src/orchard_patrol.cpp)
-target_link_libraries(orchard_patrol quad_manipulator)
-
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest_gtest(test_simple_pick_fly_dispose test/simple_pick_fly_dispose.test
     src/simple_pick_fly_dispose.cpp)
   target_link_libraries(test_simple_pick_fly_dispose quad_manipulator ${catkin_LIBRARIES})
+
+  add_rostest_gtest(test_simple_orchard_patrol test/simple_orchard_patrol.test
+    src/simple_orchard_patrol.cpp)
+  target_link_libraries(test_simple_orchard_patrol quad_manipulator ${catkin_LIBRARIES})
 endif()
 
 install(

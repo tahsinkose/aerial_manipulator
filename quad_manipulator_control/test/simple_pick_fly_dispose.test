@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <launch>
-  <include file="$(find quad_manipulator_gazebo)/launch/sim.launch">
+  <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
     <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/workout.world"/>
     <arg name="use_plot_juggler" value="false"/>
   </include>
   <group ns="uav1">
-      <include file="$(find quad_manipulator_gazebo)/launch/bringup.launch" >
+      <include file="$(find quad_manipulator_gazebo)/launch/internal/bringup.launch" >
           <arg name="tf_prefix" value="uav1" />
           <arg name="x" value="0.0" />
           <arg name="y" value="0.0" />
