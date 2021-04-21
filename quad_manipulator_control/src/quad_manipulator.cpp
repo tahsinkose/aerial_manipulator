@@ -349,10 +349,14 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   if (!(sent && orbit_srv.response.success)) {
     return false;
   }
-  ros::Duration(3.0).sleep(); //Sleep for 3 seconds for robot to start moving.
+  ros::Rate rate(20.0);
+  while (base_not_moving()) {
+    // Poll until base starts moving;
+    ros::spinOnce();
+    rate.sleep();
+  }
   ros::Time start_time = ros::Time::now();
   ros::Time finish_time = start_time + ros::Duration(100);
-  ros::Rate rate(20.0);
   bool timeout = false;
   // Poll until base is stabilized or timeout
   while (ros::ok() && !base_not_moving()) {
