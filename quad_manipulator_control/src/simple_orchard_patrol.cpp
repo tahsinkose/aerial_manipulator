@@ -6,6 +6,10 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <ros/ros.h>
 
+namespace{
+constexpr const double kTreeOrbitRadius = 1.0;
+}
+
 TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   QuadManipulator quad_manip;
   // 1 - Connect
@@ -23,7 +27,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree1.pose.position.y = -2;
   earth_T_tree1.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree1).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree1, 1.0, 0.4))
+  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree1, kTreeOrbitRadius, 0.4))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree1);
 
   geometry_msgs::PoseStamped earth_T_tree2;
@@ -32,7 +36,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree2.pose.position.y = -2.0;
   earth_T_tree2.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree2).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree2, 1.0, 0.4))
+  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree2, kTreeOrbitRadius, 0.4))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree2);
 
   geometry_msgs::PoseStamped earth_T_tree3;
@@ -41,7 +45,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree3.pose.position.y = 2.0;
   earth_T_tree3.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree3).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree3, 1.0, 0.4))
+  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree3, kTreeOrbitRadius, 0.4))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree3);
 
   geometry_msgs::PoseStamped earth_T_tree4;
@@ -50,23 +54,15 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree4.pose.position.y = 2.0;
   earth_T_tree4.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree4).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree4, 1.0, 0.4)) <<
-    "Robot could not successfully orbit around " << ToString(earth_T_tree3);
-  geometry_msgs::PoseStamped home_pose;
-  home_pose.pose.position.x = 0;
-  home_pose.pose.position.y = 0;
-  home_pose.pose.position.z = 2.0;
-  ROS_INFO("Returning home...");
-  constexpr double distance_tolerance = 0.05;  // 5cm tolerance for this test.
-  ASSERT_TRUE(quad_manip.move_base(home_pose, distance_tolerance))
-      << "Could not move to home pose: " << ToString(home_pose).c_str();
+  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree4, kTreeOrbitRadius, 0.4))
+      << "Robot could not successfully orbit around " << ToString(earth_T_tree3);
 
-  ROS_INFO("Landing...");
-  ASSERT_TRUE(quad_manip.land()) << "Could not landed";
+  ROS_INFO("Returning home...");
+  ASSERT_TRUE(quad_manip.go_to_home()) << "Could not go to home: ";
   ROS_INFO("Returned home!");
   ASSERT_TRUE(quad_manip.motor_arm(false)) << "Robot could not be armed.";
   ROS_INFO("Robot disarmed!");
-  ROS_INFO("Finished simple orchard test successfully!");
+  ROS_INFO("Finished simple orchard patrol test successfully!");
 }
 
 int main(int argc, char **argv) {

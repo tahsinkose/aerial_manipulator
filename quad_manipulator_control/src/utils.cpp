@@ -49,7 +49,7 @@ bool set_gazebo_model_pose(const std::string &model_name, const geometry_msgs::P
   return gazebo_set_client.call(set_srv) && set_srv.response.success;
 }
 
-geometry_msgs::PoseStamped px4_ned_T_gazebo_convert(const geometry_msgs::PoseStamped& pose) {
+geometry_msgs::PoseStamped px4_ned_T_map(const geometry_msgs::PoseStamped& pose) {
   geometry_msgs::PoseStamped px4_ned_pose;
   px4_ned_pose.header.frame_id = "px4";
   px4_ned_pose.pose.position.x = pose.pose.position.y;

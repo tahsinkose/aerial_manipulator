@@ -85,10 +85,15 @@ class QuadManipulator {
    * @param pose Pose in any frame convertible to vehicle's map frame.
    * @param orbit_radius Radius of the orbit.
    * @param velocity_during_orbit Velocity during the orbit.
-   * @return true if it was possible to start orbitting.
+   * @return True if it was possible to start orbitting.
    */
   bool orbit_around(const geometry_msgs::PoseStamped &pose, double orbit_radius = 2.0,
                     double velocity_during_orbit = 0.5);
+  /**
+   * @brief Moves the robot to 'Home' location.
+   * @returns True if the robot went to 'Home', false otherwise.
+   */
+  bool go_to_home();
 
  private:
   /**
@@ -162,6 +167,10 @@ class QuadManipulator {
    */
   bool cmd_manip(const std::vector<double> &desired, const ros::Duration &timeout = ros::Duration(15));
 
+  /**
+   * @brief Checks whether the base of the vehicle is stabilized or not.
+   * @returns true if it is, false otherwise.
+   */
   bool base_not_moving();
 
  private:
@@ -186,4 +195,6 @@ class QuadManipulator {
   ros::Publisher hand_control_pub_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+
+  std::string map_frame_;
 };
