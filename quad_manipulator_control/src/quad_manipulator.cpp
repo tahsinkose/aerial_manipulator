@@ -18,7 +18,7 @@ constexpr double kDefaultLandingAltitude = 1.5;  // in meters
 constexpr double kJointTolerance = 1e-2;         // in rad.
 constexpr double kLinearVelTolerance = 1e-2;     // in meters
 constexpr double kAngularVelTolerance = 3e-2;    // in rad
-constexpr const int kBaseChangeAcceptanceThreshold = 50;
+constexpr const int kBaseChangeAcceptanceThreshold = 5;
 const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",          "ALTCTL",    "POSCTL",
                                                  kOffboardMode,   kStabilizedMode, "RATTITUDE", kAutoMissionMode,
                                                  kAutoLoiterMode, "AUTO.TAKEOFF",  "AUTO.RTL",  "AUTO.LAND",
@@ -129,11 +129,12 @@ bool QuadManipulator::motor_arm(bool arm) {
 }
 
 bool QuadManipulator::takeoff() {
-  geometry_msgs::PoseStamped local_T_takeoff;
-  local_T_takeoff.pose.position.x = 0;
-  local_T_takeoff.pose.position.y = 0;
-  local_T_takeoff.pose.position.z = kDefaultTakeoffAltitude;
-  return move_base(local_T_takeoff);
+  geometry_msgs::PoseStamped map_T_takeoff;
+  map_T_takeoff.pose.position.x = local_pose_.pose.position.x;
+  map_T_takeoff.pose.position.y = local_pose_.pose.position.y;
+  map_T_takeoff.pose.position.z = kDefaultTakeoffAltitude;
+  map_T_takeoff.pose.orientation = local_pose_.pose.orientation;
+  return move_base(map_T_takeoff);
 }
 
 bool QuadManipulator::land() {
@@ -150,16 +151,19 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   double dist = DBL_MAX;
-  ROS_INFO("Going to pose: %lf, %lf, %lf in frame '%s'", target_pose.pose.position.x, target_pose.pose.position.y,
-           target_pose.pose.position.z, target_pose.header.frame_id.c_str());
+  const auto map_T_target = target_in_map(target_pose);
+  if (!map_T_target) {
+    return false;
+  }
+  ROS_INFO("Going to pose: %s", ToString(*map_T_target).c_str());
   do {
     local_pos_pub_.publish(target_pose);
 
     ros::spinOnce();
     rate.sleep();
-    dist = sqrt(pow((local_pose_.pose.position.x - target_pose.pose.position.x), 2) +
-                pow((local_pose_.pose.position.y - target_pose.pose.position.y), 2) +
-                pow((local_pose_.pose.position.z - target_pose.pose.position.z), 2));
+    dist = sqrt(pow((local_pose_.pose.position.x - map_T_target->pose.position.x), 2) +
+                pow((local_pose_.pose.position.y - map_T_target->pose.position.y), 2) +
+                pow((local_pose_.pose.position.z - map_T_target->pose.position.z), 2));
   } while (ros::ok() && dist > position_tolerance);
 
   if (!ros::ok()) {
@@ -324,27 +328,16 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   if (source_frame == "") {
     source_frame = map_frame_;
   }
-
-  std::string err_msg;
-  if (!tf_buffer_->canTransform(map_frame_, source_frame, ros::Time(0), &err_msg)) {
-    ROS_ERROR("Could not transform from %s to %s: %s", source_frame.c_str(), map_frame_.c_str(), err_msg.c_str());
+  const auto map_T_target = target_in_map(pose);
+  if (!map_T_target) {
     return false;
-  } else {
-    geometry_msgs::TransformStamped map_T_source = tf_buffer_->lookupTransform(map_frame_, source_frame, ros::Time(0));
-    Eigen::Affine3d map_T_source_eigen, source_T_target_eigen;
-    tf::transformMsgToEigen(map_T_source.transform, map_T_source_eigen);
-    tf::poseMsgToEigen(pose.pose, source_T_target_eigen);
-    const Eigen::Affine3d map_T_target_eigen = map_T_source_eigen * source_T_target_eigen;
-    geometry_msgs::PoseStamped map_T_target;
-    tf::poseEigenToMsg(map_T_target_eigen, map_T_target.pose);
-    map_T_target.header.frame_id = map_frame_;
-    ROS_INFO("Center: %s for orbit", ToString(map_T_target).c_str());
-    const auto map_T_target_in_ned = px4_ned_T_map(map_T_target);
-    ROS_INFO("Center: %s for orbit", ToString(map_T_target_in_ned).c_str());
-    orbit_srv.request.param5 = map_T_target_in_ned.pose.position.x;
-    orbit_srv.request.param6 = map_T_target_in_ned.pose.position.y;
-    orbit_srv.request.param7 = map_T_target_in_ned.pose.position.z;
   }
+  ROS_INFO("Center: %s for orbit", ToString(*map_T_target).c_str());
+  const auto map_T_target_in_ned = px4_ned_T_map(*map_T_target);
+  ROS_INFO("Center: %s for orbit", ToString(map_T_target_in_ned).c_str());
+  orbit_srv.request.param5 = map_T_target_in_ned.pose.position.x;
+  orbit_srv.request.param6 = map_T_target_in_ned.pose.position.y;
+  orbit_srv.request.param7 = map_T_target_in_ned.pose.position.z;
 
   // Orbit in local NED frame.
   orbit_srv.request.param4 = kLocalNedFrame;
@@ -380,6 +373,7 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   while (ros::ok() && base_not_moving_cnt <= kBaseChangeAcceptanceThreshold) {
     if (base_not_moving()) {
       base_not_moving_cnt++;
+      ROS_INFO("Base not moving count: %d", base_not_moving_cnt);
     }
     if (ros::Time::now() >= orbit_end_timeout) {
       timed_out = true;
@@ -396,6 +390,30 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   }
   // Transition back to auto loiter mode.
   return wait_for_mode(kAutoLoiterMode);
+}
+
+std::optional<geometry_msgs::PoseStamped> QuadManipulator::target_in_map(
+    const geometry_msgs::PoseStamped &target_pose) {
+  // If no source frame is specified, assume it is in map frame.
+  std::string source_frame = target_pose.header.frame_id;
+  if (source_frame == "") {
+    source_frame = map_frame_;
+  }
+
+  std::string err_msg;
+  if (!tf_buffer_->canTransform(map_frame_, source_frame, ros::Time(0), &err_msg)) {
+    ROS_ERROR("Could not transform from %s to %s: %s", source_frame.c_str(), map_frame_.c_str(), err_msg.c_str());
+    return std::nullopt;
+  }
+  geometry_msgs::TransformStamped map_T_source = tf_buffer_->lookupTransform(map_frame_, source_frame, ros::Time(0));
+  Eigen::Affine3d map_T_source_eigen, source_T_target_eigen;
+  tf::transformMsgToEigen(map_T_source.transform, map_T_source_eigen);
+  tf::poseMsgToEigen(target_pose.pose, source_T_target_eigen);
+  const Eigen::Affine3d map_T_target_eigen = map_T_source_eigen * source_T_target_eigen;
+  geometry_msgs::PoseStamped map_T_target;
+  tf::poseEigenToMsg(map_T_target_eigen, map_T_target.pose);
+  map_T_target.header.frame_id = map_frame_;
+  return map_T_target;
 }
 
 bool QuadManipulator::go_to_home() {

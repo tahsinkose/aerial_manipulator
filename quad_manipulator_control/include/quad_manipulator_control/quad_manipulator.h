@@ -173,6 +173,13 @@ class QuadManipulator {
    */
   bool base_not_moving();
 
+  /**
+   * @brief Transforms the @p target_pose into map frame.
+   * @param target_pose Target pose in any expressible frame wrt. map frame.
+   * @returns geometry_msgs::PoseStamped in map frame if it was possible to transform, std::nullopt otherwise.
+   */
+  std::optional<geometry_msgs::PoseStamped> target_in_map(const geometry_msgs::PoseStamped &target_pose);
+
  private:
   mavros_msgs::State current_state_;
   geometry_msgs::PoseStamped local_pose_;
