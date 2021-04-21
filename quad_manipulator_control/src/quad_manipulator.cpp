@@ -3,7 +3,6 @@
 
 #include <eigen_conversions/eigen_msg.h>
 #include <mavros_msgs/CommandLong.h>
-#include <mavros_msgs/WaypointPush.h>
 #include <tf/transform_listener.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <vector>
@@ -18,7 +17,6 @@ constexpr double kDefaultLandingAltitude = 1.5;  // in meters
 constexpr double kJointTolerance = 1e-2;         // in rad.
 constexpr double kLinearVelTolerance = 1e-2;     // in meters
 constexpr double kAngularVelTolerance = 3e-2;    // in rad
-constexpr const int kBaseChangeAcceptanceThreshold = 5;
 const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",          "ALTCTL",    "POSCTL",
                                                  kOffboardMode,   kStabilizedMode, "RATTITUDE", kAutoMissionMode,
                                                  kAutoLoiterMode, "AUTO.TAKEOFF",  "AUTO.RTL",  "AUTO.LAND",
@@ -37,6 +35,8 @@ QuadManipulator::QuadManipulator() {
                                                                   &QuadManipulator::local_pose_cb, this);
   mav_local_vel_sub_ = nh_.subscribe<geometry_msgs::TwistStamped>("mavros/local_position/velocity_local", 100,
                                                                   &QuadManipulator::local_vel_cb, this);
+  orbit_execution_state_sub_ =
+      nh_.subscribe<mavros_msgs::OrbitStatus>("mavros/orbit_status/execution", 1, &QuadManipulator::orbit_state_cb, this);
   // These are all we need for now.
   for (const auto &jn : kArmJointNames) {
     joint_states_[jn] = 0.0;
@@ -87,6 +87,10 @@ void QuadManipulator::joint_states_cb(const sensor_msgs::JointState::ConstPtr &m
     }
   }
   ROS_DEBUG("Updated joint states: %s", ToString(joint_states_).c_str());
+}
+
+void QuadManipulator::orbit_state_cb(const mavros_msgs::OrbitStatus::ConstPtr &msg) {
+  orbit_state_ = msg->state;
 }
 
 bool QuadManipulator::wait_for_connection(const ros::WallDuration &timeout) {
@@ -348,12 +352,8 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
 
   bool timed_out = false;
   ros::Rate rate(20.0);
-  ros::Time orbit_start_timeout = ros::Time::now() + ros::Duration(100);
-  int base_moving_cnt = 0;
-  while (ros::ok() && base_moving_cnt <= kBaseChangeAcceptanceThreshold) {
-    if (!base_not_moving()) {
-      base_moving_cnt++;
-    }
+  ros::Time orbit_start_timeout = ros::Time::now() + ros::Duration(30);
+  while (ros::ok() && orbit_state_ != mavros_msgs::OrbitStatus::ORBIT_EXECUTION_STATE_STARTED) {
     if (ros::Time::now() >= orbit_start_timeout) {
       timed_out = true;
       break;
@@ -369,12 +369,7 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   }
   ros::Time orbit_end_timeout = ros::Time::now() + ros::Duration(100);
   // Poll until base is stabilized or timeout
-  int base_not_moving_cnt = 0;
-  while (ros::ok() && base_not_moving_cnt <= kBaseChangeAcceptanceThreshold) {
-    if (base_not_moving()) {
-      base_not_moving_cnt++;
-      ROS_INFO("Base not moving count: %d", base_not_moving_cnt);
-    }
+  while (ros::ok() && orbit_state_ != mavros_msgs::OrbitStatus::ORBIT_EXECUTION_STATE_FINISHED) {
     if (ros::Time::now() >= orbit_end_timeout) {
       timed_out = true;
       break;
@@ -388,6 +383,7 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   } else {
     ROS_INFO("Base has stabilized!");
   }
+  orbit_state_ = std::nullopt;
   // Transition back to auto loiter mode.
   return wait_for_mode(kAutoLoiterMode);
 }

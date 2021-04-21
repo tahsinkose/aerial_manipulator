@@ -7,6 +7,7 @@
 #include <mavros_msgs/CommandTOL.h>
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/State.h>
+#include <mavros_msgs/OrbitStatus.h>
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 #include <tf2_ros/buffer.h>
@@ -117,6 +118,12 @@ class QuadManipulator {
   void local_vel_cb(const geometry_msgs::TwistStamped::ConstPtr &msg);
 
   /**
+   * @brief Receives the execution state of orbit action.
+   * @param msg mavros_msgs::OrbitStatus message representing the current execution state of the vehicle on orbit.
+   */
+  void orbit_state_cb(const mavros_msgs::OrbitStatus::ConstPtr &msg);
+
+  /**
    * @brief Receives the joint states of the robot.
    */
   void joint_states_cb(const sensor_msgs::JointState::ConstPtr &msg);
@@ -185,19 +192,22 @@ class QuadManipulator {
   geometry_msgs::PoseStamped local_pose_;
   geometry_msgs::TwistStamped local_velocity_;
   std::map<std::string, double> joint_states_;
+  std::optional<mavros_msgs::OrbitStatus::_state_type> orbit_state_;
 
   ros::NodeHandle nh_;
   ros::Subscriber mav_state_sub_;
   ros::Subscriber mav_local_pose_sub_;
   ros::Subscriber mav_local_vel_sub_;
   ros::Subscriber joint_states_sub_;
+  ros::Subscriber orbit_execution_state_sub_;
 
-  ros::Publisher local_pos_pub_;
+
   ros::ServiceClient arming_client_;
   ros::ServiceClient set_mode_client_;
   ros::ServiceClient landing_client_;
   ros::ServiceClient command_client_;
 
+  ros::Publisher local_pos_pub_;
   ros::Publisher arm_control_pub_;
   ros::Publisher hand_control_pub_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
