@@ -33,11 +33,6 @@ add_compile_options(
   -Werror
   -pedantic
 )
-
-
-#add_executable(manipulator_velocity_node src/sandbox/manipulator_velocity_node.cpp)
-#target_link_libraries(manipulator_velocity_node ${catkin_LIBRARIES})
-
 add_library(quad_manipulator src/quad_manipulator.cpp src/utils.cpp)
 target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 
