@@ -61,8 +61,6 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   ROS_INFO("Returning home...");
   ASSERT_TRUE(quad_manip.go_to_home()) << "Could not go to home: ";
   ROS_INFO("Returned home!");
-  ASSERT_TRUE(quad_manip.motor_arm(false)) << "Robot could not be armed.";
-  ROS_INFO("Robot disarmed!");
   ROS_INFO("Finished simple orchard patrol test successfully!");
 }
 
