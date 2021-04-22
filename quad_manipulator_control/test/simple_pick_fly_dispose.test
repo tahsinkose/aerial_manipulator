@@ -2,17 +2,17 @@
 <launch>
   <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
     <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/workout.world"/>
-    <arg name="use_plot_juggler" value="false"/>
+    <arg name="use_plot_juggler" value="true"/>
   </include>
   <group ns="uav1">
       <include file="$(find quad_manipulator_gazebo)/launch/internal/bringup.launch" >
           <arg name="tf_prefix" value="uav1" />
           <arg name="x" value="0.0" />
           <arg name="y" value="0.0" />
-          <arg name="yaw" value="0.0" />
+          <arg name="yaw" value="1.57" />
           <arg name="use_zero_noise_model" value="true"/>
       </include>
-       <test test-name="test_simple_pick_fly_dispose" pkg="quad_manipulator_control" type="test_simple_pick_fly_dispose"
+      <test test-name="test_simple_pick_fly_dispose" pkg="quad_manipulator_control" type="test_simple_pick_fly_dispose"
           time-limit="360.0"/>
   </group>
 </launch>
