@@ -18,7 +18,6 @@ TEST(QuadManipulatorTest, SimplePickFlyDispose) {
   // 1 - Connect
   ROS_INFO("Connecting...");
   ASSERT_TRUE(quad_manip.wait_for_connection()) << "Robot could connect to PX4 board";
-  ASSERT_TRUE(quad_manip.motor_arm(true)) << "Robot could not be armed";
   // 2 - Pick
   ROS_INFO("Picking apple...");
   ASSERT_TRUE(quad_manip.open_gripper()) << "Robot could not open grippers";
@@ -33,6 +32,7 @@ TEST(QuadManipulatorTest, SimplePickFlyDispose) {
 
   ASSERT_TRUE(quad_manip.close_gripper()) << "Robot could not open grippers";
   // 3 - Fly
+  ASSERT_TRUE(quad_manip.motor_arm(true)) << "Robot could not be armed";
   ROS_INFO("Takeoff...");
   ASSERT_TRUE(quad_manip.takeoff()) << "Robot could not takeoff";
 
@@ -62,7 +62,7 @@ TEST(QuadManipulatorTest, SimplePickFlyDispose) {
   ROS_INFO("Landing...");
   ASSERT_TRUE(quad_manip.land()) << "Could not landed";
   ROS_INFO("Returned home!");
-  ASSERT_TRUE(quad_manip.motor_arm(false)) << "Robot could not be armed.";
+  ASSERT_TRUE(quad_manip.motor_arm(false)) << "Robot could not be disarmed.";
   ROS_INFO("Robot disarmed!");
 }
 
