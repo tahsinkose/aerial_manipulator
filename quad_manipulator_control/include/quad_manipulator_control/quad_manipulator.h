@@ -5,6 +5,7 @@
 #include <geometry_msgs/TwistStamped.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/CommandTOL.h>
+#include <mavros_msgs/ExtendedState.h>
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/State.h>
 #include <mavros_msgs/OrbitStatus.h>
@@ -104,6 +105,12 @@ class QuadManipulator {
   void state_cb(const mavros_msgs::State::ConstPtr &msg);
 
   /**
+   * @brief Receives extended state information of the robot, e.g. landed, vtol.
+   * @param msg mavros_msgs::ExtendedState message representing the extended robot state.
+   */
+  void extended_state_cb(const mavros_msgs::ExtendedState::ConstPtr &msg);
+
+  /**
    * @brief Receives the pose of the robot in local coordinate frame.
    * @param msg geometry_msgs::PoseStamped message representing the pose of the
    * robot in local coordinate frame.
@@ -189,6 +196,7 @@ class QuadManipulator {
 
  private:
   mavros_msgs::State current_state_;
+  mavros_msgs::ExtendedState extended_current_state_;
   geometry_msgs::PoseStamped local_pose_;
   geometry_msgs::TwistStamped local_velocity_;
   std::map<std::string, double> joint_states_;
@@ -196,6 +204,7 @@ class QuadManipulator {
 
   ros::NodeHandle nh_;
   ros::Subscriber mav_state_sub_;
+  ros::Subscriber extended_state_sub_;
   ros::Subscriber mav_local_pose_sub_;
   ros::Subscriber mav_local_vel_sub_;
   ros::Subscriber joint_states_sub_;

@@ -32,12 +32,14 @@ constexpr const char *kMapFrame = "map";
 
 QuadManipulator::QuadManipulator() {
   mav_state_sub_ = nh_.subscribe<mavros_msgs::State>("mavros/state", 10, &QuadManipulator::state_cb, this);
+  extended_state_sub_ =
+      nh_.subscribe<mavros_msgs::ExtendedState>("mavros/extended_state", 10, &QuadManipulator::extended_state_cb, this);
   mav_local_pose_sub_ = nh_.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 100,
                                                                   &QuadManipulator::local_pose_cb, this);
   mav_local_vel_sub_ = nh_.subscribe<geometry_msgs::TwistStamped>("mavros/local_position/velocity_local", 100,
                                                                   &QuadManipulator::local_vel_cb, this);
-  orbit_execution_state_sub_ =
-      nh_.subscribe<mavros_msgs::OrbitStatus>("mavros/orbit_status/execution", 1, &QuadManipulator::orbit_state_cb, this);
+  orbit_execution_state_sub_ = nh_.subscribe<mavros_msgs::OrbitStatus>("mavros/orbit_status/execution", 1,
+                                                                       &QuadManipulator::orbit_state_cb, this);
   // These are all we need for now.
   for (const auto &jn : kArmJointNames) {
     joint_states_[jn] = 0.0;
@@ -68,6 +70,10 @@ QuadManipulator::QuadManipulator() {
 void QuadManipulator::state_cb(const mavros_msgs::State::ConstPtr &msg) {
   current_state_ = *msg;
   ROS_DEBUG("Received current state with mode %s", msg->mode.c_str());
+}
+
+void QuadManipulator::extended_state_cb(const mavros_msgs::ExtendedState::ConstPtr &msg) {
+  extended_current_state_ = *msg;
 }
 
 void QuadManipulator::local_pose_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
@@ -147,13 +153,12 @@ bool QuadManipulator::land() {
   bool success = landing_client_.call(srv_land) && srv_land.response.success;
   if (success) {
     ros::Rate rate(10.0);
-    while (!base_not_moving()) {
+    while (ros::ok() && extended_current_state_.landed_state != mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND) {
       rate.sleep();
       ros::spinOnce();
     }
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
