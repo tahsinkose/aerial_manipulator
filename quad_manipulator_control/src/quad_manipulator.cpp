@@ -14,6 +14,7 @@ constexpr const char *kAutoMissionMode = "AUTO.MISSION";
 constexpr const char *kStabilizedMode = "STABILIZED";
 constexpr double kDefaultTakeoffAltitude = 1.5;  // in meters.
 constexpr double kDefaultLandingAltitude = 1.5;  // in meters
+constexpr double kDefaultRTLAltitude = 5.0; // in meters
 constexpr double kJointTolerance = 1e-2;         // in rad.
 constexpr double kLinearVelTolerance = 1e-2;     // in meters
 constexpr double kAngularVelTolerance = 3e-2;    // in rad
@@ -143,15 +144,21 @@ bool QuadManipulator::takeoff() {
 
 bool QuadManipulator::land() {
   mavros_msgs::CommandTOL srv_land;
-  return landing_client_.call(srv_land) && srv_land.response.success;
+  bool success = landing_client_.call(srv_land) && srv_land.response.success;
+  if (success) {
+    ros::Rate rate(10.0);
+    while (!base_not_moving()) {
+      rate.sleep();
+      ros::spinOnce();
+    }
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance) {
-  // Make sure we are in offboard mode.
-  if (!wait_for_mode(kOffboardMode)) {
-    return false;
-  }
-
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   double dist = DBL_MAX;
@@ -160,8 +167,15 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
     return false;
   }
   ROS_INFO("Going to pose: %s", ToString(*map_T_target).c_str());
+  for (int i = 0; i < 100; i++) {
+    local_pos_pub_.publish(*map_T_target);
+  }
+  // Make sure we are in offboard mode.
+  if (!wait_for_mode(kOffboardMode)) {
+    return false;
+  }
   do {
-    local_pos_pub_.publish(target_pose);
+    local_pos_pub_.publish(*map_T_target);
 
     ros::spinOnce();
     rate.sleep();
@@ -173,22 +187,18 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
   if (!ros::ok()) {
     return false;
   }
-
-  // Transition back to auto loiter mode.
-  return wait_for_mode(kAutoLoiterMode);
+  return true;
 }
 
 bool QuadManipulator::wait_for_mode(const std::string &mode, uint8_t base_mode, const ros::Duration &timeout) {
-  if (std::find(kValidFlightModes.begin(), kValidFlightModes.end(), mode) == kValidFlightModes.end()) {
-    ROS_ERROR("Unknown flight mode %s. Failing!", mode.c_str());
-    return false;
-  }
-
   if (current_state_.mode == mode) {
     ROS_INFO("Robot is already in %s mode", mode.c_str());
     return true;
   }
-
+  if (std::find(kValidFlightModes.begin(), kValidFlightModes.end(), mode) == kValidFlightModes.end()) {
+    ROS_ERROR("Unknown flight mode %s. Failing!", mode.c_str());
+    return false;
+  }
   mavros_msgs::SetMode set_mode;
   set_mode.request.base_mode = base_mode;
   set_mode.request.custom_mode = mode;
@@ -414,11 +424,15 @@ std::optional<geometry_msgs::PoseStamped> QuadManipulator::target_in_map(
 
 bool QuadManipulator::go_to_home() {
   geometry_msgs::PoseStamped map_T_home;
-  map_T_home.pose.position.x = 0;
-  map_T_home.pose.position.y = 0;
-  map_T_home.pose.position.z = kDefaultLandingAltitude;
+  map_T_home.pose.position.x = local_pose_.pose.position.x;
+  map_T_home.pose.position.y = local_pose_.pose.position.y;
+  map_T_home.pose.position.z = kDefaultRTLAltitude;
+  map_T_home.pose.orientation = local_pose_.pose.orientation;
   map_T_home.header.frame_id = map_frame_;
   bool success = move_base(map_T_home);
+  map_T_home.pose.position.x = 0;
+  map_T_home.pose.position.y = 0;
+  success &= move_base(map_T_home);
   success &= land();
   return success;
 }

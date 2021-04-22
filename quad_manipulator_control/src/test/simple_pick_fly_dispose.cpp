@@ -37,9 +37,13 @@ TEST(QuadManipulatorTest, SimplePickFlyDispose) {
   ASSERT_TRUE(quad_manip.takeoff()) << "Robot could not takeoff";
 
   geometry_msgs::PoseStamped target_pose;
-  target_pose.pose.position.x = -7.9;
-  target_pose.pose.position.y = 7.9;
+  target_pose.pose.position.x = -8.0;
+  target_pose.pose.position.y = 8.0;
   target_pose.pose.position.z = 1.02;
+  target_pose.pose.orientation.w = 0.707;
+  target_pose.pose.orientation.x = 0.0;
+  target_pose.pose.orientation.y = 0.0;
+  target_pose.pose.orientation.z = 0.707;
   ASSERT_TRUE(quad_manip.move_base(target_pose, distance_tolerance))
       << "Could not move to target pose: " << ToString(target_pose);
   // 4 - Dispose.
@@ -51,19 +55,9 @@ TEST(QuadManipulatorTest, SimplePickFlyDispose) {
   ASSERT_TRUE(quad_manip.move_manip(kArmZero)) << "Robot could not move the arm to desired configuration.";
   ROS_INFO("Disposal finished!");
 
-  geometry_msgs::PoseStamped home_pose;
-  home_pose.pose.position.x = 0;
-  home_pose.pose.position.y = 0;
-  home_pose.pose.position.z = 2.0;
   ROS_INFO("Returning home...");
-  ASSERT_TRUE(quad_manip.move_base(home_pose, distance_tolerance))
-      << "Could not move to home pose: " << ToString(home_pose).c_str();
-
-  ROS_INFO("Landing...");
-  ASSERT_TRUE(quad_manip.land()) << "Could not landed";
+  ASSERT_TRUE(quad_manip.go_to_home()) << "Could not go to home";
   ROS_INFO("Returned home!");
-  ASSERT_TRUE(quad_manip.motor_arm(false)) << "Robot could not be disarmed.";
-  ROS_INFO("Robot disarmed!");
 }
 
 int main(int argc, char **argv) {

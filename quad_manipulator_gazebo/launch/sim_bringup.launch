@@ -6,8 +6,8 @@
       <arg name="tf_prefix" value="uav1" />
       <arg name="x" value="0.0" />
       <arg name="y" value="0.0" />
-      <arg name="yaw" value="0.0" />
-      <arg name="use_zero_noise_model" value="false"/>
+      <arg name="yaw" value="1.57" />
+      <arg name="use_zero_noise_model" value="true"/>
     </include>
   </group>
 </launch>
