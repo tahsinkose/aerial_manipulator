@@ -13,6 +13,8 @@
 
   <!-- base_link -->
   <gazebo reference="base_link">
+    <mu1>1.5</mu1>
+    <mu2>1.5</mu2>
     <material>Gazebo/Orange</material>
   </gazebo>
 
@@ -173,8 +175,8 @@
     </plugin>
     <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
       <pubRate>100</pubRate>
-      <noiseDensity>0.0004</noiseDensity>
-      <randomWalk>6.4e-06</randomWalk>
+      <noiseDensity>0.004</noiseDensity>
+      <randomWalk>6.4e-05</randomWalk>
       <biasCorrelationTime>600</biasCorrelationTime>
       <magTopic>mag</magTopic>
     </plugin>
