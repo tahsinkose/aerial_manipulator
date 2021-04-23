@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
+    <arg name="use_plot_juggler" value="false"/>
+  </include>
+  <group ns="uav1">
+    <include file="$(find quad_manipulator_gazebo)/launch/internal/bringup.launch">
+      <arg name="tf_prefix" value="uav1" />
+      <arg name="x" value="0.0" />
+      <arg name="y" value="0.0" />
+      <arg name="yaw" value="1.57" />
+      <arg name="use_zero_noise_model" value="true"/>
+    </include>
+    <node name="general_orchard_patrol" pkg="quad_manipulator_control" type="general_orchard_patrol"
+       output="screen"/>
+  </group>
+  <rosparam file="$(find quad_manipulator_gazebo)/cfg/patrol.yaml" command="load"/>
+</launch>

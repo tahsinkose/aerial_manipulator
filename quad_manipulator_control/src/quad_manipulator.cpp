@@ -431,7 +431,7 @@ bool QuadManipulator::go_to_home() {
   geometry_msgs::PoseStamped map_T_home;
   map_T_home.pose.position.x = local_pose_.pose.position.x;
   map_T_home.pose.position.y = local_pose_.pose.position.y;
-  map_T_home.pose.position.z = kDefaultRTLAltitude;
+  map_T_home.pose.position.z = local_pose_.pose.position.z + kDefaultRTLAltitude;
   map_T_home.pose.orientation = local_pose_.pose.orientation;
   map_T_home.header.frame_id = map_frame_;
   bool success = move_base(map_T_home);

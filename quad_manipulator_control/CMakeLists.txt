@@ -36,6 +36,9 @@ add_compile_options(
 add_library(quad_manipulator src/quad_manipulator.cpp src/utils.cpp)
 target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 
+add_executable(general_orchard_patrol src/general_orchard_patrol.cpp)
+target_link_libraries(general_orchard_patrol quad_manipulator)
+
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest_gtest(test_simple_pick_fly_dispose test/simple_pick_fly_dispose.test
