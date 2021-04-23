@@ -14,6 +14,7 @@ from gazebo_msgs.msg import ModelStates
 from geometry_msgs.msg import Vector3, Pose
 APPLE_TREE_TYPE_1 = "apple_tree"
 APPLE_TREE_TYPE_2 = "apple_tree_2"
+DETECTION_TOLERANCE = 0.12
 
 class TracePoints():
     def __init__(self, topic="debug_points", frame_id="earth"):
@@ -73,7 +74,7 @@ class OrchardReco():
         self.load_trees(APPLE_TREE_TYPE_1, self.type_1_trees)
         self.load_trees(APPLE_TREE_TYPE_2, self.type_2_trees)
         self.publish_marker_traces()
-        self.sub = rospy.Subscriber("/detections", Detections, self.handle_detection)
+        self.sub = rospy.Subscriber("detections", Detections, self.handle_detection)
 
     def load_trees(self, tree_type, tree_holder):
       models_dir = rospy.get_param('~models_dir')
@@ -121,7 +122,7 @@ class OrchardReco():
 
             pos = np.array([x, y, z])
             dists = np.sqrt(np.sum((self.fruits['positions'] - pos) ** 2, axis=1))
-            match = np.argmax(dists < 0.12)
+            match = np.argmax(dists < DETECTION_TOLERANCE)
             if match >= 0:
                 self.id_matched_fruit_markers.add(self.fruits['ids'][match])
 
