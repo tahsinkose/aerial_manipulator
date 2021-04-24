@@ -3,7 +3,7 @@
   <!-- gazebo configs -->
   <arg name="debug" default="false"/>
   <arg name="verbose" default="true"/>
-  <arg name="paused" default="false"/>
+  <arg name="paused" default="true"/>
   <arg name="use_plot_juggler" default="true"/>
   <arg name="world" default="$(find quad_manipulator_gazebo)/worlds/empty.world"/>
   <!-- Gazebo sim -->
@@ -12,7 +12,7 @@
       <arg name="world_name" value="$(arg world)"/>
       <arg name="debug" value="$(arg debug)"/>
       <arg name="verbose" value="$(arg verbose)"/>
-      <arg name="paused" value="true"/>
+      <arg name="paused" value="$(arg paused)"/>
       <arg name="respawn_gazebo" value="false"/>
       <arg name="output" value="log"/>
   </include>
