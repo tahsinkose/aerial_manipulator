@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <launch>
-<!-- Rosbag recording -->
-  <node pkg="rosbag" type="record" name="rosbag_record_cam"
+  <node pkg="rosbag" type="record" name="record_quad_manip_reco"
         args="record -o $(find quad_manipulator_gazebo)/recording.bag
         /uav1/camera/color/image_raw /uav1/camera/color/camera_info
-        /uav1/camera/depth/points /tf"
+        /uav1/camera/depth/points /orchard/plants /orchard/fruits /orchard/detections /tf"
         required="true">
   </node>
 </launch>

@@ -45,10 +45,7 @@ class TracePoints():
         a = 255
         rgb = struct.unpack('I', struct.pack('BBBB', b, g, r, a))[0]
         pt = [point.x, point.y, point.z, rgb]
-        if position_hint >= 0:
-            self.points[position_hint] = pt
-        else:
-            self.points.append(pt)
+        self.points.append(pt)
         return len(self.points) - 1
 
     def publish(self):
@@ -157,6 +154,6 @@ if __name__ == '__main__':
     rate = rospy.Rate(2)
     while not rospy.is_shutdown():
         orchard_ground_truth.update_marker_traces()
-        rospy.loginfo('Number of detected fruits: %d\nTotal number of fruits: %d\nTotal number of detections: %d' % (
+        rospy.loginfo('Detected: %d - Total : %d - Detection attempts: %d' % (
             len(orchard_ground_truth.id_matched_fruit_markers), len(orchard_ground_truth.fruits), len(orchard_ground_truth.tp_detections.points)))
         rate.sleep()

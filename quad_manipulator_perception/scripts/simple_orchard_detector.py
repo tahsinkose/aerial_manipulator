@@ -15,7 +15,7 @@ from quad_manipulator_msgs.msg import Detection, Detections
 IMAGE_TOPIC = '/uav1/rgbd_camera/color/image_raw'
 DEPTH_TOPIC = '/uav1/rgbd_camera/depth/points'
 DETECTIONS_TOPIC = '/detections'
-MAX_DETECTION_DISTANCE = 1.5
+MAX_DETECTION_DISTANCE = 2.0
 
 class MatchingMessageBuffer():
     def __init__(self):
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     orchard_detector = OrchardDetector()
     rospy.loginfo('Initialized orchard detector!')
     rate = rospy.Rate(10)
-    rospy.sleep(rospy.Duration(2.0))
+    rospy.sleep(rospy.Duration(12.0))
     while not rospy.is_shutdown():
         orchard_detector.detect()
         rate.sleep()

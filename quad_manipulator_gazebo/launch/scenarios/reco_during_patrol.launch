@@ -4,4 +4,5 @@
     <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/apple_garden_perception_testbed.world"/>
    </include>
    <include file="$(find quad_manipulator_perception)/launch/fruit_detection.launch"/>
+   <include file="$(find quad_manipulator_gazebo)/launch/internal/bag_record.launch"/>
 </launch>
