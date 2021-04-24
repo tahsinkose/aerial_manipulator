@@ -8,7 +8,7 @@ import struct
 from sensor_msgs.msg import PointCloud2, PointField
 from sensor_msgs import point_cloud2 as pc2
 from std_msgs.msg import Header
-from fields_ignition_msgs.msg import Detections
+from quad_manipulator_msgs.msg import Detections
 from gazebo_msgs.srv import GetModelState
 from gazebo_msgs.msg import ModelStates
 from geometry_msgs.msg import Vector3, Pose
@@ -51,7 +51,7 @@ class TracePoints():
 
 
 
-class OrchardReco():
+class OrchardGroundTruth():
     def __init__(self):
         self.tp_fruits = TracePoints('/orchard/fruits')
         self.tp_plants = TracePoints('/orchard/plants')
@@ -129,9 +129,9 @@ class OrchardReco():
         self.update_marker_traces()
 
 if __name__=='__main__':
-    rospy.init_node('orchard_reco_manager')
-    orchard_reco = OrchardReco()
+    rospy.init_node('orchard_ground_truth_manager')
+    orchard_ground_truth = OrchardGroundTruth()
     rate = rospy.Rate(2)
     while not rospy.is_shutdown():
-        orchard_reco.publish_marker_traces()
+        orchard_ground_truth.publish_marker_traces()
         rate.sleep()

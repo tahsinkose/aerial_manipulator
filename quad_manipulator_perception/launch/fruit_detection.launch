@@ -2,6 +2,7 @@
 <launch>
   <arg name="models_dir" value="$(find quad_manipulator_gazebo)/Media/models" />
   <node name="orchard_ground_truth" pkg="quad_manipulator_perception" type="orchard_ground_truth.py" output="screen">
-      <param name="models_dir" value="$(arg models_dir)" />
+    <param name="models_dir" value="$(arg models_dir)" />
   </node>
+  <node name="orchard_detector" pkg="quad_manipulator_perception" type="simple_orchard_detector.py" output="screen"/>
 </launch>
