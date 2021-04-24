@@ -49,33 +49,26 @@ int main(int argc, char **argv) {
   }
 
   // 3 - Orbit around trees, lower halves
-  for (const std::pair<double, double> &tree_pose : trees_to_visit) {
-    geometry_msgs::PoseStamped earth_T_tree;
-    earth_T_tree.header.frame_id = "earth";
-    earth_T_tree.pose.position.x = tree_pose.first;
-    earth_T_tree.pose.position.y = tree_pose.second;
-    earth_T_tree.pose.position.z = 1.25;
-    ROS_INFO("Orbitting around %s...", ToString(earth_T_tree).c_str());
-    if (!quad_manip.orbit_around(earth_T_tree, kTreeOrbitRadius, kTreeOrbitVelocity)) {
-      ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
+  const std::vector<double> orbit_heights{1.2, 2.5};
+  for (const double &orbit_height : orbit_heights) {
+    for (const std::pair<double, double> &tree_pose : trees_to_visit) {
+      geometry_msgs::PoseStamped earth_T_tree;
+      earth_T_tree.header.frame_id = "earth";
+      earth_T_tree.pose.position.x = tree_pose.first;
+      earth_T_tree.pose.position.y = tree_pose.second;
+      earth_T_tree.pose.position.z = orbit_height;
+      ROS_INFO("Orbitting around %s...", ToString(earth_T_tree).c_str());
+      if (!quad_manip.orbit_around(earth_T_tree, kTreeOrbitRadius, kTreeOrbitVelocity)) {
+        ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
+        return -1;
+      }
+    }
+    ROS_INFO("Finished orbit");
+    if (!quad_manip.go_to_home()) {
+      ROS_ERROR("Could not go to home");
+      return -1;
     }
   }
-  // 4 - Orbit around trees, upper halves
-  for (const std::pair<double, double> &tree_pose : trees_to_visit) {
-    geometry_msgs::PoseStamped earth_T_tree;
-    earth_T_tree.header.frame_id = "earth";
-    earth_T_tree.pose.position.x = tree_pose.first;
-    earth_T_tree.pose.position.y = tree_pose.second;
-    earth_T_tree.pose.position.z = 2.5;
-    ROS_INFO("Orbitting around %s...", ToString(earth_T_tree).c_str());
-    if (!quad_manip.orbit_around(earth_T_tree, kTreeOrbitRadius, kTreeOrbitVelocity)) {
-      ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
-    }
-  }
-  ROS_INFO("Finished orbit");
-  if (!quad_manip.go_to_home()) {
-    ROS_ERROR("Could not go to home");
-    return -1;
-  }
+
   return 0;
 }

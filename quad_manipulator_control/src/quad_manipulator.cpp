@@ -153,7 +153,7 @@ bool QuadManipulator::land() {
   bool success = landing_client_.call(srv_land) && srv_land.response.success;
   if (success) {
     ros::Rate rate(10.0);
-    while (ros::ok() && extended_current_state_.landed_state != mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND) {
+    while (ros::ok() && !is_landed()) {
       rate.sleep();
       ros::spinOnce();
     }
@@ -161,6 +161,10 @@ bool QuadManipulator::land() {
   } else {
     return false;
   }
+}
+
+bool QuadManipulator::is_landed() {
+  return extended_current_state_.landed_state == mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND;
 }
 
 bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance) {
@@ -334,6 +338,15 @@ bool QuadManipulator::move_manip(const std::vector<double> &desired) {
 
 bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, double orbit_radius,
                                    double velocity_during_orbit) {
+  if (is_landed()) {
+    ROS_WARN("Robot seems to be landed on ground. Need to takeoff first..");
+    bool took_off = takeoff();
+    if(!took_off){
+      ROS_ERROR("Failed to takeoff before orbit. Failing!");
+      return false;
+    }
+    ROS_INFO("Prerequisite takeoff successful for orbitting.");
+  }
   mavros_msgs::CommandLong orbit_srv;
   orbit_srv.request.broadcast = false;
   orbit_srv.request.command = kMavOrbitCmd;

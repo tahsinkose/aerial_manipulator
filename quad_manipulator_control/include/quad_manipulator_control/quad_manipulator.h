@@ -194,6 +194,11 @@ class QuadManipulator {
    */
   std::optional<geometry_msgs::PoseStamped> target_in_map(const geometry_msgs::PoseStamped &target_pose);
 
+  /**
+   * @brief Returns landed status of the robot
+   */
+  bool is_landed();
+
  private:
   mavros_msgs::State current_state_;
   mavros_msgs::ExtendedState extended_current_state_;
