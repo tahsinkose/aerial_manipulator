@@ -12,14 +12,20 @@ from quad_manipulator_msgs.msg import Detections
 from gazebo_msgs.srv import GetModelState
 from gazebo_msgs.msg import ModelStates
 from geometry_msgs.msg import Vector3, Pose
+from recordtype import recordtype
+
+Fruit = recordtype("Fruit", "position id detected distance tp_id")
+
 APPLE_TREE_TYPE_1 = "apple_tree"
 APPLE_TREE_TYPE_2 = "apple_tree_2"
-DETECTION_TOLERANCE = 0.12
+DETECTION_TOLERANCE = 0.02
+
 
 class TracePoints():
     def __init__(self, topic="debug_points", frame_id="earth"):
         self.topic = topic
-        self.publisher = rospy.Publisher(self.topic, PointCloud2, queue_size=10)
+        self.publisher = rospy.Publisher(
+            self.topic, PointCloud2, queue_size=10)
         self.frame_id = frame_id
 
         self.fields = [PointField('x', 0, PointField.FLOAT32, 1),
@@ -39,16 +45,23 @@ class TracePoints():
         a = 255
         rgb = struct.unpack('I', struct.pack('BBBB', b, g, r, a))[0]
         pt = [point.x, point.y, point.z, rgb]
-        self.points.append(pt)
+        if position_hint >= 0:
+            self.points[position_hint] = pt
+        else:
+            self.points.append(pt)
+        return len(self.points) - 1
 
     def publish(self):
-        rospy.logdebug('Publishing to %s',self.topic)
-        header = Header()
-        header.frame_id = self.frame_id
-        header.stamp = rospy.Time.now()
-        msg = pc2.create_cloud(header, self.fields, self.points)
-        self.publisher.publish(msg)
-
+        try:
+            rospy.logdebug('Publishing to %s', self.topic)
+            header = Header()
+            header.frame_id = self.frame_id
+            header.stamp = rospy.Time.now()
+            msg = pc2.create_cloud(header, self.fields, self.points)
+            self.publisher.publish(msg)
+        except struct.error as err:
+            rospy.loginfo(
+                'Struct error occured. Ignore this publish %s' % (str(err)))
 
 
 class OrchardGroundTruth():
@@ -57,54 +70,54 @@ class OrchardGroundTruth():
         self.tp_plants = TracePoints('/orchard/plants')
         self.tp_detections = TracePoints('/orchard/detections')
         self.id_matched_fruit_markers = set()
-        self.fruits = {
-            'positions': [],
-            'ids': []
-        }
-        model_states = rospy.wait_for_message('/gazebo/model_states', ModelStates)
-        self.get_model_state_proxy = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+        self.fruits = []
+        model_states = rospy.wait_for_message(
+            '/gazebo/model_states', ModelStates)
+        self.get_model_state_proxy = rospy.ServiceProxy(
+            '/gazebo/get_model_state', GetModelState)
         self.type_1_trees = []
         self.type_2_trees = []
         # Retrieve tree names
         for mn in model_states.name:
-          if mn.startswith(APPLE_TREE_TYPE_2):
-            self.type_2_trees.append(mn)
-          elif mn.startswith(APPLE_TREE_TYPE_1):
-            self.type_1_trees.append(mn)
+            if mn.startswith(APPLE_TREE_TYPE_2):
+                self.type_2_trees.append(mn)
+            elif mn.startswith(APPLE_TREE_TYPE_1):
+                self.type_1_trees.append(mn)
         self.load_trees(APPLE_TREE_TYPE_1, self.type_1_trees)
         self.load_trees(APPLE_TREE_TYPE_2, self.type_2_trees)
         self.publish_marker_traces()
-        self.sub = rospy.Subscriber("detections", Detections, self.handle_detection)
+        self.sub = rospy.Subscriber(
+            "detections", Detections, self.handle_detection)
 
     def load_trees(self, tree_type, tree_holder):
-      models_dir = rospy.get_param('~models_dir')
-      with open(Path(models_dir) / tree_type / 'markers.json', 'r') as fruit_markers:
-        markers = json.loads(fruit_markers.read())
-        for tree in tree_holder:
-          resp = self.get_model_state_proxy(tree, "link")
-          earth_t_tree = resp.pose.position
-          self.tp_plants.add_point(earth_t_tree, [.3, .1, .3])
-          for fruit_marker in markers:
-            if fruit_marker['marker_type'] == 'FRUIT':
-              earth_t_fruit = Vector3()
-              earth_t_fruit.x = earth_t_tree.x + fruit_marker['translation'][0]
-              earth_t_fruit.y = earth_t_tree.y + fruit_marker['translation'][1]
-              earth_t_fruit.z = earth_t_tree.z + fruit_marker['translation'][2]
-              self.tp_fruits.add_point(earth_t_fruit, [1, .3, .3])
+        models_dir = rospy.get_param('~models_dir')
+        with open(Path(models_dir) / tree_type / 'markers.json', 'r') as markers:
+            fruit_markers = json.loads(markers.read())
+            i = 0
+            for tree in tree_holder:
+                resp = self.get_model_state_proxy(tree, "link")
+                earth_t_tree = resp.pose.position
+                self.tp_plants.add_point(earth_t_tree, [.3, .1, .3])
+                for fruit_marker in fruit_markers:
+                    if fruit_marker['marker_type'] == 'FRUIT':
+                        earth_t_fruit = Vector3()
+                        earth_t_fruit.x = earth_t_tree.x + \
+                            fruit_marker['translation'][0]
+                        earth_t_fruit.y = earth_t_tree.y + \
+                            fruit_marker['translation'][1]
+                        earth_t_fruit.z = earth_t_tree.z + \
+                            fruit_marker['translation'][2]
+                        self.tp_fruits.add_point(earth_t_fruit, [1, .3, .3])
+                        self.fruits.append(
+                            Fruit(position=earth_t_fruit, id=i, detected=False, distance=float('inf'), tp_id=-1))
+                        i += 1
 
     def update_marker_traces(self):
-        self.fruits['positions'] = []
-        self.fruits['ids'] = []
-        for marker in self.markers:
-            if marker['marker_type'] == 'FRUIT':
-                color = [0, 1, 0] if marker['id'] in self.id_matched_fruit_markers else [1, .3, .3]
-                self.tp_fruits.add_point(marker['translation'], color)
-                self.fruits['positions'].append(marker['translation'])
-                self.fruits['ids'].append(marker['id'])
-            elif marker['marker_type'] == 'PLANT':
-                self.tp_plants.add_point(marker['translation'], [.3, .1, .3])
-
-        self.fruits['positions'] = np.array(self.fruits['positions'])
+        self.tp_fruits.reset()
+        for fruit in self.fruits:
+            color = [0, 1, 0] if fruit.id in self.id_matched_fruit_markers else [
+                1, .3, .3]
+            self.tp_fruits.add_point(fruit.position, color)
         self.publish_marker_traces()
 
     def publish_marker_traces(self):
@@ -113,25 +126,37 @@ class OrchardGroundTruth():
         self.tp_detections.publish()
 
     def handle_detection(self, data):
-        self.tp_detections.reset()
         for d in data.detections:
-            x = d.position.pose.position.x
-            y = d.position.pose.position.y
-            z = d.position.pose.position.z
-            self.tp_detections.add_point([x, y, z], [0, 0, 1])
+            earth_t_fruits = np.array(
+                [[f.position.x, f.position.y, f.position.z] for f in self.fruits])
+            earth_t_detection = np.array(
+                [d.position.x, d.position.y, d.position.z])
+            detection_t_fruits = earth_t_fruits - earth_t_detection
+            dists = np.linalg.norm(detection_t_fruits, axis=1)
 
-            pos = np.array([x, y, z])
-            dists = np.sqrt(np.sum((self.fruits['positions'] - pos) ** 2, axis=1))
-            match = np.argmax(dists < DETECTION_TOLERANCE)
+            min_dist_ind = np.argmin(dists)
+            if dists[min_dist_ind] <= DETECTION_TOLERANCE:
+                match = min_dist_ind
+            else:
+                continue
             if match >= 0:
-                self.id_matched_fruit_markers.add(self.fruits['ids'][match])
-
+                if self.fruits[match].detected == False:
+                    tp_id = self.tp_detections.add_point(d.position, [0, 0, 1])
+                    self.fruits[match].tp_id = tp_id
+                    self.fruits[match].distance = dists[match]
+                    self.id_matched_fruit_markers.add(self.fruits[match].id)
+                elif self.fruits[match].distance > dists[match]:
+                    self.tp_detections.add_point(d.position, [0, 0, 1])
+                    self.fruits[match].distance = dists[match]
         self.update_marker_traces()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     rospy.init_node('orchard_ground_truth_manager')
     orchard_ground_truth = OrchardGroundTruth()
     rate = rospy.Rate(2)
     while not rospy.is_shutdown():
-        orchard_ground_truth.publish_marker_traces()
+        orchard_ground_truth.update_marker_traces()
+        rospy.loginfo('Number of detected fruits: %d\nTotal number of fruits: %d\nTotal number of detections: %d' % (
+            len(orchard_ground_truth.id_matched_fruit_markers), len(orchard_ground_truth.fruits), len(orchard_ground_truth.tp_detections.points)))
         rate.sleep()

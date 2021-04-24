@@ -5,5 +5,5 @@
     <arg name="world" value="$(arg world)"/>
   </include>
   <include file="$(find quad_manipulator_gazebo)/launch/internal/spawn_drones.launch"/>
-  <include file="$(find quad_manipulator_gazebo)/launch/reco/fruit_detection.launch"/>
+  <include file="$(find quad_manipulator_perception)/launch/fruit_detection.launch"/>
 </launch>

@@ -6,7 +6,7 @@
 
 namespace {
 constexpr const double kTreeOrbitRadius = 1.2;    // m
-constexpr const double kTreeOrbitVelocity = 0.6;  // m/s
+constexpr const double kTreeOrbitVelocity = 0.4;  // m/s
 constexpr const char *kOrchardVisitParamName = "/orchard/visit";
 }  // namespace
 
@@ -48,7 +48,19 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  // 3 - Orbit around trees
+  // 3 - Orbit around trees, lower halves
+  for (const std::pair<double, double> &tree_pose : trees_to_visit) {
+    geometry_msgs::PoseStamped earth_T_tree;
+    earth_T_tree.header.frame_id = "earth";
+    earth_T_tree.pose.position.x = tree_pose.first;
+    earth_T_tree.pose.position.y = tree_pose.second;
+    earth_T_tree.pose.position.z = 1.25;
+    ROS_INFO("Orbitting around %s...", ToString(earth_T_tree).c_str());
+    if (!quad_manip.orbit_around(earth_T_tree, kTreeOrbitRadius, kTreeOrbitVelocity)) {
+      ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
+    }
+  }
+  // 4 - Orbit around trees, upper halves
   for (const std::pair<double, double> &tree_pose : trees_to_visit) {
     geometry_msgs::PoseStamped earth_T_tree;
     earth_T_tree.header.frame_id = "earth";

@@ -2,6 +2,7 @@
 <launch>
   <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
     <arg name="use_plot_juggler" value="false"/>
+    <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/apple_garden_perception_testbed.world"/>
   </include>
   <group ns="uav1">
     <include file="$(find quad_manipulator_gazebo)/launch/internal/bringup.launch">

@@ -53,8 +53,8 @@
       <pose>0 0 0 0 0 0</pose>
       <distribution>
         <type>grid</type>
-        <rows>4</rows>
-        <cols>4</cols>
+        <rows>2</rows>
+        <cols>2</cols>
         <step>4 4 0</step>
       </distribution>
     </population>

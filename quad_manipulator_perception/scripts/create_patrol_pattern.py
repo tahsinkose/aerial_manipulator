@@ -26,7 +26,7 @@ class PatternCreationServer():
     def sort_trees(self, earth_t_base_link):
       earth_t_trees = np.array([[p.x, p.y] for p in self.earth_t_trees])
       tmp = earth_t_trees - np.array([earth_t_base_link.x, earth_t_base_link.y])
-      trees_to_visit = np.argsort(np.linalg.norm(tmp, axis=1))
+      trees_to_visit = np.argsort(np.linalg.norm(tmp, axis=1), axis=1)
       for ind in trees_to_visit:
         rospy.loginfo('Visit tree at 2D position %lf, %lf' %
                       (self.earth_t_trees[ind].x, self.earth_t_trees[ind].y))
