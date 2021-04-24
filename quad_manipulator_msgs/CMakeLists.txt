@@ -5,6 +5,7 @@ find_package(catkin REQUIRED)
 
 set(PACKAGE_DEPENDENCIES
   gazebo_msgs
+  geometry_msgs
   std_msgs
 )
 
@@ -18,6 +19,8 @@ add_message_files(
   FILES
     RobotCollisions.msg
     FakeGraspingEvent.msg
+    Detection.msg
+    Detections.msg
 )
 
 generate_messages(
