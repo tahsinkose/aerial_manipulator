@@ -25,6 +25,8 @@ int main(int argc, char **argv) {
       ROS_ERROR("Parameter '%s' has non-pair entry. Not-allowed..", kOrchardVisitParamName);
       return -1;
     }
+    ROS_ASSERT(two_d_vector[i][0].getType() == XmlRpc::XmlRpcValue::TypeDouble);
+    ROS_ASSERT(two_d_vector[i][1].getType() == XmlRpc::XmlRpcValue::TypeDouble);
     trees_to_visit.push_back({two_d_vector[i][0], two_d_vector[i][1]});
   }
 
