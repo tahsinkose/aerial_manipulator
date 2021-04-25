@@ -8,7 +8,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--model_dir', dest='model_dir',
-                    default='generated/apple_tree1')
+                    default='generated/apple_tree')
 parser.add_argument('-s', '--seed', dest='seed', type=int, default=np.random.randint(10000))
 
 
@@ -245,7 +245,7 @@ def gen_plant(write_results=False, keep_materials=False):
     ob_main_stem, nodes = gen_main_stem(apple_tree_collection)
 
     ob_meshes = [ob_main_stem]
-    fruit_poses = []
+    fruits = []
     for node in nodes[1:]:
         ob_m, ob_f = gen_end_stem(
             apple_tree_collection,
@@ -253,7 +253,7 @@ def gen_plant(write_results=False, keep_materials=False):
             yaw = node.yaw,
             growth = node.z / nodes[-1].z)
         ob_meshes.append(ob_m)
-        fruit_poses += ob_f
+        fruits += ob_f
     markers = []
 
 
@@ -265,9 +265,9 @@ def gen_plant(write_results=False, keep_materials=False):
         markers.append(marker)
 
 
-    for ob in fruit_poses:
-        add_marker(ob.location)
-        bpy.ops.object.delete({'selected_objects': [ob]}, use_global=True)
+    for ob_f in fruits:
+        add_marker(ob_f.location)
+        bpy.ops.object.delete({'selected_objects': [ob_f]}, use_global=True)
 
     bpy.ops.object.join({
         'selected_objects': ob_meshes,
@@ -290,10 +290,11 @@ def gen_plant(write_results=False, keep_materials=False):
             bpy.ops.mesh.separate(type='LOOSE')
             ob.select_set(False)
     apple_tree_collection = bpy.data.collections['apple_tree.001']
-    for i in range(0, len(apple_tree_collection.all_objects)):
-        if ob.name.startswith('Apple'):
-            if ob.dimensions[0] <= 1e-2 or ob.dimensions[1] <= 1e-2 or ob.dimensions[2] <= 1e-2:
-                bpy.ops.object.delete({'selected_objects': [ob]}, use_global=True)
+    objects_to_delete = []
+    for ob in apple_tree_collection.all_objects:
+        if ob.dimensions[0] <= 1e-2 or ob.dimensions[1] <= 1e-2 or ob.dimensions[2] <= 1e-2:
+            objects_to_delete.append(ob)
+    bpy.ops.object.delete({'selected_objects': objects_to_delete}, use_global=True)
     apple_tree_collection = bpy.data.collections['apple_tree.001']
     assign_indices(apple_tree_collection.all_objects, keep_materials)
     if write_results:
@@ -302,7 +303,6 @@ def gen_plant(write_results=False, keep_materials=False):
 
         with open(model_dir / 'markers.json', 'w') as outfile:
             json.dump(markers, outfile, indent=4)
-         #bpy.ops.object.delete(use_global=True)
 
     return apple_tree_collection
 
