@@ -10,18 +10,17 @@
 namespace {
 constexpr const char *kOffboardMode = "OFFBOARD";
 constexpr const char *kAutoLoiterMode = "AUTO.LOITER";
-constexpr const char *kAutoMissionMode = "AUTO.MISSION";
 constexpr const char *kStabilizedMode = "STABILIZED";
+constexpr const char *kReturnHomeMode = "AUTO.RTL";
 constexpr double kDefaultTakeoffAltitude = 1.5;  // in meters.
 constexpr double kDefaultLandingAltitude = 1.5;  // in meters
-constexpr double kDefaultRTLAltitude = 5.0; // in meters
 constexpr double kJointTolerance = 1e-2;         // in rad.
 constexpr double kLinearVelTolerance = 1e-2;     // in meters
 constexpr double kAngularVelTolerance = 3e-2;    // in rad
-const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",          "ALTCTL",    "POSCTL",
-                                                 kOffboardMode,   kStabilizedMode, "RATTITUDE", kAutoMissionMode,
-                                                 kAutoLoiterMode, "AUTO.TAKEOFF",  "AUTO.RTL",  "AUTO.LAND",
-                                                 "AUTO.RTGS",     "AUTO.READY",    "GUIDED"};
+const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",         "ALTCTL",        "POSCTL",
+                                                 kOffboardMode,   "STABILIZED",   "RATTITUDE",     "AUTO.MISSION",
+                                                 kAutoLoiterMode, "AUTO.TAKEOFF", kReturnHomeMode, "AUTO.LAND",
+                                                 "AUTO.RTGS",     "AUTO.READY",   "GUIDED"};
 
 const std::vector<std::string> kArmJointNames{"arm_joint_1", "arm_joint_2", "arm_joint_3"};
 const std::vector<std::string> kGraspJointNames{"grasp_joint_1", "grasp_joint_2"};
@@ -140,6 +139,11 @@ bool QuadManipulator::motor_arm(bool arm) {
 }
 
 bool QuadManipulator::takeoff() {
+  const bool armed = wait_for_armed(true);
+  if (!armed) {
+    ROS_ERROR("Could not takeoff when disarmed");
+    return false;
+  }
   geometry_msgs::PoseStamped map_T_takeoff;
   map_T_takeoff.pose.position.x = local_pose_.pose.position.x;
   map_T_takeoff.pose.position.y = local_pose_.pose.position.y;
@@ -176,13 +180,11 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
     return false;
   }
   ROS_INFO("Going to pose: %s", ToString(*map_T_target).c_str());
-  for (int i = 0; i < 100; i++) {
-    local_pos_pub_.publish(*map_T_target);
-  }
   // Make sure we are in offboard mode.
   if (!wait_for_mode(kOffboardMode)) {
     return false;
   }
+
   do {
     local_pos_pub_.publish(*map_T_target);
 
@@ -237,7 +239,7 @@ bool QuadManipulator::wait_for_mode(const std::string &mode, uint8_t base_mode, 
 bool QuadManipulator::wait_for_armed(bool arm, const ros::Duration &timeout) {
   mavros_msgs::CommandBool arming_cmd;
   arming_cmd.request.value = arm;
-  if (current_state_.armed) {
+  if (current_state_.armed == arm) {
     ROS_INFO("Robot is already %s!", (arm ? "armed" : "disarmed"));
     return true;
   }
@@ -250,14 +252,14 @@ bool QuadManipulator::wait_for_armed(bool arm, const ros::Duration &timeout) {
   }
   ros::Rate rate(20.0);
   ros::Time start_time = ros::Time::now();
-  ros::Time orbit_end_timeout = start_time + timeout;
+  ros::Time end_timeout = start_time + timeout;
   ROS_INFO("Waiting for %s status..", (arm ? "armed" : "disarmed"));
-  while (ros::ok() && current_state_.armed != true && ros::Time::now() < orbit_end_timeout) {
+  while (ros::ok() && current_state_.armed != arm && ros::Time::now() < end_timeout) {
     ros::spinOnce();
     rate.sleep();
   }
-  const bool result = current_state_.armed;
-  ROS_INFO("%s %s", (arm ? "armed" : "disarmed"), (result ? "successfully" : "unsuccessfully"));
+  const bool result = current_state_.armed == arm;
+  ROS_INFO("%s %s", (arm ? "Armed" : "Disarmed"), (result ? "successfully" : "unsuccessfully"));
   return result;
 }
 
@@ -341,7 +343,7 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   if (is_landed()) {
     ROS_WARN("Robot seems to be landed on ground. Need to takeoff first..");
     bool took_off = takeoff();
-    if(!took_off){
+    if (!took_off) {
       ROS_ERROR("Failed to takeoff before orbit. Failing!");
       return false;
     }
@@ -440,19 +442,32 @@ std::optional<geometry_msgs::PoseStamped> QuadManipulator::target_in_map(
   return map_T_target;
 }
 
-bool QuadManipulator::go_to_home() {
-  geometry_msgs::PoseStamped map_T_home;
-  map_T_home.pose.position.x = local_pose_.pose.position.x;
-  map_T_home.pose.position.y = local_pose_.pose.position.y;
-  map_T_home.pose.position.z = local_pose_.pose.position.z + kDefaultRTLAltitude;
-  map_T_home.pose.orientation = local_pose_.pose.orientation;
-  map_T_home.header.frame_id = map_frame_;
-  bool success = move_base(map_T_home);
-  map_T_home.pose.position.x = 0;
-  map_T_home.pose.position.y = 0;
-  success &= move_base(map_T_home);
-  success &= land();
-  return success;
+bool QuadManipulator::go_to_home(const ros::Duration &timeout) {
+  bool in_return_mode = wait_for_mode(kReturnHomeMode);
+  if (in_return_mode) {
+    ros::Rate rate(20.0);
+    ros::Time start_time = ros::Time::now();
+    ros::Time end_timeout = start_time + timeout;
+    ROS_INFO("Waiting for landed status..");
+    while (ros::ok() && !is_landed() && ros::Time::now() < end_timeout) {
+      ros::spinOnce();
+      rate.sleep();
+    }
+    if (is_landed()) {
+      ROS_INFO("Robot landed. Waiting for disarm..");
+      const bool disarmed = wait_for_armed(false);
+      if (!disarmed) {
+        ROS_ERROR("Robot didn't disarm. Consider not at home!");
+        return false;
+      }
+      ros::Duration(2.0).sleep();
+      return true;
+    } else {
+      ROS_ERROR("Robot didn't land. Could not reach home!");
+      return false;
+    }
+  }
+  return false;
 }
 
 bool QuadManipulator::base_not_moving() {

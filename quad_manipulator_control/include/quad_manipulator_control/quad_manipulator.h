@@ -95,7 +95,7 @@ class QuadManipulator {
    * @brief Moves the robot to 'Home' location.
    * @returns True if the robot went to 'Home', false otherwise.
    */
-  bool go_to_home();
+  bool go_to_home(const ros::Duration &timeout = ros::Duration(60));
 
  private:
   /**

@@ -63,12 +63,11 @@ int main(int argc, char **argv) {
         return -1;
       }
     }
-    ROS_INFO("Finished orbit");
+    ROS_INFO("Finished orbit at height %lf", orbit_height);
     if (!quad_manip.go_to_home()) {
       ROS_ERROR("Could not go to home");
       return -1;
     }
   }
-
   return 0;
 }
