@@ -16,8 +16,7 @@ from recordtype import recordtype
 
 Fruit = recordtype("Fruit", "position id detected distance tp_id")
 
-APPLE_TREE_TYPE_1 = "apple_tree"
-APPLE_TREE_TYPE_2 = "apple_tree_2"
+APPLE_TREE_TYPE = "apple_tree"
 DETECTION_TOLERANCE = 0.02
 
 
@@ -68,47 +67,39 @@ class OrchardGroundTruth():
         self.tp_detections = TracePoints('/orchard/detections')
         self.id_matched_fruit_markers = set()
         self.fruits = []
+        self.fruit_cnt = 0
         model_states = rospy.wait_for_message(
             '/gazebo/model_states', ModelStates)
         self.get_model_state_proxy = rospy.ServiceProxy(
             '/gazebo/get_model_state', GetModelState)
-        self.type_1_trees = []
-        self.type_2_trees = []
         # Retrieve tree names
         for mn in model_states.name:
-            if mn.startswith(APPLE_TREE_TYPE_2):
-                self.type_2_trees.append(mn)
-            elif mn.startswith(APPLE_TREE_TYPE_1):
-                self.type_1_trees.append(mn)
-        self.load_trees(APPLE_TREE_TYPE_1, self.type_1_trees)
-        self.load_trees(APPLE_TREE_TYPE_2, self.type_2_trees)
+            if mn.startswith(APPLE_TREE_TYPE):
+                self.load_trees(mn)
         self.publish_marker_traces()
         self.sub = rospy.Subscriber(
             "detections", Detections, self.handle_detection)
 
-    def load_trees(self, tree_type, tree_holder):
+    def load_trees(self, tree_type):
         models_dir = rospy.get_param('~models_dir')
         with open(Path(models_dir) / tree_type / 'markers.json', 'r') as markers:
             fruit_markers = json.loads(markers.read())
-            i = 0
-            for tree in tree_holder:
-                resp = self.get_model_state_proxy(tree, "link")
-                earth_t_tree = resp.pose.position
-                self.tp_plants.add_point(earth_t_tree, [.3, .1, .3])
-                for fruit_marker in fruit_markers:
-                    if fruit_marker['marker_type'] == 'FRUIT':
-                        earth_t_fruit = Vector3()
-                        earth_t_fruit.x = earth_t_tree.x + \
-                            fruit_marker['translation'][0]
-                        earth_t_fruit.y = earth_t_tree.y + \
-                            fruit_marker['translation'][1]
-                        earth_t_fruit.z = earth_t_tree.z + \
-                            fruit_marker['translation'][2]
-                        self.tp_fruits.add_point(earth_t_fruit, [1, .3, .3])
-                        self.fruits.append(
-                            Fruit(position=earth_t_fruit, id=i, detected=False, distance=float('inf'), tp_id=-1))
-                        i += 1
-
+            resp = self.get_model_state_proxy(tree_type, "link")
+            earth_t_tree = resp.pose.position
+            self.tp_plants.add_point(earth_t_tree, [.3, .1, .3])
+            for fruit_marker in fruit_markers:
+                if fruit_marker['marker_type'] == 'FRUIT':
+                    earth_t_fruit = Vector3()
+                    earth_t_fruit.x = earth_t_tree.x + \
+                        fruit_marker['translation'][0]
+                    earth_t_fruit.y = earth_t_tree.y + \
+                        fruit_marker['translation'][1]
+                    earth_t_fruit.z = earth_t_tree.z + \
+                        fruit_marker['translation'][2]
+                    self.tp_fruits.add_point(earth_t_fruit, [1, .3, .3])
+                    self.fruits.append(
+                        Fruit(position=earth_t_fruit, id=self.fruit_cnt, detected=False, distance=float('inf'), tp_id=-1))
+                    self.fruit_cnt += 1
     def update_marker_traces(self):
         self.tp_fruits.reset()
         for fruit in self.fruits:

@@ -43,20 +43,50 @@
     <include>
       <uri>model://sun</uri>
     </include>
-    <population name="orchard">
-      <model name="apple_tree">
-        <include>
-          <static>true</static>
-          <uri>model://apple_tree</uri>
-        </include>
-      </model>
+    <include>
+      <uri>model://apple_tree</uri>
+      <name>apple_tree_1</name>
+      <pose>4 -4 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_2</uri>
+      <name>apple_tree_2</name>
+      <pose>0 -4 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_3</uri>
+      <name>apple_tree_3</name>
+      <pose>-4 -4 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_4</uri>
+      <name>apple_tree_4</name>
+      <pose>-4 0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_5</uri>
+      <name>apple_tree_5</name>
       <pose>0 0 0 0 0 0</pose>
-      <distribution>
-        <type>grid</type>
-        <rows>3</rows>
-        <cols>3</cols>
-        <step>4 4 0</step>
-      </distribution>
-    </population>
+    </include>
+    <include>
+      <uri>model://apple_tree_6</uri>
+      <name>apple_tree_6</name>
+      <pose>4 0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_7</uri>
+      <name>apple_tree_7</name>
+      <pose>4 4 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_8</uri>
+      <name>apple_tree_8</name>
+      <pose>0 4 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apple_tree_9</uri>
+      <name>apple_tree_9</name>
+      <pose>-4 4 0 0 0 0</pose>
+    </include>
   </world>
 </sdf>
