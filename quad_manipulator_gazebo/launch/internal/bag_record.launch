@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <launch>
   <node pkg="rosbag" type="record" name="record_quad_manip_reco"
-        args="record -o $(find quad_manipulator_gazebo)/recording.bag
-        /uav1/camera/color/image_raw /uav1/camera/color/camera_info
-        /uav1/camera/depth/points /orchard/plants /orchard/fruits /orchard/detections /tf"
+        args="record --lz4 -o $(find quad_manipulator_gazebo)/recording.bag
+        /uav1/rgbd_camera/color/image_raw /uav1/rgbd_camera/color/camera_info
+        /uav1/rgbd_camera/depth/camera_info /uav1/rgbd_camera/depth/image_raw
+        /uav1/rgbd_camera/depth/points /orchard/plants /orchard/fruits /orchard/detections /tf"
         required="true">
   </node>
 </launch>
