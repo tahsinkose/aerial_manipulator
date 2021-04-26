@@ -9,7 +9,7 @@ from sensor_msgs.msg import PointCloud2, PointField
 from sensor_msgs import point_cloud2 as pc2
 from std_msgs.msg import Header
 from quad_manipulator_msgs.msg import Detections
-from quad_manipulator_msgs.srv import RecoStats
+from quad_manipulator_msgs.srv import RecoStats, RecoStatsResponse
 from gazebo_msgs.srv import GetModelState
 from gazebo_msgs.msg import ModelStates
 from geometry_msgs.msg import Vector3, Pose
@@ -145,10 +145,11 @@ class OrchardGroundTruth():
     def retrieve_reco_results(self, req):
         cnt_detected_fruit = len(self.id_matched_fruit_markers)
         cnt_all_fruits = len(self.fruits)
-        rospy.loginfo("Returning reco results: %lf/%lf."%(cnt_detected_fruit, cnt_all_fruits))
+        rospy.loginfo("Returning reco results: %d/%d."%(cnt_detected_fruit, cnt_all_fruits))
         # Reset tp detections.
         rospy.loginfo("Resetting detections")
         self.tp_detections.reset()
+        self.id_matched_fruit_markers.clear()
         # Reset all fruits.
         for fruit in self.fruits:
             fruit.detected = False

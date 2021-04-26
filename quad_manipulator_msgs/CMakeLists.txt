@@ -28,6 +28,7 @@ add_service_files(
   DIRECTORY srv
   FILES
     RecoStats.srv
+    RecoCmd.srv
 )
 
 generate_messages(

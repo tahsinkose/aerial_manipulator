@@ -1,6 +1,9 @@
 #include <quad_manipulator_control/quad_manipulator.h>
 #include <quad_manipulator_control/utils.h>
 
+#include <quad_manipulator_msgs/RecoCmd.h>
+#include <quad_manipulator_msgs/RecoStats.h>
+
 #include <eigen_conversions/eigen_msg.h>
 #include <mavros_msgs/CommandLong.h>
 #include <tf/transform_listener.h>
@@ -55,6 +58,9 @@ QuadManipulator::QuadManipulator() {
   landing_client_ = nh_.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/land");
   set_mode_client_ = nh_.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
   command_client_ = nh_.serviceClient<mavros_msgs::CommandLong>("mavros/cmd/command");
+  // TODO Make these robot-specific.
+  reco_cmd_client_ = nh_.serviceClient<quad_manipulator_msgs::RecoCmd>("/reco_cmd");
+  reco_results_client_ =  nh_.serviceClient<quad_manipulator_msgs::RecoStats>("/reco_results");
   arm_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>("arm_controller/command", 10);
   hand_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>("grasp_controller/command", 10);
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>();
@@ -470,9 +476,24 @@ bool QuadManipulator::go_to_home(const ros::Duration &timeout) {
   return false;
 }
 
-bool QuadManipulator::base_not_moving() {
-  return fabs(local_velocity_.twist.linear.x) <= kLinearVelTolerance &&
-         fabs(local_velocity_.twist.linear.y) <= kLinearVelTolerance &&
-         fabs(local_velocity_.twist.linear.z) <= kLinearVelTolerance &&
-         fabs(local_velocity_.twist.angular.z) <= kAngularVelTolerance;
+bool QuadManipulator::disable_reco() {
+  quad_manipulator_msgs::RecoCmd srv;
+  srv.request.run = false;
+  return reco_cmd_client_.call(srv) && srv.response.success;
+}
+bool QuadManipulator::enable_reco() {
+  quad_manipulator_msgs::RecoCmd srv;
+  srv.request.run = true;
+  return reco_cmd_client_.call(srv) && srv.response.success;
+}
+
+bool QuadManipulator::compute_reco_results(const std::string &intro_msg) {
+  quad_manipulator_msgs::RecoStats srv;
+  if (reco_results_client_.call(srv)) {
+    double accuracy = (double)srv.response.detected / (double)srv.response.total;
+    ROS_INFO("%s", intro_msg.c_str());
+    ROS_INFO("Detected/Total: %d/%d -> Accuracy: %lf", srv.response.detected, srv.response.total, accuracy);
+    return true;
+  }
+  return false;
 }

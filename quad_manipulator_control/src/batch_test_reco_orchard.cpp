@@ -5,8 +5,7 @@
 #include <ros/ros.h>
 
 namespace {
-constexpr const double kTreeOrbitRadius = 1.2;    // m
-constexpr const double kTreeOrbitVelocity = 0.4;  // m/s
+const std::vector<std::pair<double, double>> kTestCases{{1.2, 0.4}, {1.2, 0.8}, {1.0, 0.4}, {1.0, 0.8}};
 constexpr const char *kOrchardVisitParamName = "/orchard/visit";
 }  // namespace
 
@@ -47,27 +46,50 @@ int main(int argc, char **argv) {
     ROS_ERROR("Robot could not takeoff");
     return -1;
   }
+  for (const auto &test_case : kTestCases) {
+    // 3- Enable reco
+    if (!quad_manip.enable_reco()) {
+      ROS_ERROR("Could not enable reco. Continuing with next test case");
+      continue;
+    }
+    // 4 - Orbit around trees
+    const double orbit_radius = test_case.first;
+    const double orbit_velocity = test_case.second;
+    const std::vector<double> orbit_heights{1.2, 2.5};
 
-  // 3 - Orbit around trees, lower halves
-  const std::vector<double> orbit_heights{1.2, 2.5};
-  for (const double &orbit_height : orbit_heights) {
-    for (const std::pair<double, double> &tree_pose : trees_to_visit) {
-      geometry_msgs::PoseStamped earth_T_tree;
-      earth_T_tree.header.frame_id = "earth";
-      earth_T_tree.pose.position.x = tree_pose.first;
-      earth_T_tree.pose.position.y = tree_pose.second;
-      earth_T_tree.pose.position.z = orbit_height;
-      ROS_INFO("Orbitting around %s...", ToString(earth_T_tree).c_str());
-      if (!quad_manip.orbit_around(earth_T_tree, kTreeOrbitRadius, kTreeOrbitVelocity)) {
-        ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
+    for (const double &orbit_height : orbit_heights) {
+      for (const std::pair<double, double> &tree_pose : trees_to_visit) {
+        geometry_msgs::PoseStamped earth_T_tree;
+        earth_T_tree.header.frame_id = "earth";
+        earth_T_tree.pose.position.x = tree_pose.first;
+        earth_T_tree.pose.position.y = tree_pose.second;
+        earth_T_tree.pose.position.z = orbit_height;
+        ROS_INFO("Orbitting around %s with radius %lf and velocity %lf...", ToString(earth_T_tree).c_str(),
+                 orbit_radius, orbit_velocity);
+        if (!quad_manip.orbit_around(earth_T_tree, orbit_radius, orbit_velocity)) {
+          ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
+          return -1;
+        }
+      }
+      ROS_INFO("Finished orbit at height %lf", orbit_height);
+      if (!quad_manip.go_to_home()) {
+        ROS_ERROR("Could not go to home");
         return -1;
       }
     }
-    ROS_INFO("Finished orbit at height %lf", orbit_height);
-    if (!quad_manip.go_to_home()) {
-      ROS_ERROR("Could not go to home");
+    // 5- Disable reco
+
+    if (!quad_manip.disable_reco()) {
+      ROS_ERROR("Could not disable reco. Failing");
       return -1;
     }
+    // 6- Retrieve results
+    std::ostringstream oss;
+    oss << "Orbit Radius: " << orbit_radius << " - orbit velocity: " << orbit_velocity;
+    if (!quad_manip.compute_reco_results(oss.str())) {
+      ROS_ERROR("Could not receive reco results for '%s'", oss.str().c_str());
+    }
   }
+
   return 0;
 }

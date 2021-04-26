@@ -11,11 +11,14 @@ from matplotlib import pyplot as plt
 from geometry_msgs.msg import Point
 from std_msgs.msg import String
 from quad_manipulator_msgs.msg import Detection, Detections
+from quad_manipulator_msgs.srv import RecoCmd, RecoCmdResponse
 
 IMAGE_TOPIC = '/uav1/rgbd_camera/color/image_raw'
 DEPTH_TOPIC = '/uav1/rgbd_camera/depth/points'
 DETECTIONS_TOPIC = '/detections'
 MAX_DETECTION_DISTANCE = 2.0
+
+RECO_COMMAND_SERVER = '/reco_cmd'
 
 class MatchingMessageBuffer():
     def __init__(self):
@@ -62,6 +65,11 @@ class OrchardDetector():
         self.listener = tf2_ros.TransformListener(self.tfBuffer)
         self.detect_pub = rospy.Publisher(
             DETECTIONS_TOPIC, Detections, queue_size=1)
+        self.reco_cmd_server = rospy.Service(
+            RECO_COMMAND_SERVER, RecoCmd, self.handle_reco_cmd)
+        self.run_detector = False
+        self.avg_inference_time = 0.0
+        self.inference_cnt = 0
 
     def mask_to_detections(self, mask, depth):
         x_cords, y_cords = np.mgrid[0:mask.shape[1],
@@ -107,6 +115,9 @@ class OrchardDetector():
         return detections
 
     def detect(self):
+        if self.run_detector == False:
+            return
+        start = rospy.Time.now()
         img_msg, depth_msg = self.mmbuff.get_next()
         if img_msg is None or depth_msg is None:
             return
@@ -123,6 +134,21 @@ class OrchardDetector():
         for d in detections:
             msg.detections.append(d)
         self.detect_pub.publish(msg)
+        end = rospy.Time.now()
+        inference_time = (end-start).to_nsec()
+        if self.inference_cnt == 0:
+            self.avg_inference_time = inference_time
+            self.inference_cnt += 1
+        else:
+            self.inference_cnt += 1
+            self.avg_inference_time = self.avg_inference_time * \
+                float(self.inference_cnt - 1) / float(self.inference_cnt) + \
+                inference_time / float(self.inference_cnt)
+        rospy.loginfo("Average Inference Time: %lf ns" % (self.avg_inference_time))
+
+    def handle_reco_cmd(self, req):
+        self.run_detector = req.run
+        return RecoCmdResponse(True)
 
 
 if __name__ == '__main__':

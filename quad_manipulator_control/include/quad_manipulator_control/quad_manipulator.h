@@ -97,6 +97,15 @@ class QuadManipulator {
    */
   bool go_to_home(const ros::Duration &timeout = ros::Duration(60));
 
+  /**
+   * @brief Retrieves reco results.
+   * @param intro_msg Introductory msg from user code.
+   * @returns True if it was possible to fetch reco results, false otherwise
+   */
+  bool compute_reco_results(const std::string &intro_msg="");
+
+  bool disable_reco();
+  bool enable_reco();
  private:
   /**
    * @brief Receives state information of the robot, e.g. armed, mode.
@@ -182,12 +191,6 @@ class QuadManipulator {
   bool cmd_manip(const std::vector<double> &desired, const ros::Duration &timeout = ros::Duration(15));
 
   /**
-   * @brief Checks whether the base of the vehicle is stabilized or not.
-   * @returns true if it is, false otherwise.
-   */
-  bool base_not_moving();
-
-  /**
    * @brief Transforms the @p target_pose into map frame.
    * @param target_pose Target pose in any expressible frame wrt. map frame.
    * @returns geometry_msgs::PoseStamped in map frame if it was possible to transform, std::nullopt otherwise.
@@ -220,6 +223,8 @@ class QuadManipulator {
   ros::ServiceClient set_mode_client_;
   ros::ServiceClient landing_client_;
   ros::ServiceClient command_client_;
+  ros::ServiceClient reco_cmd_client_;
+  ros::ServiceClient reco_results_client_;
 
   ros::Publisher local_pos_pub_;
   ros::Publisher arm_control_pub_;

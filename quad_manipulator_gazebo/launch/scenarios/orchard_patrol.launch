@@ -15,7 +15,6 @@
       <arg name="yaw" value="3.14" />
       <arg name="use_zero_noise_model" value="true"/>
     </include>
-    <node name="general_orchard_patrol" pkg="quad_manipulator_control" type="general_orchard_patrol"
-       output="screen"/>
+    <node name="batch_test_reco_orchard" pkg="quad_manipulator_control" type="batch_test_reco_orchard"/>
   </group>
 </launch>
