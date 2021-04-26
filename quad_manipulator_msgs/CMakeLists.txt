@@ -23,6 +23,13 @@ add_message_files(
     Detections.msg
 )
 
+
+add_service_files(
+  DIRECTORY srv
+  FILES
+    RecoStats.srv
+)
+
 generate_messages(
   DEPENDENCIES ${PACKAGE_DEPENDENCIES}
   LANGS gencpp genpy

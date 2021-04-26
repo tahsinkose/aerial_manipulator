@@ -9,6 +9,7 @@ from sensor_msgs.msg import PointCloud2, PointField
 from sensor_msgs import point_cloud2 as pc2
 from std_msgs.msg import Header
 from quad_manipulator_msgs.msg import Detections
+from quad_manipulator_msgs.srv import RecoStats
 from gazebo_msgs.srv import GetModelState
 from gazebo_msgs.msg import ModelStates
 from geometry_msgs.msg import Vector3, Pose
@@ -19,6 +20,7 @@ Fruit = recordtype("Fruit", "position id detected distance tp_id")
 APPLE_TREE_TYPE = "apple_tree"
 DETECTION_TOLERANCE = 0.02
 
+RECO_RESULTS_SERVER = '/reco_results'
 
 class TracePoints():
     def __init__(self, topic="debug_points", frame_id="earth"):
@@ -79,6 +81,8 @@ class OrchardGroundTruth():
         self.publish_marker_traces()
         self.sub = rospy.Subscriber(
             "detections", Detections, self.handle_detection)
+        self.reco_results_server = rospy.Service(
+            RECO_RESULTS_SERVER, RecoStats, self.retrieve_reco_results)
 
     def load_trees(self, tree_type):
         models_dir = rospy.get_param('~models_dir')
@@ -138,6 +142,19 @@ class OrchardGroundTruth():
                     self.fruits[match].distance = dists[match]
         self.update_marker_traces()
 
+    def retrieve_reco_results(self, req):
+        cnt_detected_fruit = len(self.id_matched_fruit_markers)
+        cnt_all_fruits = len(self.fruits)
+        rospy.loginfo("Returning reco results: %lf/%lf."%(cnt_detected_fruit, cnt_all_fruits))
+        # Reset tp detections.
+        rospy.loginfo("Resetting detections")
+        self.tp_detections.reset()
+        # Reset all fruits.
+        for fruit in self.fruits:
+            fruit.detected = False
+            fruit.distance = float('inf')
+            fruit.tp_id = -1
+        return RecoStatsResponse(cnt_detected_fruit, cnt_all_fruits)
 
 if __name__ == '__main__':
     rospy.init_node('orchard_ground_truth_manager')
@@ -145,6 +162,4 @@ if __name__ == '__main__':
     rate = rospy.Rate(2)
     while not rospy.is_shutdown():
         orchard_ground_truth.update_marker_traces()
-        rospy.loginfo('Detected: %d - Total : %d - Detection attempts: %d' % (
-            len(orchard_ground_truth.id_matched_fruit_markers), len(orchard_ground_truth.fruits), len(orchard_ground_truth.tp_detections.points)))
         rate.sleep()
