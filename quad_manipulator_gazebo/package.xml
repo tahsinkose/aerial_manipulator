@@ -2,15 +2,11 @@
   <name>quad_manipulator_gazebo</name>
   <version>0.1.0</version>
   <description>quad_manipulator_gazebo</description>
-  <maintainer email="zhonghang@hnu.edu.cn">zhonghang</maintainer>
+  <maintainer email="tahsincankose@gmail.com">tahsinkose</maintainer>
 
   <license>BSD</license>
 
-  <url type="website">http://www.aimiplus.com</url>
-  <url type="bugtracker">https://github.com/osrf/gazebo_ros_demos/issues</url>
-  <url type="repository">https://github.com/osrf/gazebo_ros_demos</url>
-
-  <author email="zhonghang@hnu.edu.cn">zhonghang</author>
+    <author email="zhonghang@hnu.edu.cn">zhonghang</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 

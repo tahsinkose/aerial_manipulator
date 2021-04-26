@@ -9,13 +9,10 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   std_msgs
   mavros_msgs
-  nav_msgs
   cmake_modules
-  cv_bridge
-  image_transport
   trajectory_msgs
-  sensor_msgs
   eigen_conversions
+  quad_manipulator_msgs
 )
 
 catkin_package()
