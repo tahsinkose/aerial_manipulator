@@ -4,5 +4,5 @@
   <node name="orchard_ground_truth" pkg="quad_manipulator_perception" type="orchard_ground_truth.py" output="screen">
     <param name="models_dir" value="$(arg models_dir)" />
   </node>
-  <node name="orchard_detector" pkg="quad_manipulator_perception" type="simple_orchard_detector.py" output="screen"/>
+  <node name="baseline_inference" pkg="quad_manipulator_perception" type="opencv_baseline_inference.py" output="screen"/>
 </launch>
