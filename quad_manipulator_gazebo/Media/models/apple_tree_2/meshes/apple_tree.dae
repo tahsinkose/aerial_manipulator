@@ -344,40 +344,40 @@
   </library_effects>
   <library_images>
     <image id="apple_png" name="apple_png">
-      <init_from>apple.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/apple.png</init_from>
     </image>
     <image id="apple_png_001" name="apple_png_001">
-      <init_from>apple.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/apple.png</init_from>
     </image>
     <image id="blo2_png_002" name="blo2_png_002">
-      <init_from>blo2.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/blo2.png</init_from>
     </image>
     <image id="blo2_png_004" name="blo2_png_004">
-      <init_from>blo2.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/blo2.png</init_from>
     </image>
     <image id="blo3_png_002" name="blo3_png_002">
-      <init_from>blo3.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/blo3.png</init_from>
     </image>
     <image id="brn1_png_002" name="brn1_png_002">
-      <init_from>brn1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/brn1.png</init_from>
     </image>
     <image id="brn1_png_004" name="brn1_png_004">
-      <init_from>brn1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/brn1.png</init_from>
     </image>
     <image id="brn1_png_006" name="brn1_png_006">
-      <init_from>brn1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/brn1.png</init_from>
     </image>
     <image id="brn1_png_008" name="brn1_png_008">
-      <init_from>brn1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/brn1.png</init_from>
     </image>
     <image id="lef1_png_001" name="lef1_png_001">
-      <init_from>lef1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/lef1.png</init_from>
     </image>
     <image id="lef1_png_002" name="lef1_png_002">
-      <init_from>lef1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/lef1.png</init_from>
     </image>
     <image id="lef1_png_009" name="lef1_png_009">
-      <init_from>lef1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/lef1.png</init_from>
     </image>
   </library_images>
   <library_materials>

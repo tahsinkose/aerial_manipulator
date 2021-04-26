@@ -24,8 +24,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Branch</name>
           </script>
           <shader type='pixel'>
@@ -55,8 +55,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Branch</name>
           </script>
           <shader type='pixel'>
@@ -86,8 +86,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Branch</name>
           </script>
           <shader type='pixel'>
@@ -117,8 +117,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Branch</name>
           </script>
           <shader type='pixel'>
@@ -148,8 +148,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Leaf1</name>
           </script>
           <shader type='pixel'>
@@ -179,8 +179,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Leaf2</name>
           </script>
           <shader type='pixel'>
@@ -210,8 +210,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Leaf1</name>
           </script>
           <shader type='pixel'>
@@ -241,8 +241,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Apple</name>
           </script>
           <shader type='pixel'>
@@ -272,8 +272,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Apple</name>
           </script>
           <shader type='pixel'>
@@ -303,8 +303,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Apple</name>
           </script>
           <shader type='pixel'>
@@ -334,8 +334,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
 
             <name>AppleTree/Apple</name>
           </script>
@@ -366,8 +366,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Apple</name>
           </script>
           <shader type='pixel'>
@@ -397,8 +397,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
 
             <name>AppleTree/Apple</name>
           </script>
@@ -429,8 +429,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Apple</name>
           </script>
           <shader type='pixel'>
@@ -460,8 +460,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
             <name>AppleTree/Apple</name>
           </script>
           <shader type='pixel'>
@@ -491,8 +491,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
 
             <name>AppleTree/Blossom1</name>
           </script>
@@ -523,8 +523,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
 
             <name>AppleTree/Blossom2</name>
           </script>
@@ -555,8 +555,8 @@
         <material>
           <diffuse>1.0 1.0 1.0</diffuse>
           <script>
-            <uri>model://apple_tree/materials/scripts</uri>
-            <uri>model://apple_tree/materials/textures</uri>
+            <uri>model://apple_tree_1/materials/scripts</uri>
+            <uri>model://apple_tree_1/materials/textures</uri>
 
             <name>AppleTree/Blossom3</name>
           </script>

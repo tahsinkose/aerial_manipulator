@@ -44,7 +44,7 @@
       <uri>model://sun</uri>
     </include>
     <include>
-      <uri>model://apple_tree</uri>
+      <uri>model://apple_tree_1</uri>
       <name>apple_tree_1</name>
       <pose>4 -4 0 0 0 0</pose>
     </include>

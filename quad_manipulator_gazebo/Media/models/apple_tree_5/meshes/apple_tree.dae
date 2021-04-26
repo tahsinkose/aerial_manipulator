@@ -172,19 +172,19 @@
   </library_effects>
   <library_images>
     <image id="apple_png" name="apple_png">
-      <init_from>apple.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/apple.png</init_from>
     </image>
     <image id="blo2_png" name="blo2_png">
-      <init_from>blo2.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/blo2.png</init_from>
     </image>
     <image id="blo3_png" name="blo3_png">
-      <init_from>blo3.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/blo3.png</init_from>
     </image>
     <image id="brn1_png" name="brn1_png">
-      <init_from>brn1.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/brn1.png</init_from>
     </image>
     <image id="lef2_png_001" name="lef2_png_001">
-      <init_from>lef2.png.001.png</init_from>
+      <init_from>../../apple_tree_1/materials/textures/lef2.png</init_from>
     </image>
   </library_images>
   <library_materials>
