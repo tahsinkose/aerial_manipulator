@@ -6,7 +6,7 @@
 
   <license>BSD</license>
 
-    <author email="zhonghang@hnu.edu.cn">zhonghang</author>
+  <author email="zhonghang@hnu.edu.cn">zhonghang</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
