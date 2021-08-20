@@ -2,15 +2,19 @@
 <launch>
   <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
     <arg name="use_plot_juggler" value="false"/>
-    <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/apple_garden_perception_testbed.world"/>
+    <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/simple_apple_garden.world"/>
   </include>
+   <arg name="use_joint_trajectory_gui" default="true"/>
   <group ns="uav1">
     <include file="$(find quad_manipulator_gazebo)/launch/internal/bringup.launch">
       <arg name="tf_prefix" value="uav1" />
-      <arg name="x" value="0.0" />
+      <arg name="x" value="10.0" />
       <arg name="y" value="0.0" />
       <arg name="yaw" value="1.57" />
       <arg name="use_zero_noise_model" value="true"/>
     </include>
+   <group if="$(arg use_joint_trajectory_gui)">
+      <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
+   </group>
   </group>
 </launch>

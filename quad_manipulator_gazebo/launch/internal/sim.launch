@@ -20,9 +20,5 @@
     <node name="plot_juggler" pkg="plotjuggler" type="PlotJuggler"
         args="--layout $(find quad_manipulator_gazebo)/cfg/odom.xml"/>
   </group>
-  <arg name="use_joint_trajectory_gui" default="false"/>
-   <group if="$(arg use_joint_trajectory_gui)">
-      <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
-   </group>
   <include file="$(find quad_manipulator_gazebo)/launch/internal/rviz.launch"/>
 </launch>
