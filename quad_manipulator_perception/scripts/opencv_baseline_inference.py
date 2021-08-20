@@ -79,13 +79,13 @@ class OrchardDetector():
         if not mask.any():
             return []
         uvs = np.column_stack([x_cords.ravel(), y_cords.ravel()])[mask]
-        cam_T_points = list(pc2.read_points(
+        cam_t_points = list(pc2.read_points(
             depth, field_names=("x", "y", "z"), uvs=uvs.tolist()))
-        cam_T_points = np.array(cam_T_points)
-        dists = np.sqrt(np.sum(cam_T_points ** 2, axis=1))
-        cam_T_points = cam_T_points[dists < MAX_DETECTION_DISTANCE]
+        cam_t_points = np.array(cam_t_points)
+        dists = np.sqrt(np.sum(cam_t_points ** 2, axis=1))
+        cam_t_points = cam_t_points[dists < MAX_DETECTION_DISTANCE]
         # NaNs are discarded with this line.
-        cam_T_points = cam_T_points[np.isfinite(cam_T_points).all(axis=1)]
+        cam_t_points = cam_t_points[np.isfinite(cam_t_points).all(axis=1)]
         earth_T_cam = self.tfBuffer.lookup_transform(
             'earth', depth.header.frame_id, depth.header.stamp, rospy.Duration(2.0))
 
@@ -104,9 +104,9 @@ class OrchardDetector():
         m_transform = t.concatenate_matrices(m_translation, m_rotation)
 
         detections = []
-        for cam_T_point in cam_T_points:
+        for cam_t_point in cam_t_points:
             pos = m_transform.dot(
-                np.array([cam_T_point[0], cam_T_point[1], cam_T_point[2], 1]))[0:3]
+                np.array([cam_t_point[0], cam_t_point[1], cam_t_point[2], 1]))[0:3]
             msg = Detection()
             msg.position.x = pos[0]
             msg.position.y = pos[1]
