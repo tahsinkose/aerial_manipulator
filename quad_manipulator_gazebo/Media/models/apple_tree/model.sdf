@@ -1,0 +1,1545 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='apple_tree'>
+    <model name='apple'>
+      <link name='link'>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0166667</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0166667</iyy>
+            <iyz>0</iyz>
+            <izz>0.0166667</izz>
+          </inertia>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+        </inertial>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <pose frame=''>0.0375 -0.1 0.245 0 -0 0</pose>
+        <gravity>1</gravity>
+        <visual name='apple'>
+          <geometry>
+            <mesh>
+              <scale>0.6 0.6 0.6</scale>
+              <uri>model://apple/meshes/apple.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple/materials/scripts</uri>
+              <uri>model://apple/materials/textures</uri>
+              <name>Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <transparency>0</transparency>
+          <cast_shadows>1</cast_shadows>
+        </visual>
+        <collision name='apple'>
+          <laser_retro>0</laser_retro>
+          <max_contacts>10</max_contacts>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>/home/tahsincan/aerial_manipulation/quad_manip_ws/src/quad_manipulator/quad_manipulator_gazebo/Media/models/apple/meshes/apple.dae</uri>
+              <scale>0.6 0.6 0.6</scale>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+                <fdir1>0 0 0</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <coefficient>1</coefficient>
+                <patch_radius>0</patch_radius>
+                <surface_radius>0</surface_radius>
+                <use_patch_radius>1</use_patch_radius>
+                <ode>
+                  <slip>0</slip>
+                </ode>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>1e+06</threshold>
+            </bounce>
+            <contact>
+              <collide_without_contact>0</collide_without_contact>
+              <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+              <collide_bitmask>1</collide_bitmask>
+              <ode>
+                <soft_cfm>0</soft_cfm>
+                <soft_erp>0.2</soft_erp>
+                <kp>1e+13</kp>
+                <kd>1</kd>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+              <bullet>
+                <split_impulse>1</split_impulse>
+                <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+                <soft_cfm>0</soft_cfm>
+                <soft_erp>0.2</soft_erp>
+                <kp>1e+13</kp>
+                <kd>1</kd>
+              </bullet>
+            </contact>
+          </surface>
+        </collision>
+      </link>
+      <static>0</static>
+      <allow_auto_disable>1</allow_auto_disable>
+    </model>
+    <model name='tree'>
+      <static>0</static>
+      <link name='body'>
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.0433305</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0437265</iyy>
+            <iyz>0</iyz>
+            <izz>0.0041434</izz>
+          </inertia>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+        </inertial>
+        <collision name='branch1'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Branch1</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='branch1'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Branch1</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Branch</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='branch2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Branch2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='branch2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Branch2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Branch</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='branch3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Branch3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='branch3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Branch3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Branch</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='leaf1'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Leaf1</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='leaf1'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Leaf1</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Leaf1</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='leaf2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Leaf2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='leaf2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Leaf2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Leaf2</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='leaf3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Leaf3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='leaf3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Leaf3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Leaf1</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple4'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple4</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple4'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple4</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple5'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple5</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple5'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple5</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple6'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple6</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple6'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple6</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple7'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple7</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple7'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple7</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple8'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple8</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple8'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple8</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple9'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple9</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple9'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple9</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple10'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple10</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple10'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple10</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple11'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple11</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple11'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple11</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple12'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple12</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple12'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple12</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple13'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple13</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple13'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple13</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple14'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple14</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple14'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple14</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple15'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple15</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple15'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple15</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple16'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple16</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple16'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple16</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple17'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple17</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple17'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple17</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple18'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple18</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple18'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple18</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple19'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple19</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple19'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple19</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='apple20'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple20</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='apple20'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Apple20</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Apple</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='blossom1'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom1</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='blossom1'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom1</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Blossom1</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='blossom2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='blossom2'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom2</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Blossom2</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='blossom3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='blossom3'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom3</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Blossom3</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <collision name='blossom4'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom4</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='blossom4'>
+          <geometry>
+            <mesh>
+              <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
+              <submesh>
+                <name>Blossom4</name>
+              </submesh>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <script>
+              <uri>model://apple_tree_1/materials/scripts</uri>
+              <uri>model://apple_tree_1/materials/textures</uri>
+              <name>AppleTree/Blossom3</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <pose frame=''>-0.01707 0.122386 -0.22951 0 -0 0</pose>
+    </model>
+    <joint name='apple_joint' type='fixed'>
+      <parent>tree::body</parent>
+      <child>apple::link</child>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+    <model name='tree_base'>
+      <link name='link'>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <pose frame=''>-0.02 0.13 -0.23 0 -0 0</pose>
+        <gravity>1</gravity>
+        <inertial>
+          <mass>1</mass>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual_1'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.272749 0.292399 0.014739</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://mud_box/materials/scripts</uri>
+              <uri>model://mud_box/materials/textures</uri>
+              <name>vrc/mud</name>
+            </script>
+            <shader type='pixel'>
+              <normal_map>__default__</normal_map>
+            </shader>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.5 0.5 0.5 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+          <transparency>0</transparency>
+        </visual>
+        <collision name='collision'>
+          <laser_retro>0</laser_retro>
+          <max_contacts>10</max_contacts>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.272749 0.292399 0.014739</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>5</mu>
+                <mu2>5</mu2>
+                <fdir1>0 0 0</fdir1>
+                <slip1>0</slip1>
+                <slip2>0</slip2>
+              </ode>
+              <torsional>
+                <coefficient>1</coefficient>
+                <patch_radius>0</patch_radius>
+                <surface_radius>0</surface_radius>
+                <use_patch_radius>1</use_patch_radius>
+                <ode>
+                  <slip>0</slip>
+                </ode>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>1e+06</threshold>
+            </bounce>
+            <contact>
+              <collide_without_contact>0</collide_without_contact>
+              <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+              <collide_bitmask>1</collide_bitmask>
+              <ode>
+                <soft_cfm>0</soft_cfm>
+                <soft_erp>0.2</soft_erp>
+                <kp>1e+13</kp>
+                <kd>1</kd>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+              <bullet>
+                <split_impulse>1</split_impulse>
+                <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+                <soft_cfm>0</soft_cfm>
+                <soft_erp>0.2</soft_erp>
+                <kp>1e+13</kp>
+                <kd>1</kd>
+              </bullet>
+            </contact>
+          </surface>
+        </collision>
+      </link>
+      <static>0</static>
+      <allow_auto_disable>1</allow_auto_disable>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+    </model>
+    <joint name='base_joint' type='fixed'>
+      <parent>tree::body</parent>
+      <child>tree_base::link</child>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+    <static>0</static>
+    <allow_auto_disable>1</allow_auto_disable>
+    <plugin name='gazebo_fruit_detachment' filename='libgazebo_fruit_detachment.so'/>
+    <pose frame=''>0 0 0.24 0 -0 0</pose>
+  </model>
+</sdf>
