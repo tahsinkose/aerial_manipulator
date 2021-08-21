@@ -540,7 +540,7 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
   tf::poseMsgToEigen(eef_pose.pose, source_T_goal_eigen);
   const Eigen::Affine3d arm_base_T_goal = arm_base_T_source_eigen * source_T_goal_eigen;
 
-  ROS_INFO("Trying to solve IK for: %s", ToString(arm_base_T_goal).c_str());
+  ROS_INFO("Trying to solve IK for: %s", ToString(arm_base_T_goal, kArmBaseLinkFrame).c_str());
   KDL::Frame arm_base_T_goal_kdl = to_kdl(arm_base_T_goal);
 
   KDL::JntArray q_out(eef_chain_->getNrOfJoints());
@@ -549,6 +549,8 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
   ROS_DEBUG("IkSolver latest result: %s",ik_solver_->strError(ret));
   KDL::Frame p_out;
   fk_solver_->JntToCart(q_out, p_out);
+  const Eigen::Affine3d source_T_achieved = arm_base_T_source_eigen.inverse() * from_kdl(p_out);
+  ROS_INFO("Achieved pose: %s",ToString(source_T_achieved, kBaseLinkFrame).c_str());
   KDL::Twist delta_twist = KDL::diff(arm_base_T_goal_kdl, p_out);
   ROS_INFO("Computed IK: (%lf,%lf,%lf) with delta-twist: [(%lf,%lf,%lf), (%lf,%lf,%lf)]", q_out.data.x(),
            q_out.data.y(), q_out.data.z(), delta_twist.vel.x(), delta_twist.vel.y(), delta_twist.vel.z(),
@@ -559,10 +561,7 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
 bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped& eef_pose) {
   const std::optional<KDL::JntArray> ik_solution = compute_ik(eef_pose);
   if (ik_solution) {
-    bool result = true;
-    result &= open_gripper();
-    result &= move_manip(*ik_solution);
-    return result;
+    return move_manip(*ik_solution);
   } else {
     ROS_ERROR("Could not compute IK, hence cannot pick apple. Failing..");
     return false;
