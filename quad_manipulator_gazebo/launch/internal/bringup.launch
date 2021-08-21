@@ -9,7 +9,7 @@
 
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
-  <arg name="z" value="0.25"/>
+  <arg name="z" value="0.05"/>
   <arg name="yaw" default="0.0"/>
   <arg name="ID" default="0"/>
   <arg name="fcu_url" default="udp://:14540@localhost:14580"/>
