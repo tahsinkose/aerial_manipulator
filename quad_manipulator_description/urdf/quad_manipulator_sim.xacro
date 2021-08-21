@@ -428,8 +428,8 @@
     <axis
       xyz="0 0 1" />
       <limit
-        lower="-1.7"
-        upper="1.7"
+        lower="-3.14"
+        upper="3.14"
         effort="10"
         velocity="1" />
 
@@ -507,8 +507,8 @@
   <joint name="arm_eef_joint"
     type="fixed">
     <origin
-      xyz="-0.12 0.0 0"
-      rpy="0 0 0.0" />
+      xyz="-0.169 0.001 -0.002"
+      rpy="-1.571 0.001 3.142" />
     <parent
       link="arm_link_3" />
     <child
@@ -560,8 +560,8 @@
     name="grasp_joint_1"
     type="revolute">
     <origin
-      xyz="-0.01833 0 -0.025"
-      rpy="0 0.45 0" />
+      xyz="-0.025 0.01833 0"
+      rpy="-1.57 0.0 2.69" />
     <parent
       link="arm_eef" />
     <child
@@ -617,8 +617,8 @@
     name="grasp_joint_2"
     type="revolute">
     <origin
-      xyz="-0.0215884572684 0 0.0255143753568"
-      rpy="0 -0.33 0" />
+      xyz="-0.0227 -0.0255143753568 0"
+      rpy="-1.57 0.0 3.47" />
     <parent
       link="arm_eef" />
     <child
@@ -683,11 +683,11 @@
   </joint>
 
   <joint name="kinect_optical_joint" type="fixed">
-      <axis xyz="0 1 0" />
-      <origin xyz="0.0 0.0 0.0" rpy="-1.57 0 -1.57"/>
-      <parent link="camera_link"/>
-      <child link="kinect_optical_link"/>
-    </joint>
+    <axis xyz="0 1 0" />
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57 0 -1.57"/>
+    <parent link="camera_link"/>
+    <child link="kinect_optical_link"/>
+  </joint>
   <link name="kinect_optical_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
