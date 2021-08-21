@@ -1,4 +1,5 @@
 #include <quad_manipulator_control/utils.h>
+#include <eigen_conversions/eigen_msg.h>
 #include <sstream>
 
 #include <gazebo_msgs/SetModelState.h>
@@ -10,6 +11,12 @@ std::string ToString(const geometry_msgs::PoseStamped &pose) {
       << std::to_string(pose.pose.orientation.y) << ", " << std::to_string(pose.pose.orientation.z) << ", "
       << std::to_string(pose.pose.orientation.w) << "] in frame: " << pose.header.frame_id;
   return oss.str();
+}
+
+std::string ToString(const Eigen::Affine3d &pose) {
+  geometry_msgs::PoseStamped target;
+  tf::poseEigenToMsg(pose, target.pose);
+  return ToString(target);
 }
 
 std::string ToString(const geometry_msgs::TwistStamped &twist) {
@@ -57,4 +64,30 @@ geometry_msgs::PoseStamped px4_ned_T_map(const geometry_msgs::PoseStamped& pose)
   px4_ned_pose.pose.position.z = -pose.pose.position.z;
   px4_ned_pose.pose.orientation = pose.pose.orientation;
   return px4_ned_pose;
+}
+
+KDL::Frame to_kdl(const Eigen::Affine3d &in) {
+  const auto p = in.translation();
+  const auto R = in.rotation();
+  // clang-format off
+  return KDL::Frame(KDL::Rotation(R(0, 0), R(0, 1), R(0, 2),
+                                  R(1, 0), R(1, 1), R(1, 2),
+                                  R(2, 0), R(2, 1), R(2, 2)),
+                    KDL::Vector(p(0), p(1), p(2)));
+  // clang-format on
+}
+
+Eigen::Affine3d from_kdl(const KDL::Frame &in) {
+  double quat_x, quat_y, quat_z, quat_w;
+  in.M.GetQuaternion(quat_x, quat_y, quat_z, quat_w);
+  return Eigen::Affine3d(Eigen::Translation3d(Eigen::Vector3d(in.p.x(), in.p.y(), in.p.z())) *
+                         Eigen::Quaterniond(quat_x, quat_y, quat_z, quat_w));
+}
+
+std::string get_qualified_frame(const ros::NodeHandle &nh, const std::string &frame) {
+  std::string resolved_frame = nh.resolveName(frame);
+  if (resolved_frame.at(0) == '/') {
+    resolved_frame.erase(resolved_frame.begin());
+  }
+  return resolved_frame;
 }

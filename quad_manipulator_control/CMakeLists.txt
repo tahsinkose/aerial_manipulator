@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   trajectory_msgs
   eigen_conversions
   quad_manipulator_msgs
+  kdl_parser
 )
 
 catkin_package()
@@ -35,6 +36,9 @@ target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 
 add_executable(batch_test_reco_orchard src/batch_test_reco_orchard.cpp)
 target_link_libraries(batch_test_reco_orchard quad_manipulator)
+
+add_executable(simple_harvest src/simple_harvest.cpp)
+target_link_libraries(simple_harvest quad_manipulator)
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)

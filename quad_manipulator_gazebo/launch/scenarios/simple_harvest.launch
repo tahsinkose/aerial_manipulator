@@ -14,7 +14,7 @@
       <arg name="yaw" value="3.14" />
       <arg name="use_zero_noise_model" value="true"/>
     </include>
-    <node name="simple_driver" pkg="quad_manipulator_control" type="simple_driver" output="log" respawn="false"/>
+    <node name="simple_harvest" pkg="quad_manipulator_control" type="simple_harvest" output="log" respawn="false"/>
     <group if="$(arg use_joint_trajectory_gui)">
        <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>
     </group>

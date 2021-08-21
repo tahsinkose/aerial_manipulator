@@ -30,6 +30,10 @@ const std::vector<std::string> kGraspJointNames{"grasp_joint_1", "grasp_joint_2"
 constexpr const int kLocalNedFrame = 1;  // MAV_FRAME::MAV_FRAME_LOCAL_NED
 constexpr const int kMavOrbitCmd = 34;   // MAV_CMD::MAV_CMD_DO_ORBIT
 constexpr const char *kMapFrame = "map";
+constexpr const char *kRobotDescriptionParamName = "robot_description";
+constexpr const char *kBaseLinkFrame = "base_link";
+constexpr const char *kArmBaseLinkFrame = "arm_base_link";
+constexpr const char *kArmTipLinkFrame = "arm_eef";
 }  // namespace
 
 QuadManipulator::QuadManipulator() {
@@ -66,10 +70,22 @@ QuadManipulator::QuadManipulator() {
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>();
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
-  map_frame_ = nh_.resolveName(kMapFrame);
-  if (map_frame_.at(0) == '/') {
-    map_frame_.erase(map_frame_.begin());
+  kdl_tree_ = std::make_shared<KDL::Tree>();
+  if (!kdl_parser::treeFromParam(kRobotDescriptionParamName, *kdl_tree_)) {
+    const std::string err_msg = "KDL parser failed to parse robot description for " + nh_.getNamespace();
+    ROS_ERROR("%s", err_msg.c_str());
+    throw std::runtime_error(err_msg);
   }
+  eef_chain_ = std::make_shared<KDL::Chain>();
+  if (!kdl_tree_->getChain(kArmBaseLinkFrame, kArmTipLinkFrame, *eef_chain_)) {
+    const std::string err_msg = "KDL parser failed to get chain between " + std::string(kArmBaseLinkFrame) + " and " +
+                                std::string(kArmTipLinkFrame) + ".";
+    ROS_ERROR("%s", err_msg.c_str());
+    throw std::runtime_error(err_msg);
+  }
+  fk_solver_ = std::make_shared<KDL::ChainFkSolverPos_recursive>(*eef_chain_);
+  vel_solver_ = std::make_shared<KDL::ChainIkSolverVel_pinv>(*eef_chain_);
+  ik_solver_ = std::make_shared<KDL::ChainIkSolverPos_NR>(*eef_chain_, *fk_solver_, *vel_solver_, 1000, 1e-6);
 }
 
 void QuadManipulator::state_cb(const mavros_msgs::State::ConstPtr &msg) {
@@ -338,10 +354,16 @@ bool QuadManipulator::close_gripper(const std::vector<double> &desired, const ro
 }
 
 bool QuadManipulator::move_manip(const std::vector<double> &desired) {
-  // ROS_INFO("Moving arm to desired setpoint: %s", ToString(desired).c_str());
+  //ROS_INFO("Moving arm to desired setpoint: %s", ToString(desired).c_str());
   const bool moved = cmd_manip(desired);
   ROS_INFO("Arm %s", (moved ? "successfully moved" : "could not be moved"));
   return moved;
+}
+
+bool QuadManipulator::move_manip(const KDL::JntArray &desired) {
+  std::vector<double> desired_v(desired.data.size());
+  Eigen::VectorXd::Map(&desired_v[0], desired.data.size()) = desired.data;
+  return move_manip(desired_v);
 }
 
 bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, double orbit_radius,
@@ -366,7 +388,7 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
 
   // If no source frame is specified, assume it is in map frame.
   if (source_frame == "") {
-    source_frame = map_frame_;
+    source_frame = get_qualified_frame(nh_, kMapFrame);
   }
   const auto map_T_target = target_in_map(pose);
   if (!map_T_target) {
@@ -429,23 +451,24 @@ std::optional<geometry_msgs::PoseStamped> QuadManipulator::target_in_map(
     const geometry_msgs::PoseStamped &target_pose) {
   // If no source frame is specified, assume it is in map frame.
   std::string source_frame = target_pose.header.frame_id;
+  const std::string map_frame = get_qualified_frame(nh_, kMapFrame);
   if (source_frame == "") {
-    source_frame = map_frame_;
+    source_frame = map_frame;
   }
 
   std::string err_msg;
-  if (!tf_buffer_->canTransform(map_frame_, source_frame, ros::Time(0), &err_msg)) {
-    ROS_ERROR("Could not transform from %s to %s: %s", source_frame.c_str(), map_frame_.c_str(), err_msg.c_str());
+  if (!tf_buffer_->canTransform(map_frame, source_frame, ros::Time(0), &err_msg)) {
+    ROS_ERROR("Could not transform from %s to %s: %s", source_frame.c_str(), map_frame.c_str(), err_msg.c_str());
     return std::nullopt;
   }
-  geometry_msgs::TransformStamped map_T_source = tf_buffer_->lookupTransform(map_frame_, source_frame, ros::Time(0));
+  geometry_msgs::TransformStamped map_T_source = tf_buffer_->lookupTransform(map_frame, source_frame, ros::Time(0));
   Eigen::Affine3d map_T_source_eigen, source_T_target_eigen;
   tf::transformMsgToEigen(map_T_source.transform, map_T_source_eigen);
   tf::poseMsgToEigen(target_pose.pose, source_T_target_eigen);
   const Eigen::Affine3d map_T_target_eigen = map_T_source_eigen * source_T_target_eigen;
   geometry_msgs::PoseStamped map_T_target;
   tf::poseEigenToMsg(map_T_target_eigen, map_T_target.pose);
-  map_T_target.header.frame_id = map_frame_;
+  map_T_target.header.frame_id = map_frame;
   return map_T_target;
 }
 
@@ -497,4 +520,51 @@ bool QuadManipulator::compute_reco_results(const std::string &intro_msg) {
     return true;
   }
   return false;
+}
+
+std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::PoseStamped &eef_pose,
+                                                         const double &cartesian_tolerance) {
+  // const Eigen::Affine3d map_T_base(Eigen::Translation3d(Eigen::Vector3d(2.3, -1.9, 0.35)));
+  // const Eigen::Affine3d map_T_apple = Eigen::Translation3d(Eigen::Vector3d(2.3, -1.9, 0.15));
+  std::string err_msg;
+  const std::string arm_base_link_frame = get_qualified_frame(nh_, kArmBaseLinkFrame);
+  if (!tf_buffer_->canTransform(arm_base_link_frame, eef_pose.header.frame_id, ros::Time(0), &err_msg)) {
+    ROS_ERROR("Could not transform from %s to %s: %s", arm_base_link_frame.c_str(), eef_pose.header.frame_id.c_str(),
+              err_msg.c_str());
+    return std::nullopt;
+  }
+  geometry_msgs::TransformStamped arm_base_T_source =
+      tf_buffer_->lookupTransform(arm_base_link_frame, eef_pose.header.frame_id, ros::Time(0));
+  Eigen::Affine3d arm_base_T_source_eigen, source_T_goal_eigen;
+  tf::transformMsgToEigen(arm_base_T_source.transform, arm_base_T_source_eigen);
+  tf::poseMsgToEigen(eef_pose.pose, source_T_goal_eigen);
+  const Eigen::Affine3d arm_base_T_goal = arm_base_T_source_eigen * source_T_goal_eigen;
+
+  ROS_INFO("Trying to solve IK for: %s", ToString(arm_base_T_goal).c_str());
+  KDL::Frame arm_base_T_goal_kdl = to_kdl(arm_base_T_goal);
+
+  KDL::JntArray q_out(eef_chain_->getNrOfJoints());
+  KDL::JntArray q_init(eef_chain_->getNrOfJoints());
+  int ret = ik_solver_->CartToJnt(q_init, arm_base_T_goal_kdl, q_out);
+  ROS_DEBUG("IkSolver latest result: %s",ik_solver_->strError(ret));
+  KDL::Frame p_out;
+  fk_solver_->JntToCart(q_out, p_out);
+  KDL::Twist delta_twist = KDL::diff(arm_base_T_goal_kdl, p_out);
+  ROS_INFO("Computed IK: (%lf,%lf,%lf) with delta-twist: [(%lf,%lf,%lf), (%lf,%lf,%lf)]", q_out.data.x(),
+           q_out.data.y(), q_out.data.z(), delta_twist.vel.x(), delta_twist.vel.y(), delta_twist.vel.z(),
+           delta_twist.rot.x(), delta_twist.rot.y(), delta_twist.rot.z());
+  return q_out;
+}
+
+bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped& eef_pose) {
+  const std::optional<KDL::JntArray> ik_solution = compute_ik(eef_pose);
+  if (ik_solution) {
+    bool result = true;
+    result &= open_gripper();
+    result &= move_manip(*ik_solution);
+    return result;
+  } else {
+    ROS_ERROR("Could not compute IK, hence cannot pick apple. Failing..");
+    return false;
+  }
 }

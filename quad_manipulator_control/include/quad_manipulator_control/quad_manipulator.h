@@ -1,8 +1,14 @@
 #pragma once
 #include <stdint.h>
+#include <optional>
 
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
+#include <kdl/chainiksolverpos_nr.hpp>
+#include <kdl/chainiksolvervel_pinv.hpp>
+#include <kdl/chainfksolverpos_recursive.hpp>
+#include <kdl/tree.hpp>
+#include <kdl_parser/kdl_parser.hpp>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/CommandTOL.h>
 #include <mavros_msgs/ExtendedState.h>
@@ -62,6 +68,22 @@ class QuadManipulator {
    * false otherwise.
    */
   bool move_manip(const std::vector<double> &desired);
+
+  /**
+   * @brief Moves the manipulator to @p desired setpoint.
+   * @param desired Goal joint positions.
+   * @returns True if it was possible to move the robot to desired setpoint,
+   * false otherwise.
+   */
+  bool move_manip(const KDL::JntArray &desired);
+
+  /**
+   * @brief Moves the manipulator such that the end effector is located at pose.
+   * @param eef_pose Goal end effector pose.
+   * @returns True if it was possible to move the end effector to goal pose,
+   * false otherwise.
+   */
+  bool move_eef(const geometry_msgs::PoseStamped& eef_pose);
 
   /**
    * @brief Opens the gripper to the limits.
@@ -202,6 +224,16 @@ class QuadManipulator {
    */
   bool is_landed();
 
+  /**
+   * @brief Computes IK for @p eef_pose.
+   * @param eef_pose Goal end effector pose.
+   * @param cartesian_tolerance 6D (position + orientation) cartesian tolerance.
+   * @returns The computed IK solution as a KDL::JntArray for the end effector pose if successful and within @p
+   * cartesian_tolerance, false otherwise.
+   */
+  std::optional<KDL::JntArray> compute_ik(const geometry_msgs::PoseStamped &eef_pose,
+                                          const double &cartesian_tolerance = 0.02);
+
  private:
   mavros_msgs::State current_state_;
   mavros_msgs::ExtendedState extended_current_state_;
@@ -232,5 +264,9 @@ class QuadManipulator {
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
-  std::string map_frame_;
+  std::shared_ptr<KDL::Tree> kdl_tree_;
+  std::shared_ptr<KDL::Chain> eef_chain_;
+  std::shared_ptr<KDL::ChainFkSolverPos_recursive> fk_solver_;
+  std::shared_ptr<KDL::ChainIkSolverVel_pinv> vel_solver_;
+  std::shared_ptr<KDL::ChainIkSolverPos_NR> ik_solver_;
 };
