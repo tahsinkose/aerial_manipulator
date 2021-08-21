@@ -13,9 +13,10 @@ std::string ToString(const geometry_msgs::PoseStamped &pose) {
   return oss.str();
 }
 
-std::string ToString(const Eigen::Affine3d &pose) {
+std::string ToString(const Eigen::Affine3d &pose, const std::string& frame_id) {
   geometry_msgs::PoseStamped target;
   tf::poseEigenToMsg(pose, target.pose);
+  target.header.frame_id = frame_id;
   return ToString(target);
 }
 
