@@ -32,8 +32,13 @@ constexpr const int kMavOrbitCmd = 34;   // MAV_CMD::MAV_CMD_DO_ORBIT
 constexpr const char *kMapFrame = "map";
 constexpr const char *kRobotDescriptionParamName = "robot_description";
 constexpr const char *kBaseLinkFrame = "base_link";
+constexpr const char *kBaseFootprintFrame = "base_footprint";
 constexpr const char *kArmBaseLinkFrame = "arm_base_link";
 constexpr const char *kArmTipLinkFrame = "arm_eef";
+
+const std::vector<double> kArmDispose = {0.0, -0.37, -0.99};
+const std::vector<double> kArmZero = {0.0, 0.0, 0.0};
+const std::vector<double> kGripperFullClose = {0.0, 0.0};
 }  // namespace
 
 QuadManipulator::QuadManipulator() {
@@ -67,6 +72,7 @@ QuadManipulator::QuadManipulator() {
   reco_results_client_ =  nh_.serviceClient<quad_manipulator_msgs::RecoStats>("/reco_results");
   arm_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>("arm_controller/command", 10);
   hand_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>("grasp_controller/command", 10);
+  const_pose_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("const_pose", 1);
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>();
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -524,8 +530,6 @@ bool QuadManipulator::compute_reco_results(const std::string &intro_msg) {
 
 std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::PoseStamped &eef_pose,
                                                          const double &cartesian_tolerance) {
-  // const Eigen::Affine3d map_T_base(Eigen::Translation3d(Eigen::Vector3d(2.3, -1.9, 0.35)));
-  // const Eigen::Affine3d map_T_apple = Eigen::Translation3d(Eigen::Vector3d(2.3, -1.9, 0.15));
   std::string err_msg;
   const std::string arm_base_link_frame = get_qualified_frame(nh_, kArmBaseLinkFrame);
   if (!tf_buffer_->canTransform(arm_base_link_frame, eef_pose.header.frame_id, ros::Time(0), &err_msg)) {
@@ -566,4 +570,88 @@ bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped& eef_pose) {
     ROS_ERROR("Could not compute IK, hence cannot pick apple. Failing..");
     return false;
   }
+}
+
+bool QuadManipulator::pick(const geometry_msgs::PoseStamped &eef_pose) {
+  // Hold robot still before computing IK.
+  hold_still();
+  enum FailState {GRIPPER_OPEN, ARM_MOVED, NO_FAIL, NO_ACTION_NEEDED};
+  FailState failure_state = FailState::NO_FAIL;
+  if (!open_gripper()) {
+    ROS_ERROR("Failed to open gripper in pick action!");
+    failure_state = FailState::NO_ACTION_NEEDED;
+  }
+  if (!move_eef(eef_pose)) {
+    failure_state = FailState::GRIPPER_OPEN;
+    ROS_ERROR("Failed to move the end effector in pick action!");
+  }
+  if (!close_gripper()) {
+    failure_state = FailState::ARM_MOVED;
+    ROS_ERROR("Failed to close gripper in pick action!");
+  }
+  if (!move_manip(kArmZero)) {
+    failure_state = FailState::ARM_MOVED;
+    ROS_ERROR("Failed to move arm to 0-state in pick action!");
+  }
+  unhold_still();
+  switch (failure_state) {
+    case FailState::ARM_MOVED: {
+      ROS_INFO("Resetting arms.");
+      move_manip(kArmZero);
+    }
+    // intentional fallback.
+    case FailState::GRIPPER_OPEN: {
+      ROS_INFO("Closing gripper as pick failure recovery.");
+      close_gripper();
+      return false;
+    }
+    case FailState::NO_ACTION_NEEDED: {
+      return false;
+    }
+    default:
+      break;
+  }
+  return true;
+}
+
+bool QuadManipulator::dispose() {
+  geometry_msgs::PoseStamped target_pose;
+  target_pose.header.frame_id = get_qualified_frame(nh_, kBaseFootprintFrame);
+  target_pose.pose.position.z = 0.3;
+  target_pose.pose.orientation.w = 1.0;
+  // need to be a bit more loose as the weight is slightly increased with the picked fruit.
+  if (!move_base(target_pose, 0.08)) {
+    ROS_ERROR("Could not move the base to dispose pose!");
+    return false;
+  }
+  if (!move_manip(kArmDispose)) {
+    ROS_ERROR("Could not move arm to dispose configuration!");
+    return false;
+  }
+  if (!open_gripper()) {
+    ROS_ERROR("Could not open grippers in dispose action!");
+    return false;
+  }
+  if (!close_gripper(kGripperFullClose)) {
+    ROS_ERROR("Could not close grippers in dispose action!");
+    return false;
+  }
+  if (!move_manip(kArmZero)) {
+    ROS_ERROR("Could not move arm to 0-state in dispose action!");
+    return false;
+  }
+  return true;
+}
+
+void QuadManipulator::hold_still() {
+  geometry_msgs::PoseStamped msg;
+  msg.header.frame_id = get_qualified_frame(nh_, kBaseLinkFrame);
+  msg.pose.orientation.w = 1.0;
+  const_pose_pub_.publish(msg);
+}
+
+void QuadManipulator::unhold_still() {
+  geometry_msgs::PoseStamped msg;
+  msg.header.frame_id = "STOP_CONST_POSE";
+  const_pose_pub_.publish(msg);
 }

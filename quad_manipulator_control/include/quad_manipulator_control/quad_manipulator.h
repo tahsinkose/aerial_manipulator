@@ -86,6 +86,28 @@ class QuadManipulator {
   bool move_eef(const geometry_msgs::PoseStamped& eef_pose);
 
   /**
+   * @brief Initiates pick sequence:
+   *  1. Opens gripper
+   *  2. Moves the manipulator such that the end effector is located at pose.
+   *  3. Closes gripper.
+   *  4. Moves the manipulator to 0-configuration.
+   * @param eef_pose Goal end effector pose.
+   * @returns True if all steps succeed, false otherwise.
+   */
+  bool pick(const geometry_msgs::PoseStamped &eef_pose);
+
+  /**
+   * @brief Initiates dispose sequence:
+   *  1. Lowers the base to ground.
+   *  2. Moves the manipulator to dispose configuration.
+   *  3. Opens gripper to release fruit.
+   *  4. Closes gripper
+   *  5. Moves the manipulator to 0-configuration.
+   * @returns True if all steps succeed, false otherwise.
+   */
+  bool dispose();
+
+  /**
    * @brief Opens the gripper to the limits.
    * @param timeout Timeout in seconds.
    * @returns True if it was possible to open the gripper.
@@ -234,6 +256,9 @@ class QuadManipulator {
   std::optional<KDL::JntArray> compute_ik(const geometry_msgs::PoseStamped &eef_pose,
                                           const double &cartesian_tolerance = 0.02);
 
+  void hold_still();
+  void unhold_still();
+
  private:
   mavros_msgs::State current_state_;
   mavros_msgs::ExtendedState extended_current_state_;
@@ -261,6 +286,7 @@ class QuadManipulator {
   ros::Publisher local_pos_pub_;
   ros::Publisher arm_control_pub_;
   ros::Publisher hand_control_pub_;
+  ros::Publisher const_pose_pub_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
