@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <optional>
 
+#include <Eigen/Geometry>
+
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <kdl/chainiksolverpos_nr.hpp>
@@ -91,10 +93,11 @@ class QuadManipulator {
    *  2. Moves the manipulator such that the end effector is located at pose.
    *  3. Closes gripper.
    *  4. Moves the manipulator to 0-configuration.
+   * @param base_pose Pose of UAV to make it perfectly hover at.
    * @param eef_pose Goal end effector pose.
    * @returns True if all steps succeed, false otherwise.
    */
-  bool pick(const geometry_msgs::PoseStamped &eef_pose);
+  bool pick(const geometry_msgs::PoseStamped& base_pose, const geometry_msgs::PoseStamped &eef_pose);
 
   /**
    * @brief Initiates dispose sequence:
@@ -150,6 +153,22 @@ class QuadManipulator {
 
   bool disable_reco();
   bool enable_reco();
+
+  /**
+   * @brief Holds robot still at @p pose.
+   */
+  void hold_still(std::optional<geometry_msgs::PoseStamped> pose = std::nullopt);
+
+  /**
+   * @brief Unholds robot.
+   */
+  void unhold_still();
+
+  /**
+   * @brief Return the transform expressed in earth frame
+   */
+  std::optional<Eigen::Affine3d> express_in_earth(const geometry_msgs::PoseStamped& pose, bool should_invert);
+
  private:
   /**
    * @brief Receives state information of the robot, e.g. armed, mode.
@@ -255,9 +274,6 @@ class QuadManipulator {
    */
   std::optional<KDL::JntArray> compute_ik(const geometry_msgs::PoseStamped &eef_pose,
                                           const double &cartesian_tolerance = 0.02);
-
-  void hold_still();
-  void unhold_still();
 
  private:
   mavros_msgs::State current_state_;

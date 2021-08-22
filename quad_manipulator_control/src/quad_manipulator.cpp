@@ -31,6 +31,7 @@ constexpr const int kLocalNedFrame = 1;  // MAV_FRAME::MAV_FRAME_LOCAL_NED
 constexpr const int kMavOrbitCmd = 34;   // MAV_CMD::MAV_CMD_DO_ORBIT
 constexpr const char *kMapFrame = "map";
 constexpr const char *kRobotDescriptionParamName = "robot_description";
+constexpr const char *kEarthFrame = "earth";
 constexpr const char *kBaseLinkFrame = "base_link";
 constexpr const char *kBaseFootprintFrame = "base_footprint";
 constexpr const char *kArmBaseLinkFrame = "arm_base_link";
@@ -544,7 +545,7 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
   tf::poseMsgToEigen(eef_pose.pose, source_T_goal_eigen);
   const Eigen::Affine3d arm_base_T_goal = arm_base_T_source_eigen * source_T_goal_eigen;
 
-  ROS_INFO("Trying to solve IK for: %s", ToString(arm_base_T_goal, kArmBaseLinkFrame).c_str());
+  ROS_DEBUG("Trying to solve IK for: %s", ToString(arm_base_T_goal, kArmBaseLinkFrame).c_str());
   KDL::Frame arm_base_T_goal_kdl = to_kdl(arm_base_T_goal);
 
   KDL::JntArray q_out(eef_chain_->getNrOfJoints());
@@ -554,11 +555,16 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
   KDL::Frame p_out;
   fk_solver_->JntToCart(q_out, p_out);
   const Eigen::Affine3d source_T_achieved = arm_base_T_source_eigen.inverse() * from_kdl(p_out);
-  ROS_INFO("Achieved pose: %s",ToString(source_T_achieved, kBaseLinkFrame).c_str());
+  ROS_DEBUG("Achieved pose: %s",ToString(source_T_achieved, kBaseLinkFrame).c_str());
   KDL::Twist delta_twist = KDL::diff(arm_base_T_goal_kdl, p_out);
   ROS_INFO("Computed IK: (%lf,%lf,%lf) with delta-twist: [(%lf,%lf,%lf), (%lf,%lf,%lf)]", q_out.data.x(),
            q_out.data.y(), q_out.data.z(), delta_twist.vel.x(), delta_twist.vel.y(), delta_twist.vel.z(),
            delta_twist.rot.x(), delta_twist.rot.y(), delta_twist.rot.z());
+  const double cartesian_error = delta_twist.vel.Norm() + delta_twist.rot.Norm();
+  if (cartesian_tolerance < cartesian_error) {
+    ROS_ERROR("Found solution is exceeding cartesian tolerance: %lf < %lf", cartesian_tolerance, cartesian_error);
+    return std::nullopt;
+  }
   return q_out;
 }
 
@@ -572,9 +578,9 @@ bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped& eef_pose) {
   }
 }
 
-bool QuadManipulator::pick(const geometry_msgs::PoseStamped &eef_pose) {
+bool QuadManipulator::pick(const geometry_msgs::PoseStamped& base_pose, const geometry_msgs::PoseStamped &eef_pose) {
   // Hold robot still before computing IK.
-  hold_still();
+  hold_still(base_pose);
   enum FailState {GRIPPER_OPEN, ARM_MOVED, NO_FAIL, NO_ACTION_NEEDED};
   FailState failure_state = FailState::NO_FAIL;
   if (!open_gripper()) {
@@ -643,10 +649,14 @@ bool QuadManipulator::dispose() {
   return true;
 }
 
-void QuadManipulator::hold_still() {
+void QuadManipulator::hold_still(std::optional<geometry_msgs::PoseStamped> pose) {
   geometry_msgs::PoseStamped msg;
-  msg.header.frame_id = get_qualified_frame(nh_, kBaseLinkFrame);
-  msg.pose.orientation.w = 1.0;
+  if (pose) {
+    msg = *pose;
+  } else {
+    msg.header.frame_id = get_qualified_frame(nh_, kBaseLinkFrame);
+    msg.pose.orientation.w = 1.0;
+  }
   const_pose_pub_.publish(msg);
 }
 
@@ -654,4 +664,26 @@ void QuadManipulator::unhold_still() {
   geometry_msgs::PoseStamped msg;
   msg.header.frame_id = "STOP_CONST_POSE";
   const_pose_pub_.publish(msg);
+}
+
+std::optional<Eigen::Affine3d> QuadManipulator::express_in_earth(const geometry_msgs::PoseStamped& pose, bool should_invert) {
+  std::string err_msg;
+  if (!tf_buffer_->canTransform(kEarthFrame, pose.header.frame_id, ros::Time(0), &err_msg)) {
+    ROS_ERROR("Could not transform from %s to %s: %s", kEarthFrame, pose.header.frame_id.c_str(),
+              err_msg.c_str());
+    return std::nullopt;
+  }
+  geometry_msgs::TransformStamped earth_T_source =
+      tf_buffer_->lookupTransform(kEarthFrame, pose.header.frame_id, ros::Time(0));
+  Eigen::Affine3d earth_T_source_eigen, source_T_pose_eigen;
+  tf::transformMsgToEigen(earth_T_source.transform, earth_T_source_eigen);
+  tf::poseMsgToEigen(pose.pose, source_T_pose_eigen);
+  const Eigen::Affine3d earth_R_source = Eigen::Affine3d(earth_T_source_eigen.linear());
+  const Eigen::Affine3d source_T_pose_in_earth = earth_R_source * source_T_pose_eigen;
+  if (should_invert) {
+    return earth_R_source * source_T_pose_in_earth.inverse() * earth_R_source.inverse();
+  }
+  else {
+    return source_T_pose_in_earth;
+  }
 }
