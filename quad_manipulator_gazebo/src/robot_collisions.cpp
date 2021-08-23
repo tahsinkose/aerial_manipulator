@@ -275,7 +275,7 @@ void RobotCollisions::OnContactsUpdate(const ConstContactsPtr &msg) {
       std::string col1 = msg->contact(i).collision1();
       std::string col2 = msg->contact(i).collision2();
       std::string object_collided;
-
+      ROS_DEBUG_STREAM("Collision: " << col1 << "- " << col2);
       // If the collision doesn't involve the link, discard it
       if (col1.find(link_name) != std::string::npos) {
         object_collided = col2.substr(0, col2.find("::"));
@@ -293,8 +293,8 @@ void RobotCollisions::OnContactsUpdate(const ConstContactsPtr &msg) {
         continue;
       }
       // Store collision
-      ROS_DEBUG_STREAM("Link: " << link_name
-                                << " Collision: " << object_collided);
+      /*ROS_DEBUG_STREAM("Link: " << link_name
+                                << " Collision: " << object_collided);*/
       quad_manipulator_msgs::RobotCollisions collision_event;
 
       collision_event.header.frame_id = link_name;

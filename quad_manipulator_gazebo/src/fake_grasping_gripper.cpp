@@ -92,10 +92,17 @@ bool FakeGraspingGripper::graspObject(const std::string &attachedLinkName) {
   physics::CollisionPtr obj = boost::dynamic_pointer_cast<physics::Collision>(
       world->EntityByName(attachedLinkName));
   if (!obj.get()) {
-    ROS_WARN("Fake grasping gripper: Object ModelPtr %s not found it world, "
-             "can't attach it.",
-             attachedLinkName.c_str());
+    ROS_WARN(
+        "Fake grasping gripper: Object ModelPtr %s not found it world, "
+        "can't attach it.",
+        attachedLinkName.c_str());
     return false;
+  }
+  auto joints = obj->GetLink()->GetParentJoints();
+  ROS_INFO("Fake grasping gripper: Attaching %s", obj->GetLink()->GetName().c_str());
+  for (auto j : joints) {
+    ROS_INFO("Fake grasping gripper: Removing joint %s", j->GetName().c_str());
+    j->Detach();
   }
   ignition::math::Pose3d diff =
       obj->GetLink()->WorldPose() - this->palmLink->WorldPose();
@@ -107,6 +114,7 @@ bool FakeGraspingGripper::graspObject(const std::string &attachedLinkName) {
     // this disables collision of the object with the gripper
     obj->GetLink()->SetCollideMode("none");
   }
+  obj->GetLink()->SetKinematic(false);
   this->attachedLink = attachedLinkName;
   return true;
 }
@@ -140,11 +148,6 @@ bool FakeGraspingGripper::checkGrip(
       lengthRatio > 1 - kLengthRatioTolerance) {
     ROS_WARN(
         "Fake grasping gripper: checkGrip: specify a lengthRatio of [0..1]");
-    return false;
-  }
-  if (minAngleDiff < M_PI_2) {
-    ROS_WARN("Fake grasping gripper: checkGrip: min angle must be at least 90 "
-             "degrees (PI/2)");
     return false;
   }
   if (forces.size() > 1) {
