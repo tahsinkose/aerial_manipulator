@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <include file="$(find quad_manipulator_gazebo)/launch/internal/sim.launch">
-    <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/workout.world"/>
+    <arg name="world" value="$(find quad_manipulator_gazebo)/worlds/simple_pick_fly_dispose.world"/>
     <arg name="use_plot_juggler" value="false"/>
   </include>
   <group ns="uav1">
