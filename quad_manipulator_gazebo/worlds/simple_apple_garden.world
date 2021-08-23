@@ -98,10 +98,22 @@
       <uri>model://orchard_ground</uri>
       <pose>0 0 -0.239 0 0 0</pose>
     </include>
+    <population name="orchard">
+      <model name="apple_tree">
+        <include>
+          <static>0</static>
+          <uri>model://apple_tree</uri>
+        </include>
+      </model>
+      <pose>0 0 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>2</cols>
+        <step>4 4 0</step>
+      </distribution>
+    </population>
     <include>
-      <uri>model://apple_tree</uri>
-      <pose>7.7 0.033 0.0 0 0 0</pose>
-    </include>
     <gui fullscreen='0'>
       <camera name='developer_camera'>
         <pose frame=''>26.4076 0.083329 5.38427 -0 0.448249 3.10046</pose>

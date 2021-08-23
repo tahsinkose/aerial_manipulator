@@ -37,8 +37,7 @@ target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 add_executable(batch_test_reco_orchard src/batch_test_reco_orchard.cpp)
 target_link_libraries(batch_test_reco_orchard quad_manipulator)
 
-add_executable(simple_harvest src/simple_harvest.cpp)
-target_link_libraries(simple_harvest quad_manipulator)
+
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
@@ -49,6 +48,10 @@ if(CATKIN_ENABLE_TESTING)
   add_rostest_gtest(test_simple_orchard_patrol test/simple_orchard_patrol.test
     src/test/simple_orchard_patrol.cpp)
   target_link_libraries(test_simple_orchard_patrol quad_manipulator ${catkin_LIBRARIES})
+
+  add_rostest_gtest(test_simple_harvest test/simple_harvest.test
+    src/test/simple_harvest.cpp)
+  target_link_libraries(test_simple_harvest quad_manipulator ${catkin_LIBRARIES})
 endif()
 
 install(
