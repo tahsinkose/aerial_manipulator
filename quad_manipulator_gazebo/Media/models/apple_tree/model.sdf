@@ -55,8 +55,8 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>0.1</mu>
+                <mu2>0.1</mu2>
                 <fdir1>0 0 0</fdir1>
                 <slip1>0</slip1>
                 <slip2>0</slip2>
@@ -117,7 +117,7 @@
           </inertia>
           <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='branch1'>
+        <!--collision name='branch1'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -139,7 +139,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='branch1'>
           <geometry>
             <mesh>
@@ -161,7 +161,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='branch2'>
+        <!--collision name='branch2'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -183,7 +183,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='branch2'>
           <geometry>
             <mesh>
@@ -205,7 +205,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='branch3'>
+        <!--collision name='branch3'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -227,7 +227,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='branch3'>
           <geometry>
             <mesh>
@@ -249,7 +249,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='leaf1'>
+        <!--collision name='leaf1'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -271,7 +271,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='leaf1'>
           <geometry>
             <mesh>
@@ -293,7 +293,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='leaf2'>
+        <!--collision name='leaf2'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -315,7 +315,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='leaf2'>
           <geometry>
             <mesh>
@@ -337,7 +337,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='leaf3'>
+        <!--collision name='leaf3'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -359,7 +359,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='leaf3'>
           <geometry>
             <mesh>
@@ -381,7 +381,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple2'>
+        <!--collision name='apple2'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -403,7 +403,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple2'>
           <geometry>
             <mesh>
@@ -425,7 +425,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple3'>
+        <!--collision name='apple3'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -447,7 +447,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple3'>
           <geometry>
             <mesh>
@@ -469,7 +469,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple4'>
+        <!--collision name='apple4'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -491,7 +491,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple4'>
           <geometry>
             <mesh>
@@ -513,7 +513,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple5'>
+        <!--collision name='apple5'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -535,7 +535,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple5'>
           <geometry>
             <mesh>
@@ -557,7 +557,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple6'>
+        <!--collision name='apple6'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -579,7 +579,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple6'>
           <geometry>
             <mesh>
@@ -601,7 +601,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple7'>
+        <!--collision name='apple7'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -623,7 +623,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple7'>
           <geometry>
             <mesh>
@@ -645,7 +645,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple8'>
+        <!--collision name='apple8'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -667,7 +667,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple8'>
           <geometry>
             <mesh>
@@ -689,7 +689,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple9'>
+        <!--collision name='apple9'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -711,7 +711,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple9'>
           <geometry>
             <mesh>
@@ -733,7 +733,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple10'>
+        <!--collision name='apple10'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -755,7 +755,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple10'>
           <geometry>
             <mesh>
@@ -777,7 +777,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple11'>
+        <!--collision name='apple11'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -799,7 +799,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple11'>
           <geometry>
             <mesh>
@@ -821,7 +821,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple12'>
+        <!--collision name='apple12'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -843,7 +843,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple12'>
           <geometry>
             <mesh>
@@ -865,7 +865,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple13'>
+        <!--collision name='apple13'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -887,7 +887,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple13'>
           <geometry>
             <mesh>
@@ -909,7 +909,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple14'>
+        <!--collision name='apple14'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -931,7 +931,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple14'>
           <geometry>
             <mesh>
@@ -953,7 +953,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple15'>
+        <!--collision name='apple15'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -975,7 +975,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple15'>
           <geometry>
             <mesh>
@@ -997,7 +997,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple16'>
+        <!--collision name='apple16'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1019,7 +1019,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple16'>
           <geometry>
             <mesh>
@@ -1041,7 +1041,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple17'>
+        <!--collision name='apple17'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1063,7 +1063,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple17'>
           <geometry>
             <mesh>
@@ -1085,7 +1085,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple18'>
+        <!--collision name='apple18'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1107,7 +1107,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple18'>
           <geometry>
             <mesh>
@@ -1129,7 +1129,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple19'>
+        <!--collision name='apple19'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1151,7 +1151,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple19'>
           <geometry>
             <mesh>
@@ -1173,7 +1173,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='apple20'>
+        <!--collision name='apple20'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1195,7 +1195,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='apple20'>
           <geometry>
             <mesh>
@@ -1217,7 +1217,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='blossom1'>
+        <!--collision name='blossom1'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1239,7 +1239,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='blossom1'>
           <geometry>
             <mesh>
@@ -1261,7 +1261,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='blossom2'>
+        <!--collision name='blossom2'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1283,7 +1283,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='blossom2'>
           <geometry>
             <mesh>
@@ -1305,7 +1305,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='blossom3'>
+        <!--collision name='blossom3'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1327,7 +1327,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='blossom3'>
           <geometry>
             <mesh>
@@ -1349,7 +1349,7 @@
             </shader>
           </material>
         </visual>
-        <collision name='blossom4'>
+        <!--collision name='blossom4'>
           <geometry>
             <mesh>
               <uri>model://apple_tree_1/meshes/apple_tree.dae</uri>
@@ -1371,7 +1371,7 @@
               <ode/>
             </friction>
           </surface>
-        </collision>
+        </collision-->
         <visual name='blossom4'>
           <geometry>
             <mesh>
@@ -1539,7 +1539,6 @@
     </joint>
     <static>0</static>
     <allow_auto_disable>1</allow_auto_disable>
-    <plugin name='gazebo_fruit_detachment' filename='libgazebo_fruit_detachment.so'/>
     <pose frame=''>0 0 0.24 0 -0 0</pose>
   </model>
 </sdf>

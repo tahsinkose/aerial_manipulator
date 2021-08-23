@@ -6,7 +6,7 @@
 #include <ros/ros.h>
 
 namespace {
-const Eigen::Affine3d earth_T_apple(Eigen::Translation3d(Eigen::Vector3d(8.0,0.0,1.5)));
+const Eigen::Affine3d earth_T_apple(Eigen::Translation3d(Eigen::Vector3d(7.765, -0.08, 0.28)));
 // A known pose with a good IK solution
 const Eigen::Affine3d base_link_T_apple(Eigen::Translation3d(0.182947, 0.0, -0.227281));
 }
