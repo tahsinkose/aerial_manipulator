@@ -23,6 +23,7 @@
 #include <tf2_ros/transform_listener.h>
 
 class QuadManipulator {
+ static constexpr double kDefaultTakeoffAltitude = 1.5;  // in meters.
  public:
   QuadManipulator();
 
@@ -45,23 +46,25 @@ class QuadManipulator {
    * frame.
    * @returns True if successfully took off, false otherwise.
    */
-  bool takeoff();
+  bool takeoff(double altitude = kDefaultTakeoffAltitude, double settling_duration = 0.0);
 
   /**
    * @brief Lands the robot to ground below
    * @returns True if successfully landed, false otherwise.
    */
-  bool land();
+  bool land(const double altitude = 0.0);
 
   /**
    * @brief Moves the robot to passed in @p target_pose.
    * @param target_pose Target pose
    * @param position_tolerance Tolerance in Euclidean distance, defaults to 5
    * cms.
+   * @param settling_duration Enforces robot to fly unconditionally until this duration expires. (in seconds)
    * @returns True if the robot ends up within the tolerance volume of @p
    * target_pose, false otherwise.
    */
-  bool move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance = 0.05);
+  bool move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance = 0.05,
+                 double settling_duration = 0.0);
 
   /**
    * @brief Moves the manipulator to @p desired setpoint.
@@ -120,8 +123,8 @@ class QuadManipulator {
 
   /**
    * @brief Closes the gripper with desired amount.
-   * @param desired Goal joint positions for grippers, defaults to {-0.35,
-   * 0.35}.
+   * @param desired Goal joint positions for grippers, defaults to {-0.4,
+   * 0.4}.
    * @param timeout Timeout in seconds.
    * @returns True if it was possible to close the gripper.
    * false otherwise.
@@ -263,7 +266,7 @@ class QuadManipulator {
   /**
    * @brief Returns landed status of the robot
    */
-  bool is_landed();
+  bool is_landed(uint8_t goal_status = mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND);
 
   /**
    * @brief Computes IK for @p eef_pose.

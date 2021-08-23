@@ -15,8 +15,6 @@ constexpr const char *kOffboardMode = "OFFBOARD";
 constexpr const char *kAutoLoiterMode = "AUTO.LOITER";
 constexpr const char *kStabilizedMode = "STABILIZED";
 constexpr const char *kReturnHomeMode = "AUTO.RTL";
-constexpr double kDefaultTakeoffAltitude = 1.5;  // in meters.
-constexpr double kDefaultLandingAltitude = 1.5;  // in meters
 constexpr double kJointTolerance = 1e-2;         // in rad.
 constexpr double kLinearVelTolerance = 1e-2;     // in meters
 constexpr double kAngularVelTolerance = 3e-2;    // in rad
@@ -37,7 +35,8 @@ constexpr const char *kBaseFootprintFrame = "base_footprint";
 constexpr const char *kArmBaseLinkFrame = "arm_base_link";
 constexpr const char *kArmTipLinkFrame = "arm_eef";
 
-const std::vector<double> kArmDispose = {0.0, -0.37, -0.99};
+const std::vector<double> kArmDisposeFromAir = {0.0, -0.37, -0.99};
+const std::vector<double> kArmDisposeFromGround = {0.69, 0.19, 0.0};
 const std::vector<double> kArmZero = {0.0, 0.0, 0.0};
 const std::vector<double> kGripperFullClose = {0.0, 0.0};
 }  // namespace
@@ -167,7 +166,7 @@ bool QuadManipulator::motor_arm(bool arm) {
   return true;
 }
 
-bool QuadManipulator::takeoff() {
+bool QuadManipulator::takeoff(double altitude, double settling_duration) {
   const bool armed = wait_for_armed(true);
   if (!armed) {
     ROS_ERROR("Could not takeoff when disarmed");
@@ -176,17 +175,21 @@ bool QuadManipulator::takeoff() {
   geometry_msgs::PoseStamped map_T_takeoff;
   map_T_takeoff.pose.position.x = local_pose_.pose.position.x;
   map_T_takeoff.pose.position.y = local_pose_.pose.position.y;
-  map_T_takeoff.pose.position.z = kDefaultTakeoffAltitude;
+  map_T_takeoff.pose.position.z = altitude;
   map_T_takeoff.pose.orientation = local_pose_.pose.orientation;
-  return move_base(map_T_takeoff);
+  // In takeoff robot is not perfectly stable, hence enforce a looser constraint.
+  return move_base(map_T_takeoff, 0.0625, settling_duration);
 }
 
-bool QuadManipulator::land() {
+bool QuadManipulator::land(const double altitude) {
   mavros_msgs::CommandTOL srv_land;
+  srv_land.request.altitude = altitude;
+  uint8_t goal_status = fabs(altitude) < 1e-3 ? mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND
+                                              : mavros_msgs::ExtendedState::LANDED_STATE_IN_AIR;
   bool success = landing_client_.call(srv_land) && srv_land.response.success;
   if (success) {
     ros::Rate rate(10.0);
-    while (ros::ok() && !is_landed()) {
+    while (ros::ok() && !is_landed(goal_status)) {
       rate.sleep();
       ros::spinOnce();
     }
@@ -196,11 +199,11 @@ bool QuadManipulator::land() {
   }
 }
 
-bool QuadManipulator::is_landed() {
-  return extended_current_state_.landed_state == mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND;
+bool QuadManipulator::is_landed(uint8_t goal_status) {
+  return extended_current_state_.landed_state == goal_status;
 }
 
-bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance) {
+bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance, double settling_duration) {
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   double dist = DBL_MAX;
@@ -213,7 +216,8 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
   if (!wait_for_mode(kOffboardMode)) {
     return false;
   }
-
+  ros::Time start_time = ros::Time::now();
+  ros::Time settle_end_time = start_time + ros::Duration(settling_duration);
   do {
     local_pos_pub_.publish(*map_T_target);
 
@@ -222,7 +226,8 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
     dist = sqrt(pow((local_pose_.pose.position.x - map_T_target->pose.position.x), 2) +
                 pow((local_pose_.pose.position.y - map_T_target->pose.position.y), 2) +
                 pow((local_pose_.pose.position.z - map_T_target->pose.position.z), 2));
-  } while (ros::ok() && dist > position_tolerance);
+    ROS_DEBUG("Distance to target: %lf",dist);
+  } while (ros::ok() && (dist > position_tolerance || ros::Time::now() < settle_end_time));
 
   if (!ros::ok()) {
     return false;
@@ -311,7 +316,7 @@ bool QuadManipulator::cmd_gripper(const std::vector<double> &desired, const ros:
   grasp_trajectory.joint_names = kGraspJointNames;
   trajectory_msgs::JointTrajectoryPoint trajectory_point;
   trajectory_point.positions = desired;
-  trajectory_point.time_from_start = ros::Duration(1.0);  // Make it by default 1.0 seconds for now
+  trajectory_point.time_from_start = ros::Duration(1.0);  // Make it by default 1.0 seconds
   grasp_trajectory.points.push_back(trajectory_point);
 
   ros::Rate rate(20.0);
@@ -323,7 +328,11 @@ bool QuadManipulator::cmd_gripper(const std::vector<double> &desired, const ros:
     ros::spinOnce();
     rate.sleep();
   }
-  return in_pose(kGraspJointNames, trajectory_point.positions);
+  if (in_pose(kGraspJointNames, trajectory_point.positions)) {
+    ros::Duration(0.2).sleep();
+    return true;
+  }
+  return false;
 }
 
 bool QuadManipulator::cmd_manip(const std::vector<double> &desired, const ros::Duration &timeout) {
@@ -480,7 +489,7 @@ std::optional<geometry_msgs::PoseStamped> QuadManipulator::target_in_map(
 }
 
 bool QuadManipulator::go_to_home(const ros::Duration &timeout) {
-  bool in_return_mode = wait_for_mode(kReturnHomeMode);
+  bool in_return_mode = wait_for_mode(kAutoLoiterMode) && wait_for_mode(kReturnHomeMode);
   if (in_return_mode) {
     ros::Rate rate(20.0);
     ros::Time start_time = ros::Time::now();
@@ -578,24 +587,21 @@ bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped& eef_pose) {
   }
 }
 
-bool QuadManipulator::pick(const geometry_msgs::PoseStamped& base_pose, const geometry_msgs::PoseStamped &eef_pose) {
+bool QuadManipulator::pick(const geometry_msgs::PoseStamped &base_pose, const geometry_msgs::PoseStamped &eef_pose) {
   // Hold robot still before computing IK.
   hold_still(base_pose);
-  enum FailState {GRIPPER_OPEN, ARM_MOVED, NO_FAIL, NO_ACTION_NEEDED};
+  enum FailState { GRIPPER_OPEN, ARM_MOVED, NO_FAIL, NO_ACTION_NEEDED };
   FailState failure_state = FailState::NO_FAIL;
   if (!open_gripper()) {
     ROS_ERROR("Failed to open gripper in pick action!");
-    failure_state = FailState::NO_ACTION_NEEDED;
-  }
-  if (!move_eef(eef_pose)) {
     failure_state = FailState::GRIPPER_OPEN;
+  } else if (!move_eef(eef_pose)) {
+    failure_state = FailState::ARM_MOVED;
     ROS_ERROR("Failed to move the end effector in pick action!");
-  }
-  if (!close_gripper()) {
+  } else if (!close_gripper()) {
     failure_state = FailState::ARM_MOVED;
     ROS_ERROR("Failed to close gripper in pick action!");
-  }
-  if (!move_manip(kArmZero)) {
+  } else if (!move_manip(kArmZero)) {
     failure_state = FailState::ARM_MOVED;
     ROS_ERROR("Failed to move arm to 0-state in pick action!");
   }
@@ -621,16 +627,21 @@ bool QuadManipulator::pick(const geometry_msgs::PoseStamped& base_pose, const ge
 }
 
 bool QuadManipulator::dispose() {
-  geometry_msgs::PoseStamped target_pose;
-  target_pose.header.frame_id = get_qualified_frame(nh_, kBaseFootprintFrame);
-  target_pose.pose.position.z = 0.3;
-  target_pose.pose.orientation.w = 1.0;
-  // need to be a bit more loose as the weight is slightly increased with the picked fruit.
-  if (!move_base(target_pose, 0.08)) {
-    ROS_ERROR("Could not move the base to dispose pose!");
+  // Specify 10 seconds of settling time.
+  if (!takeoff(0.8, 10.0)) {
+    ROS_ERROR("Failed to takeoff as a pre-dispose action!");
     return false;
   }
-  if (!move_manip(kArmDispose)) {
+  geometry_msgs::PoseStamped reverse_a_bit;
+  reverse_a_bit.header.frame_id = get_qualified_frame(nh_, kBaseFootprintFrame);
+  reverse_a_bit.pose.position.x = -0.2;
+  reverse_a_bit.pose.position.z = 0.3;
+  reverse_a_bit.pose.orientation.w = 1.0;
+  if (!move_base(reverse_a_bit, 0.065)) {
+    ROS_ERROR("Failed to go to home as a pre-dispose action!");
+    return false;
+  }
+  if (!move_manip(kArmDisposeFromAir)) {
     ROS_ERROR("Could not move arm to dispose configuration!");
     return false;
   }
