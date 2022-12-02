@@ -1,26 +1,19 @@
 #!/bin/bash
 xhost +
 
-XAUTH=/tmp/.docker.xauth
-if [ ! -f $XAUTH ]
-then
-    xauth_list=$(xauth nlist :0 | sed -e 's/^..../ffff/')
-    if [ ! -z "$xauth_list" ]
-    then
-        echo $xauth_list | xauth -f $XAUTH nmerge -
-    else
-        touch $XAUTH
-    fi
-    chmod a+r $XAUTH
-fi
-
-docker run -it \
+export UID=$(id -u)
+export GID=$(id -g)
+docker run -it --privileged \
+    --user $UID:$GID \
+    -v /home/tahsin/aerial_manipulation/quad_manip_ws:/quad_manip_ws:rw \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    --workdir="/quad_manip_ws" \
     --env="DISPLAY=$DISPLAY" \
     --env="QT_X11_NO_MITSHM=1" \
-    --volume="/home/tahsin/aerial_manipulation/quad_manip_ws:/quad_manip_ws:rw" \
-    --workdir="/quad_manip_ws" \
-    --env="XAUTHORITY=$XAUTH" \
-    --volume="$XAUTH:$XAUTH" \
-    aerial-manipulation-melodic
+    -p 14556:14556/udp \
+    --runtime=nvidia \
+    --gpus all \
+    --name=aerial-manipulation-melodic-container aerial-manipulation-melodic bash
 
+docker rm aerial-manipulation-melodic-container
 xhost -

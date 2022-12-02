@@ -1,8 +1,27 @@
-# This is an auto generated Dockerfile for ros:desktop-full
-# generated from docker_images/create_ros_image.Dockerfile.em
-FROM osrf/ros:melodic-desktop-bionic
+FROM nvidia/cudagl:11.4.2-devel-ubuntu18.04
+FROM px4io/px4-dev-ros-melodic:latest
 
-# install ros packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-melodic-desktop-full=1.4.1-0* \
-    && rm -rf /var/lib/apt/lists/*
+# nvidia-docker hooks
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+RUN apt-get update && apt-get install -y mesa-utils -y module-init-tools
+# install nvidia driver
+#RUN apt-get install -y binutils
+#ADD NVIDIA*.run /tmp/NVIDIA-DRIVER.run
+#RUN sh /tmp/NVIDIA-DRIVER.run -a -N --ui=none --no-kernel-module
+#RUN rm /tmp/NVIDIA-DRIVER.run
+
+ENV TERM xterm-256color
+ARG USER=docker
+ARG UID=1000
+ARG GID=1000
+# default password for user
+ARG PW=docker
+
+RUN useradd -m ${USER} --uid=${UID} && echo "${USER}:${PW}" | \
+      chpasswd
+
+USER ${UID}:${GID}
