@@ -15,9 +15,9 @@ constexpr const char *kOffboardMode = "OFFBOARD";
 constexpr const char *kAutoLoiterMode = "AUTO.LOITER";
 constexpr const char *kStabilizedMode = "STABILIZED";
 constexpr const char *kReturnHomeMode = "AUTO.RTL";
-constexpr double kJointTolerance = 1e-2;         // in rad.
-constexpr double kLinearVelTolerance = 1e-2;     // in meters
-constexpr double kAngularVelTolerance = 3e-2;    // in rad
+constexpr double kJointTolerance = 1e-2;       // in rad.
+constexpr double kLinearVelTolerance = 1e-2;   // in meters
+constexpr double kAngularVelTolerance = 3e-2;  // in rad
 const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",         "ALTCTL",        "POSCTL",
                                                  kOffboardMode,   "STABILIZED",   "RATTITUDE",     "AUTO.MISSION",
                                                  kAutoLoiterMode, "AUTO.TAKEOFF", kReturnHomeMode, "AUTO.LAND",
@@ -69,7 +69,7 @@ QuadManipulator::QuadManipulator() {
   command_client_ = nh_.serviceClient<mavros_msgs::CommandLong>("mavros/cmd/command");
   // TODO Make these robot-specific.
   reco_cmd_client_ = nh_.serviceClient<quad_manipulator_msgs::RecoCmd>("/reco_cmd");
-  reco_results_client_ =  nh_.serviceClient<quad_manipulator_msgs::RecoStats>("/reco_results");
+  reco_results_client_ = nh_.serviceClient<quad_manipulator_msgs::RecoStats>("/reco_results");
   arm_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>("arm_controller/command", 10);
   hand_control_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>("grasp_controller/command", 10);
   const_pose_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("const_pose", 1);
@@ -203,7 +203,8 @@ bool QuadManipulator::is_landed(uint8_t goal_status) {
   return extended_current_state_.landed_state == goal_status;
 }
 
-bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance, double settling_duration) {
+bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, double position_tolerance,
+                                double settling_duration) {
   // the setpoint publishing rate MUST be faster than 2Hz
   ros::Rate rate(20.0);
   double dist = DBL_MAX;
@@ -226,7 +227,7 @@ bool QuadManipulator::move_base(const geometry_msgs::PoseStamped &target_pose, d
     dist = sqrt(pow((local_pose_.pose.position.x - map_T_target->pose.position.x), 2) +
                 pow((local_pose_.pose.position.y - map_T_target->pose.position.y), 2) +
                 pow((local_pose_.pose.position.z - map_T_target->pose.position.z), 2));
-    ROS_DEBUG("Distance to target: %lf",dist);
+    ROS_DEBUG("Distance to target: %lf", dist);
   } while (ros::ok() && (dist > position_tolerance || ros::Time::now() < settle_end_time));
 
   if (!ros::ok()) {
@@ -370,7 +371,7 @@ bool QuadManipulator::close_gripper(const std::vector<double> &desired, const ro
 }
 
 bool QuadManipulator::move_manip(const std::vector<double> &desired) {
-  //ROS_INFO("Moving arm to desired setpoint: %s", ToString(desired).c_str());
+  // ROS_INFO("Moving arm to desired setpoint: %s", ToString(desired).c_str());
   const bool moved = cmd_manip(desired);
   ROS_INFO("Arm %s", (moved ? "successfully moved" : "could not be moved"));
   return moved;
@@ -413,7 +414,7 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   ROS_INFO("Center: %s for orbit", ToString(*map_T_target).c_str());
   const auto map_T_target_in_ned = px4_ned_T_map(*map_T_target);
   ROS_INFO("Center: %s for orbit", ToString(map_T_target_in_ned).c_str());
-  orbit_srv.request.param4 = 6.28; // in radians
+  orbit_srv.request.param4 = 6.28;  // in radians
   orbit_srv.request.param5 = map_T_target_in_ned.pose.position.x;
   orbit_srv.request.param6 = map_T_target_in_ned.pose.position.y;
   orbit_srv.request.param7 = map_T_target_in_ned.pose.position.z;
@@ -560,11 +561,11 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
   KDL::JntArray q_out(eef_chain_->getNrOfJoints());
   KDL::JntArray q_init(eef_chain_->getNrOfJoints());
   int ret = ik_solver_->CartToJnt(q_init, arm_base_T_goal_kdl, q_out);
-  ROS_DEBUG("IkSolver latest result: %s",ik_solver_->strError(ret));
+  ROS_DEBUG("IkSolver latest result: %s", ik_solver_->strError(ret));
   KDL::Frame p_out;
   fk_solver_->JntToCart(q_out, p_out);
   const Eigen::Affine3d source_T_achieved = arm_base_T_source_eigen.inverse() * from_kdl(p_out);
-  ROS_DEBUG("Achieved pose: %s",ToString(source_T_achieved, kBaseLinkFrame).c_str());
+  ROS_DEBUG("Achieved pose: %s", ToString(source_T_achieved, kBaseLinkFrame).c_str());
   KDL::Twist delta_twist = KDL::diff(arm_base_T_goal_kdl, p_out);
   ROS_INFO("Computed IK: (%lf,%lf,%lf) with delta-twist: [(%lf,%lf,%lf), (%lf,%lf,%lf)]", q_out.data.x(),
            q_out.data.y(), q_out.data.z(), delta_twist.vel.x(), delta_twist.vel.y(), delta_twist.vel.z(),
@@ -577,7 +578,7 @@ std::optional<KDL::JntArray> QuadManipulator::compute_ik(const geometry_msgs::Po
   return q_out;
 }
 
-bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped& eef_pose) {
+bool QuadManipulator::move_eef(const geometry_msgs::PoseStamped &eef_pose) {
   const std::optional<KDL::JntArray> ik_solution = compute_ik(eef_pose);
   if (ik_solution) {
     return move_manip(*ik_solution);
@@ -677,11 +678,11 @@ void QuadManipulator::unhold_still() {
   const_pose_pub_.publish(msg);
 }
 
-std::optional<Eigen::Affine3d> QuadManipulator::express_in_earth(const geometry_msgs::PoseStamped& pose, bool should_invert) {
+std::optional<Eigen::Affine3d> QuadManipulator::express_in_earth(const geometry_msgs::PoseStamped &pose,
+                                                                 bool should_invert) {
   std::string err_msg;
   if (!tf_buffer_->canTransform(kEarthFrame, pose.header.frame_id, ros::Time(0), &err_msg)) {
-    ROS_ERROR("Could not transform from %s to %s: %s", kEarthFrame, pose.header.frame_id.c_str(),
-              err_msg.c_str());
+    ROS_ERROR("Could not transform from %s to %s: %s", kEarthFrame, pose.header.frame_id.c_str(), err_msg.c_str());
     return std::nullopt;
   }
   geometry_msgs::TransformStamped earth_T_source =
@@ -693,8 +694,7 @@ std::optional<Eigen::Affine3d> QuadManipulator::express_in_earth(const geometry_
   const Eigen::Affine3d source_T_pose_in_earth = earth_R_source * source_T_pose_eigen;
   if (should_invert) {
     return earth_R_source * source_T_pose_in_earth.inverse() * earth_R_source.inverse();
-  }
-  else {
+  } else {
     return source_T_pose_in_earth;
   }
 }

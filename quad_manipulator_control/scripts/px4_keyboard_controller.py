@@ -83,7 +83,7 @@ def sendSetpoint():
     # Input data
     global setpoint, yawSetPoint, run, position_control
     # Output data
-    local_setpoint_pub = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, queue_size=0)
+    local_setpoint_pub = rospy.Publisher('/uav1/mavros/setpoint_position/local', PoseStamped, queue_size=0)
 
     rate = rospy.Rate(5)
 
@@ -160,17 +160,15 @@ def InterfaceKeyboard():
 def init():
     # Input data
     # Output data
-    global state, setpoint, yawSetPoint, \
-           run, laserposition, pose, lasers_raw, position_control
+    global state, setpoint, yawSetPoint, run, pose, position_control
     # Publishers
-    global local_pos_pub, arming_client, set_mode_client, lasers_yaw
+    global arming_client, set_mode_client, lasers_yaw
     # Objects
 
     lasers_yaw = 0
 
     # Global variable initialisation
     pose = PoseStamped()
-    laserposition = PoseStamped()
     setpoint = Point()
     setpoint.x = 1
     setpoint.y = 1
@@ -182,19 +180,8 @@ def init():
     run = True
     state = State()
 
-    # Node initiation
-    rospy.init_node('control_position_setpoint_py')
-
     time.sleep(1)
 
-    # Publishers, subscribers and services
-    pose_sub        = rospy.Subscriber('/mavros/local_position/pose', PoseStamped, Pose_Callback)
-    state_sub       = rospy.Subscriber('/mavros/state', State, State_Callback)
-
-    rospy.wait_for_service('mavros/set_mode')
-    set_mode_client = rospy.ServiceProxy('mavros/set_mode', SetMode)
-    rospy.wait_for_service('mavros/cmd/arming')
-    arming_client   = rospy.ServiceProxy('mavros/cmd/arming', CommandBool)
 
     # Thread to send setpoints
     tSetPoints = Thread(target=sendSetpoint)
@@ -205,6 +192,16 @@ def init():
         InterfaceKeyboard()
     run = False
 if __name__ == '__main__':
+    rospy.init_node('control_position_setpoint_py')
+
+    # Publishers, subscribers and services
+    pose_sub        = rospy.Subscriber('/uav1/mavros/local_position/pose', PoseStamped, Pose_Callback)
+    state_sub       = rospy.Subscriber('/uav1/mavros/state', State, State_Callback)
+
+    rospy.wait_for_service('/uav1/mavros/set_mode')
+    set_mode_client = rospy.ServiceProxy('/uav1/mavros/set_mode', SetMode)
+    rospy.wait_for_service('/uav1/mavros/cmd/arming')
+    arming_client   = rospy.ServiceProxy('/uav1/mavros/cmd/arming', CommandBool)
     rospy.loginfo("We are ready")
     try:
         init()
