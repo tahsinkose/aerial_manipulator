@@ -13,6 +13,7 @@ docker run -it --privileged \
     -p 14556:14556/udp \
     --runtime=nvidia \
     --gpus all \
+    --workdir=/quad_manip_ws/src/aerial_manipulator/PX4-Autopilot \
     --name=aerial-manipulation-melodic-container aerial-manipulation-melodic bash
 
 docker rm aerial-manipulation-melodic-container
