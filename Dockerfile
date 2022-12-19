@@ -8,11 +8,6 @@ ENV NVIDIA_DRIVER_CAPABILITIES \
     ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
 RUN apt-get update && apt-get install -y mesa-utils -y module-init-tools
-# install nvidia driver
-#RUN apt-get install -y binutils
-#ADD NVIDIA*.run /tmp/NVIDIA-DRIVER.run
-#RUN sh /tmp/NVIDIA-DRIVER.run -a -N --ui=none --no-kernel-module
-#RUN rm /tmp/NVIDIA-DRIVER.run
 
 ENV TERM xterm-256color
 ARG USER=docker
@@ -22,6 +17,6 @@ ARG GID=1000
 ARG PW=docker
 
 RUN useradd -m ${USER} --uid=${UID} && echo "${USER}:${PW}" | \
-      chpasswd
+      chpasswd && adduser ${USER} sudo
 
 USER ${UID}:${GID}
