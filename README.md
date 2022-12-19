@@ -46,6 +46,13 @@ catkin config --blacklist px4
 catkin config --extend /opt/ros/melodic
 ```
 
+Next, install all dependencies in the workspace:
+```
+cd ~/catkin_ws
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+```
+
 and now compile with:
 
 ```
