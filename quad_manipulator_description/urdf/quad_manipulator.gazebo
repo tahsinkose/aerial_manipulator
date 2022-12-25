@@ -310,6 +310,21 @@
         </control_channels>
     </plugin>
   </gazebo>
+
+  <gazebo reference="magnetometer">
+    <sensor name="magnetometer" type="magnetometer">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
+        <robotNamespace/>
+        <pubRate>100</pubRate>
+        <noiseDensity>0.0004</noiseDensity>
+        <randomWalk>6.4e-06</randomWalk>
+        <biasCorrelationTime>600</biasCorrelationTime>
+      </plugin>
+    </sensor>
+  </gazebo>
   <!-- camera -->
   <gazebo reference="camera_link">
     <sensor type="depth" name="rgbd_camera">
@@ -365,6 +380,7 @@
     </sensor>
   </gazebo>
 
+  <!-- collisions plugin -->
   <gazebo>
     <plugin name="grasp_collisions" filename="libgazebo_ros_robot_collisions.so">
       <topicName>${namespace}/robot_collisions</topicName>
