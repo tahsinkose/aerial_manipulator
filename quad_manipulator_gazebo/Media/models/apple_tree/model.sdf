@@ -48,7 +48,7 @@
           <pose frame=''>0 0 0 0 -0 0</pose>
           <geometry>
             <mesh>
-              <uri>/home/tahsincan/aerial_manipulation/quad_manip_ws/src/quad_manipulator/quad_manipulator_gazebo/Media/models/apple/meshes/apple.dae</uri>
+              <uri>model://apple/meshes/apple.dae</uri>
               <scale>0.6 0.6 0.6</scale>
             </mesh>
           </geometry>

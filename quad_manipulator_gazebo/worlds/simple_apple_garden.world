@@ -48,7 +48,7 @@
     <!-- Ground Plane -->
     <include>
       <uri>model://orchard_ground</uri>
-      <pose>0 0 -0.239 0 0 0</pose>
+      <pose>0 0 0 0 0 0</pose>
     </include>
     <population name="orchard">
       <model name="apple_tree">
