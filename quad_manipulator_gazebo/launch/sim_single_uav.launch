@@ -11,7 +11,6 @@
       <arg name="x" value="10.0" />
       <arg name="y" value="0.0" />
       <arg name="yaw" value="1.57" />
-      <arg name="use_zero_noise_model" value="true"/>
     </include>
     <group if="$(arg use_joint_trajectory_gui)">
        <node name="arm_controller_gui" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller"/>

@@ -3,7 +3,7 @@
   <xacro:property name="namespace" value="$(arg robot_namespace)" />
   <xacro:property name="udp_port" value="$(arg mavlink_udp_port)" />
   <xacro:property name="tcp_port" value="$(arg mavlink_tcp_port)" />
-  <!-- ros_control plugin -->
+  <!-- ros_control -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
@@ -177,15 +177,8 @@
     </plugin>
   </gazebo>
   <gazebo>
-    <plugin name='gps_plugin' filename='libgazebo_gps_plugin.so'>
-      <gpsNoise>1</gpsNoise>
-    </plugin>
-    <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-      <pubRate>100</pubRate>
-      <noiseDensity>0.004</noiseDensity>
-      <randomWalk>6.4e-05</randomWalk>
-      <biasCorrelationTime>600</biasCorrelationTime>
-      <magTopic>mag</magTopic>
+    <plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>
+      <robotNamespace/>
     </plugin>
     <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
       <pubRate>50</pubRate>
@@ -371,19 +364,6 @@
       </plugin>
     </sensor>
   </gazebo>
-
-  <xacro:macro name="imu" params="**noise_model">
-    <gazebo>
-      <plugin name="rotors_gazebo_imu_plugin" filename="libgazebo_imu_plugin.so">
-        <linkName>base_link</linkName>
-        <imuTopic>imu</imuTopic>
-        <xacro:insert_block name="noise_model"/>
-        <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
-        <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
-        <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
-      </plugin>
-    </gazebo>
-  </xacro:macro>
 
   <gazebo>
     <plugin name="grasp_collisions" filename="libgazebo_ros_robot_collisions.so">

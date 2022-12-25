@@ -4,32 +4,8 @@
   <xacro:arg name="robot_namespace" default=""/>
   <xacro:arg name='mavlink_udp_port' default='14560' />
   <xacro:arg name='mavlink_tcp_port' default='4560' />
-  <xacro:arg name="use_zero_noise_model" default="true"/>
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find quad_manipulator_description)/urdf/quad_manipulator.gazebo" />
-  <!-- Import Gazebo-IMU-->
-  <xacro:if value="$(arg use_zero_noise_model)">
-    <xacro:imu>
-      <noise_model>
-        <gyroscopeNoiseDensity>0.000018665</gyroscopeNoiseDensity>
-        <gyroscopeRandomWalk>3.8785e-06</gyroscopeRandomWalk>
-        <accelerometerNoiseDensity>0.000186</accelerometerNoiseDensity>
-        <accelerometerRandomWalk>0.0006</accelerometerRandomWalk>
-        <accelerometerTurnOnBiasSigma>0.0</accelerometerTurnOnBiasSigma>
-      </noise_model>
-    </xacro:imu>
-  </xacro:if>
-  <xacro:unless value="$(arg use_zero_noise_model)">
-    <xacro:imu>
-      <noise_model>
-        <gyroscopeNoiseDensity>0.00018665</gyroscopeNoiseDensity>
-        <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
-        <accelerometerNoiseDensity>0.00186</accelerometerNoiseDensity>
-        <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
-        <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
-      </noise_model>
-    </xacro:imu>
-  </xacro:unless>
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find quad_manipulator_description)/urdf/materials.xacro" />
 

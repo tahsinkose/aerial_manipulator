@@ -10,7 +10,6 @@
           <arg name="x" value="0.0" />
           <arg name="y" value="0.0" />
           <arg name="yaw" value="1.57" />
-          <arg name="use_zero_noise_model" value="true"/>
       </include>
        <test test-name="test_simple_pick_fly_dispose" pkg="quad_manipulator_control" type="test_simple_pick_fly_dispose"
           time-limit="360.0"/>
