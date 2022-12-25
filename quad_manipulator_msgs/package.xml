@@ -4,7 +4,7 @@
   <version>0.0.0</version>
   <description>The quad_manipulator_msgs package</description>
 
-  <maintainer email="tahsincan@todo.todo">tahsincan</maintainer>
+  <maintainer email="tahsincan@todo.todo">Tahsincan Kose</maintainer>
 
   <license>MIT</license>
   <buildtool_depend>catkin</buildtool_depend>

@@ -71,7 +71,7 @@ source devel/setup.bash
 In order to bringup an idle session of a single robot, run:
 
 ```
-roslaunch quad_manipulator_gazebo sim_bringup.launch
+roslaunch quad_manipulator_gazebo sim_single_uav.launch
 ```
 
 ## Troubleshooting
