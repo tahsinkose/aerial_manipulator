@@ -94,6 +94,9 @@
   <gazebo reference='kinect_optical_joint'>
     <preserveFixedJoint>true</preserveFixedJoint>
   </gazebo>
+  <gazebo reference='mag_joint'>
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
 
   <!-- camera_link -->
   <gazebo reference="camera_link">
@@ -178,7 +181,6 @@
   </gazebo>
   <gazebo>
     <plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>
-      <robotNamespace/>
     </plugin>
     <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
       <pubRate>50</pubRate>
@@ -191,6 +193,7 @@
         <gpsSubTopic>gps</gpsSubTopic>
         <magSubTopic>mag</magSubTopic>
         <baroSubTopic>baro</baroSubTopic>
+        <groundtruthSubTopic>groundtruth</groundtruthSubTopic>
         <irlockSubTopic>camera/link/irlock</irlockSubTopic>
         <opticalFlowSubTopic>px4flow/link/opticalFlow</opticalFlowSubTopic>
         <visionSubTopic>vision_odom</visionSubTopic>
@@ -317,7 +320,7 @@
       <always_on>true</always_on>
       <visualize>false</visualize>
       <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-        <robotNamespace/>
+        <magTopic>mag</magTopic>
         <pubRate>100</pubRate>
         <noiseDensity>0.0004</noiseDensity>
         <randomWalk>6.4e-06</randomWalk>
