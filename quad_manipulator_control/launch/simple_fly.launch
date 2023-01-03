@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+ <group ns="uav1">
+    <node name="simple_fly_test" pkg="quad_manipulator_control" type="simple_fly_test" output="screen"/>
+ </group>
+</launch>

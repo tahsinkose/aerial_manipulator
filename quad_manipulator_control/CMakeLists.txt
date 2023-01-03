@@ -37,6 +37,9 @@ target_link_libraries(quad_manipulator ${catkin_LIBRARIES})
 add_executable(batch_test_reco_orchard src/batch_test_reco_orchard.cpp)
 target_link_libraries(batch_test_reco_orchard quad_manipulator)
 
+add_executable(simple_fly_test src/simple_fly_test.cpp)
+target_link_libraries(simple_fly_test quad_manipulator)
+
 
 
 if(CATKIN_ENABLE_TESTING)
