@@ -313,7 +313,7 @@
         </control_channels>
     </plugin>
   </gazebo>
-
+  <!-- magnetometer -->
   <gazebo reference="magnetometer">
     <sensor name="magnetometer" type="magnetometer">
       <pose>0 0 0 0 0 0</pose>
@@ -325,6 +325,24 @@
         <noiseDensity>0.0004</noiseDensity>
         <randomWalk>6.4e-06</randomWalk>
         <biasCorrelationTime>600</biasCorrelationTime>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <!-- imu -->
+  <gazebo reference="imu">
+    <sensor name="imu" type="imu">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <plugin name='imu_plugin' filename='libgazebo_imu_plugin.so'>
+        <imuTopic>imu</imuTopic>
+        <gyroscopeNoiseDensity>0.0003394</gyroscopeNoiseDensity>
+        <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
+        <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
+        <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
+        <accelerometerNoiseDensity>0.004</accelerometerNoiseDensity>
+        <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
+        <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
       </plugin>
     </sensor>
   </gazebo>

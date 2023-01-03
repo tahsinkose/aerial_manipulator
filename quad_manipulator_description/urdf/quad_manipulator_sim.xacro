@@ -699,6 +699,29 @@
     </visual>
   </link>
 
+  <link name="imu">
+    <inertial>
+      <mass value="0.015" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name='imu_joint' type='revolute'>
+    <axis xyz="1 0 0" />
+    <parent link="base_link"/>
+    <child link="imu"/>
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
 
 
   <!-- quad manipulator transmission -->
