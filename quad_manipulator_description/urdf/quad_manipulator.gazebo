@@ -97,6 +97,13 @@
   <gazebo reference='mag_joint'>
     <preserveFixedJoint>true</preserveFixedJoint>
   </gazebo>
+  <gazebo reference='imu_joint'>
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+  <gazebo reference='gps_joint'>
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+
 
   <!-- camera_link -->
   <gazebo reference="camera_link">
@@ -329,7 +336,7 @@
     </sensor>
   </gazebo>
   <!-- imu -->
-  <gazebo reference="imu">
+  <gazebo reference="imu_link">
     <sensor name="imu" type="imu">
       <pose>0 0 0 0 0 0</pose>
       <always_on>true</always_on>
@@ -343,6 +350,24 @@
         <accelerometerNoiseDensity>0.004</accelerometerNoiseDensity>
         <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
         <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <!-- gps -->
+  <gazebo reference="gps_link">
+    <sensor name="gps" type="gps">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <plugin name='gps_plugin' filename='libgazebo_gps_plugin.so'>
+        <topic>gps</topic>
+        <gpsNoise>true</gpsNoise>
+        <gpsXYRandomWalk>2.0</gpsXYRandomWalk>
+        <gpsZRandomWalk>4.0</gpsZRandomWalk>
+        <gpsXYNoiseDensity>2.0e-4</gpsXYNoiseDensity>
+        <gpsZNoiseDensity>4.0e-4</gpsZNoiseDensity>
+        <gpsVXYNoiseDensity>0.2</gpsVXYNoiseDensity>
+        <gpsVZNoiseDensity>0.4</gpsVZNoiseDensity>
       </plugin>
     </sensor>
   </gazebo>
