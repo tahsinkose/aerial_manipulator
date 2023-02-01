@@ -16,5 +16,4 @@ docker run -it --privileged \
     --workdir=/quad_manip_ws/src/aerial_manipulator/PX4-Autopilot \
     --name=aerial-manipulation-melodic-container aerial-manipulation-melodic bash
 
-docker rm aerial-manipulation-melodic-container
 xhost -

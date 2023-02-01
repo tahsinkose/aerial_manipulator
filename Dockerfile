@@ -9,7 +9,8 @@ ENV NVIDIA_DRIVER_CAPABILITIES \
 
 RUN apt-get update && apt-get install -y mesa-utils -y module-init-tools
 # Install ros-dependencies
-RUN apt-get install ros-melodic-message-to-tf ros-melodic-joint-trajectory-controller -y
+RUN apt-get install ros-melodic-message-to-tf ros-melodic-joint-trajectory-controller \
+    ros-melodic-urdfdom-py ros-melodic-kdl-parser python-catkin-pkg -y
 
 ENV TERM xterm-256color
 ARG USER=docker

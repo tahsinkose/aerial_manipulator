@@ -27,7 +27,6 @@ to build the container. Similarly, the name of container is hardcoded as `aerial
 
 ```
 ./run_container.sh
-make px4_sitl_default gazebo
 ```
 
 With this command you should have a running Gazebo simulator with Iris quadcopter on ground. The next step is to connect `QGroundControl` to the robot. This is unfortunately not straightforward at the moment and requires inspection of two parameters:
