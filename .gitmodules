@@ -9,3 +9,7 @@
 	path = mavros
 	url = git@github.com:tahsinkose/mavros.git
 	branch = orbit-status-plugin
+[submodule "PX4-SITL_gazebo"]
+	path = PX4-SITL_gazebo
+	url = git@github.com:tahsinkose/PX4-SITL_gazebo.git
+	branch = aerial-manipulation
