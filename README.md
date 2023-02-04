@@ -23,17 +23,16 @@ After cloning the repo into a catkin workspace, it is necessary to build the Doc
 ```
 ./build_image.sh
 ```
-to build the container. Similarly, the name of container is hardcoded as `aerial-manipulation-melodic-container`. Next, we will verify the sanity of the Docker container:
+to build the container. Similarly, the name of container is hardcoded as `aerial-manipulation-melodic-container`. Next enter into the container:
 
 ```
 ./run_container.sh
 ```
 
-With this command you should have a running Gazebo simulator with Iris quadcopter on ground. The next step is to connect `QGroundControl` to the robot. This is unfortunately not straightforward at the moment and requires inspection of two parameters:
-1. We need to figure out the UDP port of quadcopter. It can be found in `build/px4_sitl_default/etc/init.d-posix/px4-rc.mavlink` on the parameter `udp_gcs_port_local`.
-2. The IP address of the container we just created -> `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'  aerial-manipulation-melodic-container`
-
-Having both parameters, navigate to Application Settings (opens new window) and select Comm Links in QGroundControl. Create a new link that uses the UDP protocol. Specify the value you retrieved in Step-1 above to *Listening Port* and  the value from Step-2 to *Target Hosts*. After adding this link, click *Connect*. You can now use QGroundControl as if you would normally be doing in the host.
+Now compile PX4:
+```
+make px4_sitl
+```
 
 ## Aerial Manipulation Stack Setup
 Finish the previous simulation session from **Docker Setup** section if it is still running.
@@ -58,9 +57,7 @@ and now compile with:
 catkin build
 ```
 
-## Quick Start
-
-Go into your catkin workspace. Then do the following.
+Now source the workspace layout for ROS:
 
 ```
 cd catkin_ws
@@ -72,6 +69,12 @@ In order to bringup an idle session of a single robot, run:
 ```
 roslaunch quad_manipulator_gazebo sim_single_uav.launch
 ```
+
+With this command you should have a running Gazebo simulator with aerial manipulator on the ground. The next step is to connect `QGroundControl` to the robot. This is unfortunately not straightforward at the moment and requires inspection of two parameters:
+1. We need to figure out the UDP port of quadcopter. It can be found in `build/px4_sitl_default/etc/init.d-posix/px4-rc.mavlink` on the parameter `udp_gcs_port_local`.
+2. The IP address of the container we just created -> `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'  aerial-manipulation-melodic-container`
+
+Having both parameters, navigate to Application Settings (opens new window) and select Comm Links in QGroundControl. Create a new link that uses the UDP protocol. Specify the value you retrieved in Step-1 above to *Listening Port* and  the value from Step-2 to *Target Hosts*. After adding this link, click *Connect*. You can now use QGroundControl as if you would normally be doing in the host.
 
 ## Troubleshooting
 
