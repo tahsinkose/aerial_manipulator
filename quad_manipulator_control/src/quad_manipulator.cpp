@@ -411,16 +411,15 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   if (!map_T_target) {
     return false;
   }
+  // Orbit in local NED frame.
+  orbit_srv.request.param4 = kLocalNedFrame;
   ROS_INFO("Center: %s for orbit", ToString(*map_T_target).c_str());
   const auto map_T_target_in_ned = px4_ned_T_map(*map_T_target);
   ROS_INFO("Center: %s for orbit", ToString(map_T_target_in_ned).c_str());
-  orbit_srv.request.param4 = 6.28;  // in radians
   orbit_srv.request.param5 = map_T_target_in_ned.pose.position.x;
   orbit_srv.request.param6 = map_T_target_in_ned.pose.position.y;
   orbit_srv.request.param7 = map_T_target_in_ned.pose.position.z;
 
-  // Orbit in local NED frame.
-  orbit_srv.request.param4 = kLocalNedFrame;
   bool sent = command_client_.call(orbit_srv);
   if (!(sent && orbit_srv.response.success)) {
     return false;
