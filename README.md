@@ -35,12 +35,12 @@ make px4_sitl
 ```
 
 ## Aerial Manipulation Stack Setup
-Spawn a new terminal. This time run `./enter_container` bash script. Here, we need to blacklist `px4` package, since it uses plain CMake for compilation and we don't want to mess with it via `catkin`. Besides it has been already compiled in the **Docker Setup** section. Finally, we need to extend the installation path of `melodic`:
+Spawn a new terminal. This time run `./enter_container` bash script. Here, we need to blacklist `px4` package, since it uses plain CMake for compilation and we don't want to mess with it via `catkin`. Besides it has been already compiled in the **Docker Setup** section. Finally, we need to extend the installation path of `noetic`:
 
 ```
 cd /quad_manip_ws
 catkin config --blacklist px4
-catkin config --extend /opt/ros/melodic
+catkin config --extend /opt/ros/noetic
 ```
 
 Next, install all dependencies in the workspace. Notice that we need to skip `mavros` and `mavros_msgs` packages as they will be custom built in the next stage:
