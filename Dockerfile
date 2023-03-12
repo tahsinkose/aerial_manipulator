@@ -21,5 +21,6 @@ ARG PW=docker
 
 RUN useradd -m ${USER} --uid=${UID} && echo "${USER}:${PW}" | \
       chpasswd && adduser ${USER} sudo
-
+RUN mkdir -p /quad_manip_ws/src
+RUN chown ${UID} /quad_manip_ws
 USER ${UID}:${GID}

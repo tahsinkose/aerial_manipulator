@@ -35,20 +35,18 @@ make px4_sitl
 ```
 
 ## Aerial Manipulation Stack Setup
-Finish the previous simulation session from **Docker Setup** section if it is still running.
-
-We need to blacklist `px4` package, since it uses plain CMake for compilation and we don't want to mess with it via `catkin`. Besides it has been already compiled in the **Docker Setup** section. Finally, we need to extend the installation path of `melodic`:
+Spawn a new terminal. This time run `./enter_container` bash script. Here, we need to blacklist `px4` package, since it uses plain CMake for compilation and we don't want to mess with it via `catkin`. Besides it has been already compiled in the **Docker Setup** section. Finally, we need to extend the installation path of `melodic`:
 
 ```
+cd /quad_manip_ws
 catkin config --blacklist px4
 catkin config --extend /opt/ros/melodic
 ```
 
-Next, install all dependencies in the workspace:
+Next, install all dependencies in the workspace. Notice that we need to skip `mavros` and `mavros_msgs` packages as they will be custom built in the next stage:
 ```
-cd ~/catkin_ws
 rosdep update
-rosdep install --from-paths src --ignore-src -r -y
+rosdep install --from-paths src --ignore-src --skip-keys="mavros mavros_msgs libmavconn mavros_extras" -r -y
 ```
 
 and now compile with:
@@ -57,10 +55,9 @@ and now compile with:
 catkin build
 ```
 
-Now source the workspace layout for ROS:
+Then source the workspace layout for ROS:
 
 ```
-cd catkin_ws
 source devel/setup.bash
 ```
 
