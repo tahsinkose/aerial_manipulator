@@ -12,6 +12,6 @@ docker run -it --privileged \
     -p 14556:14556/udp \
     --gpus all \
     --workdir=/quad_manip_ws/src/aerial_manipulator/PX4-Autopilot \
-    --name=aerial-manipulation-melodic-container aerial-manipulation-melodic bash
+    --name=aerial-manipulation-noetic-container aerial-manipulation-noetic bash
 
 xhost -
