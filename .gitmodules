@@ -1,6 +1,7 @@
 [submodule "PX4-Autopilot"]
 	path = PX4-Autopilot
-	url = https://github.com/PX4/PX4-Autopilot.git
+	url = git@github.com:tahsinkose/PX4-melodic.git
+	branch = develop
 [submodule "mavlink-gbp-release"]
 	path = mavlink-gbp-release
 	url = git@github.com:tahsinkose/mavlink-gbp-release.git
