@@ -16,7 +16,6 @@
     <gravity>0 0 -9.8</gravity>
     <atmosphere type='adiabatic'/>
     <physics name='default_physics' default='0' type='ode'>
-      <gravity>0 0 -9.8066</gravity>
       <ode>
         <solver>
           <type>quick</type>
@@ -41,6 +40,7 @@
           <speed>12</speed>
         </clouds>
       </sky>
+      <shadows>0</shadows>
     </scene>
     <wind/>
     <!-- Ground Plane -->
