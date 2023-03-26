@@ -76,4 +76,7 @@ Having both parameters, navigate to Application Settings (opens new window) and 
 ## Troubleshooting
 
 1. "preflight check failed, missing sensor during GAZEBO simulation" -> solve by removing `~/.ros/eeprom/parameters` file.
+2. Why `mavlink-gbp-release` and `PX4-Autopilot/src/modules/mavlink` packages have to be managed together? 
+    - `mavlink-gbp-release` is the `mavlink` project with message definitions that are translated to uORB format, which is necessary for the ROS workspace. These definitions are compiled with `catkin build` to auto-generated headers which can be used in mavros and other packages that would communicate with the Autopilot. It is important for the definitions in`PX4-Autopilot/src/modules/mavlink` and `mavlink-gbp-release` to exactly match.
+    - Also `mavros_msgs` ROS msg definitions need to match uORB formats.
 
