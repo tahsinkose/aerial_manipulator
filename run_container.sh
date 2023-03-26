@@ -1,11 +1,10 @@
 #!/bin/bash
 xhost +
 
-export UID=$(id -u)
-export GID=$(id -g)
 docker run -it --privileged \
-    --user $UID:$GID \
+    --user ${USER} \
     -v ${PWD}:/quad_manip_ws/src/aerial_manipulator:rw \
+    -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     --workdir="/quad_manip_ws" \
     --env="DISPLAY=$DISPLAY" \
