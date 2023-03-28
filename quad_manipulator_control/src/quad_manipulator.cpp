@@ -26,7 +26,7 @@ const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",       
 const std::vector<std::string> kArmJointNames{"arm_joint_1", "arm_joint_2", "arm_joint_3"};
 const std::vector<std::string> kGraspJointNames{"grasp_joint_1", "grasp_joint_2"};
 constexpr const int kLocalNedFrame = 1;  // MAV_FRAME::MAV_FRAME_LOCAL_NED
-constexpr const int kMavOrbitCmd = 34;   // MAV_CMD::MAV_CMD_DO_ORBIT
+constexpr const int kMavInspectionOrbitCmd = 36;   // MAV_CMD::MAV_CMD_DO_INSPECTION_ORBIT
 constexpr const char *kMapFrame = "map";
 constexpr const char *kRobotDescriptionParamName = "robot_description";
 constexpr const char *kEarthFrame = "earth";
@@ -396,7 +396,7 @@ bool QuadManipulator::inspect_around(const geometry_msgs::PoseStamped &pose, dou
   }
   mavros_msgs::CommandLong orbit_srv;
   orbit_srv.request.broadcast = false;
-  orbit_srv.request.command = kMavOrbitCmd;
+  orbit_srv.request.command = kMavInspectionOrbitCmd;
   orbit_srv.request.confirmation = 1;
   orbit_srv.request.param1 = orbit_radius;
   orbit_srv.request.param2 = velocity_during_orbit;
