@@ -5,7 +5,7 @@
 [submodule "mavlink-gbp-release"]
 	path = mavlink-gbp-release
 	url = git@github.com:tahsinkose/mavlink-gbp-release.git
-	branch = release/melodic/mavlink-orbit-exec-fsm-support
+	branch = inspection-orbit-flight-task
 [submodule "mavros"]
 	path = mavros
 	url = git@github.com:tahsinkose/mavros.git
