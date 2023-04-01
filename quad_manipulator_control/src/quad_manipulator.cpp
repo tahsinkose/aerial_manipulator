@@ -257,8 +257,8 @@ bool QuadManipulator::wait_for_mode(const std::string &mode, uint8_t base_mode, 
 
   ros::Rate rate(20.0);
   ros::Time start_time = ros::Time::now();
-  ros::Time orbit_end_timeout = start_time + timeout;
-  while (ros::ok() && current_state_.mode != mode && ros::Time::now() < orbit_end_timeout) {
+  ros::Time mode_wait_timeout = start_time + timeout;
+  while (ros::ok() && current_state_.mode != mode && ros::Time::now() < mode_wait_timeout) {
     ROS_DEBUG("Current mode: %s. Pending until %s mode..", current_state_.mode.c_str(), mode.c_str());
     set_mode_client_.call(set_mode);
     ros::spinOnce();
