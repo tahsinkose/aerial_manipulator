@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
         earth_T_tree.pose.position.z = orbit_height;
         ROS_INFO("Orbitting around %s with radius %lf and velocity %lf...", ToString(earth_T_tree).c_str(),
                  orbit_radius, orbit_velocity);
-        if (!quad_manip.orbit_around(earth_T_tree, orbit_radius, orbit_velocity)) {
+        if (!quad_manip.inspect_around(earth_T_tree, orbit_radius, orbit_velocity)) {
           ROS_ERROR("Robot could not successfully orbit around %s", ToString(earth_T_tree).c_str());
           return -1;
         }

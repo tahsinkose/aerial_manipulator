@@ -28,7 +28,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree1.pose.position.y = -2;
   earth_T_tree1.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree1).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree1, kTreeOrbitRadius, kTreeOrbitVelocity))
+  ASSERT_TRUE(quad_manip.inspect_around(earth_T_tree1, kTreeOrbitRadius, kTreeOrbitVelocity))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree1);
 
   geometry_msgs::PoseStamped earth_T_tree2;
@@ -37,7 +37,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree2.pose.position.y = -2.0;
   earth_T_tree2.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree2).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree2, kTreeOrbitRadius, kTreeOrbitVelocity))
+  ASSERT_TRUE(quad_manip.inspect_around(earth_T_tree2, kTreeOrbitRadius, kTreeOrbitVelocity))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree2);
 
   geometry_msgs::PoseStamped earth_T_tree3;
@@ -46,7 +46,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree3.pose.position.y = 2.0;
   earth_T_tree3.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree3).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree3, kTreeOrbitRadius, kTreeOrbitVelocity))
+  ASSERT_TRUE(quad_manip.inspect_around(earth_T_tree3, kTreeOrbitRadius, kTreeOrbitVelocity))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree3);
 
   geometry_msgs::PoseStamped earth_T_tree4;
@@ -55,7 +55,7 @@ TEST(QuadManipulatorTest, SimpleOrchardPatrol) {
   earth_T_tree4.pose.position.y = 2.0;
   earth_T_tree4.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree4).c_str());
-  ASSERT_TRUE(quad_manip.orbit_around(earth_T_tree4, kTreeOrbitRadius, kTreeOrbitVelocity))
+  ASSERT_TRUE(quad_manip.inspect_around(earth_T_tree4, kTreeOrbitRadius, kTreeOrbitVelocity))
       << "Robot could not successfully orbit around " << ToString(earth_T_tree3);
 
   ROS_INFO("Returning home...");

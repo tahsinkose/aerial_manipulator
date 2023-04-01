@@ -139,7 +139,7 @@ class QuadManipulator {
    * @param velocity_during_orbit Velocity during the orbit.
    * @return True if it was possible to start orbitting.
    */
-  bool orbit_around(const geometry_msgs::PoseStamped &pose, double orbit_radius = 2.0,
+  bool inspect_around(const geometry_msgs::PoseStamped &pose, double orbit_radius = 2.0,
                     double velocity_during_orbit = 0.5);
   /**
    * @brief Moves the robot to 'Home' location.

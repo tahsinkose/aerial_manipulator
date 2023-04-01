@@ -132,8 +132,8 @@ bool QuadManipulator::wait_for_connection(const ros::WallDuration &timeout) {
   ros::Rate rate(20.0);
   // wait for FCU connection
   ros::WallTime init = ros::WallTime::now();
-  ros::WallTime orbit_end_timeout = init + timeout;
-  while (ros::ok() && current_state_.connected != true && ros::WallTime::now() < orbit_end_timeout) {
+  ros::WallTime connection_end_timeout = init + timeout;
+  while (ros::ok() && current_state_.connected != true && ros::WallTime::now() < connection_end_timeout) {
     ros::spinOnce();
     rate.sleep();
   }
@@ -383,7 +383,7 @@ bool QuadManipulator::move_manip(const KDL::JntArray &desired) {
   return move_manip(desired_v);
 }
 
-bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, double orbit_radius,
+bool QuadManipulator::inspect_around(const geometry_msgs::PoseStamped &pose, double orbit_radius,
                                    double velocity_during_orbit) {
   if (is_landed()) {
     ROS_WARN("Robot seems to be landed on ground. Need to takeoff first..");
@@ -401,12 +401,6 @@ bool QuadManipulator::orbit_around(const geometry_msgs::PoseStamped &pose, doubl
   orbit_srv.request.param1 = orbit_radius;
   orbit_srv.request.param2 = velocity_during_orbit;
 
-  std::string source_frame = pose.header.frame_id;
-
-  // If no source frame is specified, assume it is in map frame.
-  if (source_frame == "") {
-    source_frame = get_qualified_frame(nh_, kMapFrame);
-  }
   const auto map_T_target = target_in_map(pose);
   if (!map_T_target) {
     return false;
