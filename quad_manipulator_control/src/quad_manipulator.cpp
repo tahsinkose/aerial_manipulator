@@ -9,6 +9,7 @@
 #include <tf/transform_listener.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <vector>
+#include <cmath>
 
 namespace {
 constexpr const char *kOffboardMode = "OFFBOARD";
@@ -25,7 +26,6 @@ const std::vector<std::string> kValidFlightModes{"MANUAL",        "ACRO",       
 
 const std::vector<std::string> kArmJointNames{"arm_joint_1", "arm_joint_2", "arm_joint_3"};
 const std::vector<std::string> kGraspJointNames{"grasp_joint_1", "grasp_joint_2"};
-constexpr const int kLocalNedFrame = 1;  // MAV_FRAME::MAV_FRAME_LOCAL_NED
 constexpr const int kMavInspectionOrbitCmd = 36;   // MAV_CMD::MAV_CMD_DO_INSPECTION_ORBIT
 constexpr const char *kMapFrame = "map";
 constexpr const char *kRobotDescriptionParamName = "robot_description";
@@ -405,8 +405,7 @@ bool QuadManipulator::inspect_around(const geometry_msgs::PoseStamped &pose, dou
   if (!map_T_target) {
     return false;
   }
-  // Orbit in local NED frame.
-  orbit_srv.request.param4 = kLocalNedFrame;
+  orbit_srv.request.param4 = 3 * M_PI_2;
   ROS_INFO("Center: %s for orbit", ToString(*map_T_target).c_str());
   const auto map_T_target_in_ned = px4_ned_T_map(*map_T_target);
   ROS_INFO("Center: %s for orbit", ToString(map_T_target_in_ned).c_str());

@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
 
   geometry_msgs::PoseStamped earth_T_tree1;
   earth_T_tree1.header.frame_id = "earth";
-  earth_T_tree1.pose.position.x = -5;
+  earth_T_tree1.pose.position.x = 2;
   earth_T_tree1.pose.position.y = -2;
   earth_T_tree1.pose.position.z = 1.5;
   ROS_INFO("Orbitting around %s...", ToString(earth_T_tree1).c_str());
